@@ -32,7 +32,24 @@ exports.findUser = function(req, res) {
 	});
 };
 
-exports.insertRegister = function(req, res) {
+exports.checkRegis = function(req, res) {
+	var email = req.body.email;
+	strQuery = "SELECT user_id, email FROM user_info WHERE email=?";
+	connection.query(strQuery, email, function(err, rows){
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			if(rows != ""){
+				res.send("อีเมลนี้มีผู้ใช้แล้ว..กรุณากรอกใหม่");
+			}else{
+				res.send("Success");
+			}
+		}
+	});
+};
+
+exports.insertRegis = function(req, res) {
 	var regisData = {
 		email : req.body.email,
 		password : req.body.password,
