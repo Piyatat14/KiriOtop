@@ -1,0 +1,27 @@
+<ion-view view-title="สมัครสมาชิก">
+	<ion-content>
+		<form name="regisForm">
+			<ion-list>
+				<label class="item item-input item-floating-label item-icon-right">
+					<span class="input-label">อีเมล</span>
+					<input type="email" ng-model="registerData.email" placeholder="อีเมล" required name="email">
+					<i ng-show="regisForm.email.$error.required && !regisForm.email.$pristine" class="icon ion-close-circled" style="color:red;"></i>
+					<i ng-show="regisForm.email.$error.email" class="icon ion-close-circled" style="color:red;"></i>
+				</label>
+				<label class="item item-input item-floating-label item-icon-right">
+					<span class="input-label">รหัสผ่าน</span>
+					<input type="password" ng-model="registerData.password" placeholder="รหัสผ่าน" required name="password">
+					<i ng-show="regisForm.password.$error.required && !regisForm.password.$pristine" class="icon ion-close-circled" style="color:red;"></i>
+				</label>
+				<label class="item item-input item-floating-label item-icon-right">
+					<span class="input-label">ยืนยันรหัสผ่าน</span>
+					<input type="password" ng-model="registerData.rePassword" placeholder="ยืนยันรหัสผ่าน" required name="rePassword">
+					<i ng-show="regisForm.rePassword.$error.required && !regisForm.rePassword.$pristine" class="icon ion-close-circled" style="color:red;"></i>
+				</label>
+				<div class="content padding has-header">
+		        	<button class="button button-block button-assertive" ng-click="insertRegis()" ng-disabled="regisForm.$invalid || regisForm.$pristine">ลงทะเบียน</button>
+		        </div>
+			</ion-list>
+		</form>
+	</ion-content>
+</ion-view>
