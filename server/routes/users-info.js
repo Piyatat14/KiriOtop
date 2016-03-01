@@ -32,12 +32,28 @@ exports.findUser = function(req, res) {
 	});
 };
 
-exports.insertRegister = function(req, res) {
+exports.checkRegis = function(req, res) {
+	strQuery = "SELECT user_id, email FROM user_info WHERE email=?";
+	connection.query(strQuery, req.body.email, function(err, rows){
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			if(rows != ""){
+				res.send("ชื่อผู้ใช้ซ้ำ..กรุณากรอกใหม่");
+			}else{
+				res.send("Success");
+			}
+		}
+	});
+};
+
+exports.insertRegis = function(req, res) {
 	var regisData = {
 		email : req.body.email,
 		password : req.body.password,
 		register_date : new Date(),
-		user_status : "test"
+		user_status : "User"
 	}
 	strQuery = "INSERT INTO user_info SET ?";
 	connection.query(strQuery, regisData, function(err, rows){
