@@ -62,27 +62,16 @@ angular.module('starter.userCtrl', [])
 .controller('registerCtrl', function($scope, $http, $ionicPopup) {
 	$scope.registerData = {};
 	$scope.insertRegis = function() {
-		if($scope.registerData.password != $scope.registerData.rePassword){
-			$ionicPopup.alert({
+		if($scope.registerData.email == "" || $scope.registerData.password == "" || $scope.registerData.rePassword == ""){
+			var popup = $ionicPopup.alert({
 				title: 'สมัครสมาชิกผิดพลาด',
-				subTitle: 'รหัสผ่านไม่ตรงกัน..กรุณากรอกใหม่'
+				subTitle: 'กรอกข้อมูลไม่ครบถ้วน..กรุณากรอกใหม่'
 			});
 		}else{
 			$http
-			.post('/checkRegister', $scope.registerData)
+			.post('/checkAndInsertRegister', $scope.registerData)
 			.success(function(response) {
-				if(response == "Success"){
-					$http
-					.post('/insertRegister', $scope.registerData)
-					.success(function(response) {
-						$scope.login();
-					})
-				}else{
-					$ionicPopup.alert({
-						title: 'สมัครสมาชิกผิดพลาด',
-						subTitle: response
-					});
-				}
+				console.log(response);
 			})
 		}
 	};

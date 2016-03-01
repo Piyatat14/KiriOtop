@@ -17,10 +17,8 @@ app.set('port', process.env.PORT || 8100);
 app.get('/products', products.getProduct);
 //Where and get user and password
 app.post('/findUsers', users.findUser);
-//Check Email for Register
-app.post('/checkRegister', users.checkRegis);
-//Insert Register
-app.post('/insertRegister', users.insertRegis);
+//Check Data and Insert Register
+app.post('/checkAndInsertRegister', users.insertRegister);
 
 
 app.listen(app.get('port'), function() {
