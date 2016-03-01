@@ -36,7 +36,7 @@ angular.module('starter.userCtrl', [])
 		.post('/findUsers', $scope.loginData)
 		.success(function(response) {
 			if(response == "ชื่อผู้ใช้หรือรหัสผ่านผิด..กรุณากรอกใหม่" || response == "ไม่พบชื่อผู้ใช้และรหัสผ่าน..กรุณากรอกใหม่"){
-				var popup = $ionicPopup.alert({
+				$ionicPopup.alert({
 					title: 'การเข้าสู่ระบบผิดพลาด',
 					subTitle: response
 				});
@@ -62,16 +62,27 @@ angular.module('starter.userCtrl', [])
 .controller('registerCtrl', function($scope, $http, $ionicPopup) {
 	$scope.registerData = {};
 	$scope.insertRegis = function() {
-		if($scope.registerData.email == "" || $scope.registerData.password == "" || $scope.registerData.rePassword == ""){
-			var popup = $ionicPopup.alert({
+		if($scope.registerData.password != $scope.registerData.rePassword){
+			$ionicPopup.alert({
 				title: 'สมัครสมาชิกผิดพลาด',
-				subTitle: 'กรอกข้อมูลไม่ครบถ้วน..กรุณากรอกใหม่'
+				subTitle: 'รหัสผ่านไม่ตรงกัน..กรุณากรอกใหม่'
 			});
 		}else{
 			$http
-			.post('/checkAndInsertRegister', $scope.registerData)
+			.post('/checkRegister', $scope.registerData)
 			.success(function(response) {
-				console.log(response);
+				if(response == "Success"){
+					$http
+					.post('/insertRegister', $scope.registerData)
+					.success(function(response) {
+						$scope.login();
+					})
+				}else{
+					$ionicPopup.alert({
+						title: 'สมัครสมาชิกผิดพลาด',
+						subTitle: response
+					});
+				}
 			})
 		}
 	};
