@@ -1,12 +1,12 @@
 // grab the packages we need
 var express = require('express'),
 	bodyParser = require('body-parser'),
-    users = require('routes/users-info'),
-    products = require('routes/product'),
+    users = require('./routes/users-info'),
+    products = require('./routes/product'),
     app = express(),
 	directory = "./app";
 
-app.use(express.static(directory + '/www'));
+app.use(express.static(directory + "/www"));
 // parse application/x-www-form-urlencoded 
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json 
