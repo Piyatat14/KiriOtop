@@ -1,29 +1,41 @@
 // grab the packages we need
 var express = require('express'),
 	bodyParser = require('body-parser'),
-    users = require('./routes/users-info'),
-    products = require('./routes/product'),
-    app = express(),
-	directory = "../app";
+    app = express();
 
-app.use(express.static(directory + "/www"));
+app.use(express.static(__dirname + '/uploads'));
 // parse application/x-www-form-urlencoded 
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ 
+	extended: true 
+}))
 // parse application/json 
 app.use(bodyParser.json())
-app.set('port', process.env.PORT || 8100);
+
+//dispatching CORS headers for clients can access the data we are exposing
+var allowCrossDomain = function(req, res, next) {
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+
+	next();
+}
+
+app.use(allowCrossDomain);
+app.use('/', require('./routes/index'));
+
 
 //get all attribute of product
-app.get('/products', products.getProduct);
+//app.get('/products', products.getProduct);
 //Where and get user and password
-app.post('/findUsers', users.findUser);
+//app.post('/findUsers', users.findUser);
 //Check Email Register
-app.post('/checkRegister', users.checkRegis);
+//app.post('/checkRegister', users.checkRegis);
 //Insert Register
-app.post('/insertRegister', users.insertRegis);
+//app.post('/insertRegister', users.insertRegis);
 
-
+app.set('port', process.env.PORT || 8100);
 app.listen(app.get('port'), function() {
 	// start the server
 	console.log('Server started! At http://localhost:' + app.get('port'));
 });
+
+module.exports = app;

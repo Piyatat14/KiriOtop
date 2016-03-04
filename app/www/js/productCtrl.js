@@ -1,6 +1,9 @@
 angular.module('starter.productCtrl', [])
 
 	.controller('ProductCtrl', function($scope, $http) {
+		$http.get('http://localhost:8100/products').then(function(resp) {
+			console.log('Success', resp);
+		});
 		$scope.dataTest = [{
 					"name" : "กระเป็า",
 					"detail" : "ก็ลองดูจ่าาาาาาาาาาาาา"
