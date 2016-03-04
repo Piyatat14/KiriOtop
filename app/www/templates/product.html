@@ -1,0 +1,40 @@
+<ion-view view-title="KiriOtop">
+	<ion-content>
+		<ion-list>
+			<div class="card">
+				<div class="item item-divider">
+					สินค้าแนะนำ
+					<div style="float:right;"><a href="" class="">เพิ่มเติม</a></div>
+				</div>
+				<ion-scroll direction="x" style=" overflow: hidden;">
+					<div class="item item-text-wrap row">
+						<div class="cardCustom" ng-repeat="test in dataTest">
+							<div class="bodyCardCustom">
+								<img class="image-view-product" src="img/ionic.png">
+								<p class="forNameCustom">{{test.name}}</p>
+							</div>
+						</div>
+					</div>
+				</ion-scroll>
+			</div>
+		</ion-list>
+		<ion-list>
+			<div class="card">
+				<div class="item item-divider">
+					สินค้าแนะนำ
+					<div style="float:right;"><a href="" class="">เพิ่มเติม</a></div>
+				</div>
+				<ion-scroll direction="x" style=" overflow: hidden;">
+					<div class="item item-text-wrap row">
+						<div class="cardCustom" ng-repeat="test in dataTest">
+							<div class="bodyCardCustom">
+								<img class="image-view-product" src="img/ionic.png">
+								<p class="forNameCustom">{{test.name}}</p>
+							</div>
+						</div>
+					</div>
+				</ion-scroll>
+			</div>
+		</ion-list>
+	</ion-content>
+</ion-view>

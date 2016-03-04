@@ -1,0 +1,23 @@
+<ion-modal-view>
+  <ion-content>
+    <form>
+      <ion-list>
+        <ion-item class="item-image">
+          <button class="button top-right" ng-click="closeLogin()" style="position:absolute; top:10px; right:10px;">ปิด</button>
+          <img src="img/login-img.jpg" style="width:100%;">
+        </ion-item>
+        <label class="item item-input item-floating-label">
+          <span class="input-label">อีเมล</span>
+          <input type="text" ng-model="loginData.username" placeholder="อีเมล">
+        </label>
+        <label class="item item-input item-floating-label">
+          <span class="input-label">รหัสผ่าน</span>
+          <input type="password" ng-model="loginData.password" placeholder="รหัสผ่าน">
+        </label>
+        <label class="item">
+          <button class="button button-block button-positive" type="submit" ng-click="doLogin()">เข้าสู่ระบบ</button>
+        </label>
+      </ion-list>
+    </form>
+  </ion-content>
+</ion-modal-view>
