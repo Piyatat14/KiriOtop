@@ -38,7 +38,7 @@ angular.module('starter.userCtrl', [])
 			if(response == "ชื่อผู้ใช้หรือรหัสผ่านผิด..กรุณากรอกใหม่" || response == "ไม่พบชื่อผู้ใช้และรหัสผ่าน..กรุณากรอกใหม่"){
 				$ionicPopup.alert({
 					title: 'การเข้าสู่ระบบผิดพลาด',
-					subTitle: response
+					template: response
 				});
 			}else{
 				Authen.setUser({
@@ -65,7 +65,7 @@ angular.module('starter.userCtrl', [])
 		if($scope.registerData.password != $scope.registerData.rePassword){
 			$ionicPopup.alert({
 				title: 'สมัครสมาชิกผิดพลาด',
-				subTitle: 'รหัสผ่านไม่ตรงกัน..กรุณากรอกใหม่'
+				template: 'รหัสผ่านไม่ตรงกัน..กรุณากรอกใหม่'
 			});
 		}else{
 			$http
@@ -80,7 +80,7 @@ angular.module('starter.userCtrl', [])
 				}else{
 					$ionicPopup.alert({
 						title: 'สมัครสมาชิกผิดพลาด',
-						subTitle: response
+						template: response
 					});
 				}
 			})
