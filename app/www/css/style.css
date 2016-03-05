@@ -88,3 +88,9 @@
 .groupList i{
 	padding-right: 15px;
 }
+
+.user-profile .image-profile img{
+	width: 150px;
+	height: 150px;
+	border-radius: 100px;
+}

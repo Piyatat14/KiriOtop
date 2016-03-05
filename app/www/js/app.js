@@ -71,9 +71,9 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
 
     .state('app.profile', {
       url: '/profile',
-      view: {
+      views: {
         'menuContent': {
-          templateUrl: 'template/profile.html',
+          templateUrl: 'templates/profile.html'
         }
       }
     });
