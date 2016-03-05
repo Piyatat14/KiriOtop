@@ -20,6 +20,7 @@
           <h2>email.email.com</h2>
           <p>Name Lastname</p>
         </div>
+
         <ion-item>
           <label class="item item-input" style="background-color:#E8E8E8 ;">
             <i class="icon ion-search placeholder-icon"></i>
@@ -32,19 +33,28 @@
             <a class="button button-icon icon ion-search"></a>
           </div>
         </ion-item>
+
         <ion-item class="item item-complex">
           <div class="groupList"><i class="ion-android-cart" style="color:RoyalBlue;"></i><a href="#/app/playlists">รายการสินค้า</a></div>
         </ion-item>
+
+        <ion-item class="item item-complex">
+          <div class="groupList"><i class="ion-edit"></i><a href="#/app/profile">ข้อมูลส่วนตัว</a></div>
+        </ion-item>
+
         <ion-item class="item item-complex">
           <div class="groupList"><i class="ion-unlocked"></i><a href="">เข้าสู่ระบบ</a></div>
           <div class="groupList"><i class="ion-android-person-add"></i><a href="#/app/register">สมัครสมาชิก</a></div>
         </ion-item>
+
         <ion-item menu-close href="#/app/browse">
           Browse
         </ion-item>
+
         <ion-item menu-close ng-click="logout()">
           <i class="ion-close-circled" style="color:red; padding-right: 15px;"></i>ออกจากระบบ
         </ion-item>
+
       </ion-list>
     </ion-content>
   </ion-side-menu>
