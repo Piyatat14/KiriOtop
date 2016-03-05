@@ -34,21 +34,37 @@
           </div>
         </ion-item>
 
-        <ion-item class="item item-complex">
-          <div class="groupList"><i class="ion-android-cart" style="color:RoyalBlue;"></i>
-            <a menu-close href="#/app/playlists">รายการสินค้า</a>
-          </div>
+        <ion-item menu-close class="item item-complex">
+          <a class="menuTagA" menu-close href="#/app/playlists">
+            <div class="groupList">
+              <i class="ion-android-cart" style="color:RoyalBlue;"></i>
+              รายการสินค้า
+            </div>
+          </a>
         </ion-item>
 
-        <ion-item class="item item-complex">
-          <div class="groupList"><i class="ion-edit"></i>
-            <a menu-close href="#/app/profile">ข้อมูลส่วนตัว</a>
-          </div>
+        <ion-item menu-close class="item item-complex">
+          <a class="menuTagA" href="#/app/profile">
+            <div class="groupList">
+              <i class="ion-edit"></i>
+              ข้อมูลส่วนตัว
+            </div>
+          </a>
         </ion-item>
 
-        <ion-item class="item item-complex">
-          <div class="groupList"><i class="ion-unlocked"></i><a href="">เข้าสู่ระบบ</a></div>
-          <div class="groupList"><i class="ion-android-person-add"></i><a href="#/app/register">สมัครสมาชิก</a></div>
+        <ion-item menu-close class="item item-complex">
+          <a class="menuTagA" href="">
+            <div class="groupList" ng-click="login()">
+              <i class="ion-unlocked"></i>
+              เข้าสู่ระบบ
+            </div>
+          </a>
+          <a class="menuTagA" href="#/app/register">
+            <div class="groupList">
+              <i class="ion-android-person-add"></i>
+              สมัครสมาชิก
+            </div>
+          </a>
         </ion-item>
 
         <ion-item menu-close href="#/app/browse">
