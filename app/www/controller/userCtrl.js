@@ -1,6 +1,7 @@
 angular.module('starter.userCtrl', [])
 
-.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, $timeout, Authen, $state) {
+
+.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, $timeout, Authen, urlService, $state) {
 
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
@@ -8,6 +9,9 @@ angular.module('starter.userCtrl', [])
 	// listen for the $ionicView.enter event:
 	//$scope.$on('$ionicView.enter', function(e) {
 	//});
+
+	//save user data
+	$scope.dataUser = {};
 
 	// Form data for the login modal
 	$scope.loginData = {};
@@ -33,7 +37,7 @@ angular.module('starter.userCtrl', [])
 	$scope.doLogin = function() {
 		console.log($scope.loginData);
 		$http
-		.post('/findUsers', $scope.loginData)
+		.post(urlService.getBaseUrl() + '/findUsers', $scope.loginData)
 		.success(function(response) {
 			if(response == "ชื่อผู้ใช้หรือรหัสผ่านผิด..กรุณากรอกใหม่" || response == "ไม่พบชื่อผู้ใช้และรหัสผ่าน..กรุณากรอกใหม่"){
 				$ionicPopup.alert({
@@ -45,21 +49,24 @@ angular.module('starter.userCtrl', [])
 					userID : response[0].user_id,
 					email : response[0].email
 				});
+				$scope.dataUser = Authen.getUser();
 				$scope.closeLogin();
-				$state.go('app.playlists');
+				console.log(Authen.getUser());
+				$state.go('app.product');
 			}
 		})
 	};
 
 	$scope.logout = function() {
 		Authen.logout();
-		$state.go('app.playlists');
+		$state.go('app.product');
+		$scope.dataUser = Authen.getUser();
 		console.log(Authen.getUser());
 	};
 
 })
 
-.controller('registerCtrl', function($scope, $http, $ionicPopup) {
+.controller('registerCtrl', function($scope, $http, $ionicPopup, urlService) {
 	$scope.registerData = {};
 	$scope.insertRegis = function() {
 		if($scope.registerData.password != $scope.registerData.rePassword){
@@ -69,11 +76,11 @@ angular.module('starter.userCtrl', [])
 			});
 		}else{
 			$http
-			.post('/checkRegister', $scope.registerData)
+			.post(urlService.getBaseUrl() + '/checkRegister', $scope.registerData)
 			.success(function(response) {
 				if(response == "Success"){
 					$http
-					.post('/insertRegister', $scope.registerData)
+					.post(urlService.getBaseUrl() + '/insertRegister', $scope.registerData)
 					.success(function(response) {
 						$scope.login();
 					})
@@ -86,4 +93,8 @@ angular.module('starter.userCtrl', [])
 			})
 		}
 	};
+})
+
+.controller('AddUserDataCtrl', function($scope, urlService, $http) {
+	
 })

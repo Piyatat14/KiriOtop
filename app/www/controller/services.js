@@ -1,5 +1,11 @@
 angular.module('starter.services', ['ngCookies'])
 
+.service('urlService', function() {
+	this.getBaseUrl = function() {
+		return "http://localhost:8100";
+	};
+})
+
 .factory('Authen', function($cookieStore) {
 	var _user = $cookieStore.get('starter.sessionUser');
 	var setUser = function(user) {

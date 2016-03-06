@@ -15,6 +15,7 @@ app.use(bodyParser.json())
 var allowCrossDomain = function(req, res, next) {
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+	res.header('Access-Control-Allow-Headers', 'Content-Type');
 
 	next();
 }
@@ -22,15 +23,6 @@ var allowCrossDomain = function(req, res, next) {
 app.use(allowCrossDomain);
 app.use('/', require('./routes/index'));
 
-
-//get all attribute of product
-//app.get('/products', products.getProduct);
-//Where and get user and password
-//app.post('/findUsers', users.findUser);
-//Check Email Register
-//app.post('/checkRegister', users.checkRegis);
-//Insert Register
-//app.post('/insertRegister', users.insertRegis);
 
 app.set('port', process.env.PORT || 8100);
 app.listen(app.get('port'), function() {

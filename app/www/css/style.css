@@ -90,9 +90,18 @@
 	padding-right: 15px;
 }
 
+.user-profile .image-profile{
+	margin: 5px 0 5px 5px;
+	padding: 0 0 0 0;
+	border-style: none;
+	width: 120px;
+	height: 120px;
+	border-radius: 100px;
+}
+
 .user-profile .image-profile img{
-	width: 150px;
-	height: 150px;
+	width: 120px;
+	height: 120px;
 	border-radius: 100px;
 }
 

@@ -15,9 +15,9 @@
   <ion-side-menu side="left">
     <ion-content>
       <ion-list>
-        <div class="menuProfile">
+        <div class="menuProfile" ng-if="dataUser != null">
           <img src="img/ionic.png">
-          <h2>email.email.com</h2>
+          <h2>{{ dataUser.email }}</h2>
           <p>Name Lastname</p>
         </div>
 
@@ -53,18 +53,20 @@
         </ion-item>
 
         <ion-item menu-close class="item item-complex">
-          <a class="menuTagA" href="">
-            <div class="groupList" ng-click="login()">
-              <i class="ion-unlocked"></i>
-              เข้าสู่ระบบ
-            </div>
-          </a>
-          <a class="menuTagA" href="#/app/register">
-            <div class="groupList">
-              <i class="ion-android-person-add"></i>
-              สมัครสมาชิก
-            </div>
-          </a>
+          <div ng-if="dataUser == null">
+            <a class="menuTagA" href="">
+              <div class="groupList" ng-click="login()">
+                <i class="ion-unlocked"></i>
+                เข้าสู่ระบบ
+              </div>
+            </a>
+            <a class="menuTagA" href="#/app/register">
+              <div class="groupList">
+                <i class="ion-android-person-add"></i>
+                สมัครสมาชิก
+              </div>
+            </a>
+          </div>
         </ion-item>
 
         <ion-item menu-close href="#/app/browse">

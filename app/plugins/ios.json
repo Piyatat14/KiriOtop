@@ -69,6 +69,12 @@
         },
         "cordova-plugin-crosswalk-webview": {
             "PACKAGE_NAME": "com.ionicframework.starter"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
         }
     },
     "dependent_plugins": {}
