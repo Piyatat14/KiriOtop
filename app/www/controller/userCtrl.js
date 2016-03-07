@@ -11,7 +11,7 @@ angular.module('starter.userCtrl', [])
 	//});
 
 	//save user data
-	$scope.dataUser = {};
+	$scope.dataUser;
 
 	// Form data for the login modal
 	$scope.loginData = {};
@@ -52,14 +52,14 @@ angular.module('starter.userCtrl', [])
 				$scope.dataUser = Authen.getUser();
 				$scope.closeLogin();
 				console.log(Authen.getUser());
-				$state.go('app.product');
+				$state.go('app.product', {}, {reload:true});
 			}
 		})
 	};
 
 	$scope.logout = function() {
 		Authen.logout();
-		$state.go('app.product');
+		$state.go('app.product', {}, {reload:true});
 		$scope.dataUser = Authen.getUser();
 		console.log(Authen.getUser());
 	};

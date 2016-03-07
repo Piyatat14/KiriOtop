@@ -15,7 +15,7 @@
   <ion-side-menu side="left">
     <ion-content>
       <ion-list>
-        <div class="menuProfile" ng-if="dataUser != null">
+        <div class="menuProfile" ng-if="dataUser">
           <img src="img/ionic.png">
           <h2>{{ dataUser.email }}</h2>
           <p>Name Lastname</p>
@@ -28,8 +28,8 @@
           </label>
           <div class="range range-positive" style="padding-left:0; padding-right:0;">
             <label>ราคา</label>
-            <input type="range" min="0" max="100" ng-model="test">
-            <label>{{test}}</label>
+            <input type="range" min="0" max="100" ng-model="price_value">
+            <label>{{price_value}}</label>
             <a class="button button-icon icon ion-search"></a>
           </div>
         </ion-item>
@@ -43,7 +43,7 @@
           </a>
         </ion-item>
 
-        <ion-item menu-close class="item item-complex">
+        <ion-item menu-close class="item item-complex" ng-if="dataUser">
           <a class="menuTagA" href="#/app/profile">
             <div class="groupList">
               <i class="ion-edit"></i>
@@ -52,31 +52,24 @@
           </a>
         </ion-item>
 
-        <ion-item menu-close class="item item-complex">
-          <div ng-if="dataUser == null">
-            <a class="menuTagA" href="">
-              <div class="groupList" ng-click="login()">
-                <i class="ion-unlocked"></i>
-                เข้าสู่ระบบ
-              </div>
-            </a>
-            <a class="menuTagA" href="#/app/register">
-              <div class="groupList">
-                <i class="ion-android-person-add"></i>
-                สมัครสมาชิก
-              </div>
-            </a>
-          </div>
+        <ion-item menu-close class="item item-complex" ng-if="!dataUser">
+          <a class="menuTagA" href="">
+            <div class="groupList" ng-click="login()">
+              <i class="ion-unlocked"></i>
+              เข้าสู่ระบบ
+            </div>
+          </a>
+          <a class="menuTagA" href="#/app/register">
+            <div class="groupList">
+              <i class="ion-android-person-add"></i>
+              สมัครสมาชิก
+            </div>
+          </a>
         </ion-item>
 
-        <ion-item menu-close href="#/app/browse">
-          Browse
-        </ion-item>
-
-        <ion-item menu-close ng-click="logout()">
+        <ion-item menu-close ng-click="logout()" ng-if="dataUser">
           <i class="ion-close-circled" style="color:red; padding-right: 15px;"></i>ออกจากระบบ
         </ion-item>
-
       </ion-list>
     </ion-content>
   </ion-side-menu>
