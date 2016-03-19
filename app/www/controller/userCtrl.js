@@ -1,7 +1,7 @@
 angular.module('starter.userCtrl', [])
 
 
-.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, $timeout, Authen, urlService, $state) {
+.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, $timeout, Authen, urlService, $state, $ionicHistory) {
 
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
@@ -16,6 +16,9 @@ angular.module('starter.userCtrl', [])
 	// Form data for the login modal
 	$scope.loginData = {};
 
+	$ionicHistory.nextViewOptions({
+		disableBack: true
+	});
 	// Create the login modal that we will use later
 	$ionicModal.fromTemplateUrl('templates/login.html', {
 		scope: $scope
@@ -66,7 +69,10 @@ angular.module('starter.userCtrl', [])
 
 })
 
-.controller('registerCtrl', function($scope, $http, $ionicPopup, urlService) {
+.controller('registerCtrl', function($scope, $http, $ionicPopup, urlService, $ionicHistory) {
+	$ionicHistory.nextViewOptions({
+		disableBack: true
+	});
 	$scope.registerData = {};
 	$scope.insertRegis = function() {
 		if($scope.registerData.password != $scope.registerData.rePassword){

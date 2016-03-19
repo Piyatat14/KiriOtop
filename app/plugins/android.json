@@ -10,6 +10,12 @@
         "cordova-plugin-device": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
@@ -20,12 +26,6 @@
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "ionic-plugin-keyboard": {
-            "PACKAGE_NAME": "com.ionicframework.app445426"
-        },
-        "cordova-plugin-file-transfer": {
-            "PACKAGE_NAME": "com.ionicframework.app445426"
-        },
-        "cordova-plugin-file": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "cordova-plugin-image-picker": {

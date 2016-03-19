@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var products = require('./product');
 var users = require('./users-info');
+var bank = require('./banks');
 
 router.get('/products', products.getProduct);
 router.post('/findUsers', users.findUser);
@@ -9,5 +10,11 @@ router.post('/findUsers', users.findUser);
 router.post('/checkRegister', users.checkRegis);
 //Insert Register
 router.post('/insertRegister', users.insertRegis);
+//Get Banks
+router.get('/getBanks', bank.getBank);
+//Insert Bank Account Data
+router.post('/insertBankAccounts', bank.insertBankAccount);
+//Update Bank Account Data
+router.put('/updateBankAccounts', bank.updateBankAccount);
 
 module.exports = router;

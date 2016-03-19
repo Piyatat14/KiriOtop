@@ -35,7 +35,7 @@
         </ion-item>
 
         <ion-item menu-close class="item item-complex">
-          <a class="menuTagA" menu-close href="#/app/playlists">
+          <a class="menuTagA" href="#/app/product">
             <div class="groupList">
               <i class="ion-android-cart" style="color:RoyalBlue;"></i>
               รายการสินค้า
@@ -48,6 +48,15 @@
             <div class="groupList">
               <i class="ion-edit"></i>
               ข้อมูลส่วนตัว
+            </div>
+          </a>
+        </ion-item>
+
+        <ion-item menu-close class="item item-complex" ng-if="dataUser">
+          <a class="menuTagA" href="#/app/bankaccount">
+            <div class="groupList">
+              <i class="ion-cash" style="color:green;"></i>
+              บัญชีธนาคาร
             </div>
           </a>
         </ion-item>
