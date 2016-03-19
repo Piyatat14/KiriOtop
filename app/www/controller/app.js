@@ -66,16 +66,6 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     views: {
       'menuContent': {
         templateUrl: 'templates/profile.html',
-        controller: 'AddUserDataCtrl'
-      }
-    }
-  })
-
-  .state('app.profile', {
-    url: '/profile',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/profile.html',
         controller: 'ImageCtrl'
       }
     }
