@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', 'starter.services', 'ngCordova'])
+angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', 'starter.services', 'starter.bankAccountCtrl', 'ngCordova'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -41,43 +41,45 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     }
   })
 
-  .state('app.browse', {
-      url: '/browse',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/browse.html'
-        }
+  .state('app.product', {
+    url: '/products',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/product.html',
+        controller: 'ProductCtrl'
       }
-    })
-    .state('app.product', {
-      url: '/products',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/product.html',
-          controller: 'ProductCtrl'
-        }
-      }
-    })
+    }
+  })
 
-    .state('app.single', {
-      url: '/playlists/:playlistId',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/playlist.html',
-          controller: 'PlaylistCtrl'
-        }
+  .state('app.single', {
+    url: '/playlists/:playlistId',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/playlist.html',
+        controller: 'PlaylistCtrl'
       }
-    })
+    }
+  })
 
-    .state('app.profile', {
-      url: '/profile',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/profile.html',
-          controller: 'AddUserDataCtrl'
-        }
+  .state('app.profile', {
+    url: '/profile',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/profile.html',
+        controller: 'AddUserDataCtrl'
       }
-    });
+    }
+  })
+
+  .state('app.bankaccount', {
+    url: '/bankaccount',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/bankAccount.html',
+        controller: 'bankCtrl'
+      }
+    }
+  });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/products');
 });

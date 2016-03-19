@@ -1,0 +1,29 @@
+<ion-modal-view>
+   <ion-header-bar>
+      <h1 class="title">{{bankData.bankName}}</h1>
+      <button class="button button-clear button-positive" ng-click="closeBankAccount()">ปิด</button>
+    </ion-header-bar>
+  <ion-content>
+    <form>
+      <ion-list>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">เลขที่บัญชี</span>
+          <input type="text" ng-model="bankData.bankAccount" placeholder="เลขที่บัญชี"/>
+        </label>
+
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">ชื่อบัญชี</span>
+          <input type="text" ng-model="bankData.accountName" placeholder="ชื่อบัญชี" />
+        </label>
+
+        <label class='item item-input item-stacked-label'>
+          <span class="input-label">สาขา</span>
+          <input type="text" ng-model="bankData.bankBranch" placeholder="สาขา" />
+        </label>
+        <div class="content padding has-header">
+          <button class="button button-block button-assertive" ng-click="doBankAccount(bank_account_id)">ยืนยัน</button>
+        </div>
+      </ion-list>
+    </form>
+  </ion-content>
+</ion-modal-view>

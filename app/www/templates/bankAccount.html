@@ -1,0 +1,11 @@
+<ion-view view-title="บัญชีธนาคาร">
+	<ion-content>
+		<ion-list>
+		    <ion-item class="item-icon-right" ng-repeat="allBank in allBanks" ng-click="openBankAccount(allBank.logo_bank_id)">
+		    	{{allBank.logo_bank_name}}
+		    	<i ng-show="allBank.book_bank_account" class="icon ion-checkmark-circled" style="color:green;"></i>
+		    	<i ng-show="!allBank.book_bank_account" class="icon ion-close-circled" style="color:red;"></i>
+		    </ion-item>
+		</ion-list>
+	</ion-content>
+</ion-view>

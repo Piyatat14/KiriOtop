@@ -1,6 +1,9 @@
 angular.module('starter.productCtrl', [])
 
-	.controller('ProductCtrl', function($scope, $http) {
+	.controller('ProductCtrl', function($scope, $http, $ionicHistory) {
+		$ionicHistory.nextViewOptions({
+			disableBack: true
+		});
 		$http.get('http://localhost:8100/products').then(function(resp) {
 			console.log('Success', resp);
 		});
