@@ -101,13 +101,41 @@ angular.module('starter.userCtrl', [])
 	};
 })
 
-.controller('ImageCtrl', function($scope, $cordovaDevice, $cordovaCamera, $cordovaImagePicker, $http, $ionicPlatform, $cordovaFile, ImageService, urlService, $ionicActionSheet) {
-	
-	$scope.collection = {
-			selectedImage : ''
-	};
+.controller('ImageCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, ImageService, FileService, urlService, $ionicActionSheet) {
 
 	$ionicPlatform.ready(function() {
+		$scope.images = { imageUri: '' };
+		/*
+		$scope.images = FileService.images();
+		$scope.$apply();
+
+		$scope.urlForImage = function(imageName) {
+			var trueOrigin = cordova.file.dataDirectory + imageName;
+			return trueOrigin;
+		}
+
+		$scope.addMedia = function() {
+			$scope.hideSheet = $ionicActionSheet.show({
+				buttons: [
+					{text: "Take Photo"},
+					{text: "Photo from library"}
+				],
+				titleText: 'Add profile image',
+				cancelText: 'Cancel',
+				buttonClicked: function(index) {
+					$scope.addImage(index);
+				}
+			});
+		}
+
+		$scope.addImage = function(type) {
+			$scope.hideSheet();
+			ImageService.handleMediaDialog(type).then(function() {
+				$scope.$apply();
+			});
+		}*/
+
+		// test anothe way.
 		$scope.addMedia = function() {
 			$scope.hideSheet = $ionicActionSheet.show({
 				buttons: [
@@ -122,33 +150,34 @@ angular.module('starter.userCtrl', [])
 						console.log("Take Photo")
 					}else if(index == 1) {
 						$scope.hideSheet();
-						console.log("Pho to library");
-						var options = {
-							maximumImagesCount: 1,
-							width: 120,
-							height: 120,
-							quality: 80
-						};
-						$cordovaImagePicker.getPictures(options).then(function(results) {
-							for(var i=0; i<results.length; i++) {
-								console.log('Image URI: '+results[i]);
-								$scope.collection.selectedImage = results[i];
-								console.log('selectedImage: ' + $scope.collection.selectedImage);
-								
-								window.plugins.Base64.encodeFile($scope.collection.selectedImage, function(base64) {
-									console.log("OK");
-									$scope.collection.selectedImage = base64;
-									console.log('Base 64: '+$scope.collection.selectedImage);
-								});
-								
-							}
-						}, function(error) {
-							console.log('Error: ' + JSON.stringify(error));
-						});
+		                var options = {
+		                    quality: 50,
+		                    destinationType: Camera.DestinationType.FILE_URI,
+		                    sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+		                    saveToPhotoAlbum: false
+		                };
+
+		                $cordovaCamera.getPicture(options).then(function(fileUri) {
+		                        console.log(fileUri);
+		                        $cordovaFileTransfer.download(fileUri, cordova.file.dataDirectory + 'my-image.jpg', {}, true)
+		                        .then(function(fileEntry) {
+		                                $scope.images.imageUri = fileEntry.nativeURL;
+		                                console.log($scope.images.imageUri);
+		                            }, function (error) {
+		                                console.log(error);
+		                            }
+		                        );
+		                    }, function(error) {
+		                        console.log(error);
+		                    }
+		                );
+
+						
 					}
 				}
 			});
-		};
+		}
+		
 	});
 })
 

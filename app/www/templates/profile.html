@@ -2,10 +2,11 @@
 	<ion-content>
 		<ion-list>
 			<div class="user-profile">
-				<a class="item image-profile" ui-sref="#" ng-click="addMedia()">
-					<img ng-src="{{collection.selectedImage}}" id="myImage" />
+				<a class="item image-profile" ng-click="addMedia()">
+					<img ng-src="{{images.imageUri}}">
 				</a>
 			</div>
+			{{images.imageUri}}
 
 			<div style="margin-bottom: 10px; margin-left: 40px;">
 				<a style="text-decoration: underline;" ui-sref="#">แก้ไขรูป</a>
