@@ -84,7 +84,8 @@ You can use the Crosswalk [shared mode](https://crosswalk-project.org/documentat
     <!-- These are all equivalent -->
     cordova plugin add cordova-plugin-crosswalk-webview  --variable XWALK_MODE="shared"
     <preference name="xwalkMode" value="shared" />
-Note that if you want to specify the Crosswalk version when using shared mode, you need to use the shared version of the library, e.g.: 
+
+You can also use a Crosswalk beta version on shared mode, e.g.:
 
     <!-- Using a Crosswalk shared mode beta version -->
     cordova plugin add cordova-plugin-crosswalk-webview --variable XWALK_VERSION="org.xwalk:xwalk_shared_library_beta:14+"
@@ -99,6 +100,12 @@ You can also set user agent with the preference of xwalkUserAgent.
     <preference name="xwalkUserAgent" value="customer UA" />
 
 ### Release Notes
+
+#### 1.6.0 (March 11, 2016)
+* Uses the latest Crosswalk 17 stable version by default
+* Support to [package apps for 64-bit devices](https://crosswalk-project.org/documentation/android/android_64bit.html), it's possible to specify 64-bit targets using the `--xwalk64bit` option in the build command:
+
+        cordova build android --xwalk64bit
 
 #### 1.5.0 (January 18, 2016)
 * Uses the latest Crosswalk 16 stable version by default

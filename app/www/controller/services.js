@@ -27,3 +27,32 @@ angular.module('starter.services', ['ngCookies'])
 		}
 	}
 })
+
+.factory('ImageService', function($cordovaCamera, $q, $cordovaFile) {
+	function optionsForType(type) {
+		var source;
+
+		switch (type) {
+			case 0:
+				source = Camera.PictureSourceType.CAMERA;
+				break;
+			case 1:
+				source = Camera.PictureSourceType.PHOTOLIBRARY;
+				break;
+		}
+
+		return {
+			quality: 80,
+			destinationType: Camera.DestinationType.FILE_URI,
+			sourceType: source,
+			allowEdit: false,
+			encodingType: Camera.EncodingType.JPEG,
+			popoverOptions: CameraPopoverOptions,
+			saveToPhotoAlbum: false
+		};
+	};
+
+	return {
+			options: optionsForType
+	};
+})

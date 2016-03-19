@@ -67,13 +67,22 @@
         "ionic-plugin-keyboard": {
             "PACKAGE_NAME": "com.ionicframework.starter"
         },
-        "cordova-plugin-crosswalk-webview": {
-            "PACKAGE_NAME": "com.ionicframework.starter"
-        },
         "cordova-plugin-file-transfer": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-image-picker": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-crosswalk-webview": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "com-badrit-base64": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         }
     },

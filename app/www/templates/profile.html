@@ -2,9 +2,8 @@
 	<ion-content>
 		<ion-list>
 			<div class="user-profile">
-				<a class="item image-profile" ui-sref="#">
-					<img src="./img/no-image.jpg" />
-
+				<a class="item image-profile" ui-sref="#" ng-click="addMedia()">
+					<img ng-src="{{collection.selectedImage}}" id="myImage" />
 				</a>
 			</div>
 

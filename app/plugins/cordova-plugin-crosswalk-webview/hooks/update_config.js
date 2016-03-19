@@ -4,12 +4,12 @@ module.exports = function(context) {
 
     var ConfigParser, XmlHelpers;
     try {
-        ConfigParser = context.requireCordovaModule("cordova-lib/src/configparser/ConfigParser");
-        XmlHelpers = context.requireCordovaModule("cordova-lib/src/util/xml-helpers");
-    } catch (e) {
         // cordova-lib >= 5.3.4 doesn't contain ConfigParser and xml-helpers anymore
         ConfigParser = context.requireCordovaModule("cordova-common").ConfigParser;
         XmlHelpers = context.requireCordovaModule("cordova-common").xmlHelpers;
+    } catch (e) {
+        ConfigParser = context.requireCordovaModule("cordova-lib/src/configparser/ConfigParser");
+        XmlHelpers = context.requireCordovaModule("cordova-lib/src/util/xml-helpers");
     }
 
     /** @external */
@@ -26,7 +26,10 @@ module.exports = function(context) {
         projectConfigurationFile = path.join(context.opts.projectRoot,
             'config.xml'),
         projectManifestFile = path.join(androidPlatformDir,
-            'AndroidManifest.xml');
+            'AndroidManifest.xml'),
+        xwalk64bit = "xwalk64bit",
+        xwalkLiteVersion = "",
+        specificVersion = false;
 
     /** Init */
     var CordovaConfig = new ConfigParser(projectConfigurationFile);
@@ -63,7 +66,12 @@ module.exports = function(context) {
         tagsList.map(function(prefTag) {
             prefTag.getchildren().forEach(function(element) {
                 if ((element.tag == 'preference') && (element.attrib['name']) && element.attrib['default']) {
-                    pluginPreferences[element.attrib['name']] = element.attrib['default'];
+                    // Don't add xwalkLiteVersion in the app/config.xml
+                    if (element.attrib['name'] == "xwalkLiteVersion") {
+                        xwalkLiteVersion = element.attrib['default'];
+                    } else {
+                        pluginPreferences[element.attrib['name']] = element.attrib['default'];
+                    }
                 }
             });
         });
@@ -74,26 +82,27 @@ module.exports = function(context) {
     /** The style of name align with config.xml */
     var setConfigPreference = function(name, value) {
         var trimName = name.replace('_', '');
-        for (localName in xwalkVariables) {
+        for (var localName in xwalkVariables) {
             if (localName.toUpperCase() == trimName.toUpperCase()) {
                 xwalkVariables[localName] = value;
+                if (localName == 'xwalkVersion') {
+                    specificVersion = true;
+                }
             }
         }
     }
 
-    /** Pase the cli command to get the specific preferece*/
+    /** Pase the cli command to get the specific preference*/
     var parseCliPreference = function() {
-        var commandlineVariablesList = argumentsString.split('variable');
+        var commandlineVariablesList = argumentsString.split('--variable');
         if (commandlineVariablesList) {
             commandlineVariablesList.forEach(function(element) {
-                var spaceList = element.split(' ');
-                if (spaceList) {
-                    spaceList.forEach(function(element) {
-                        var preference = element.split('=');
-                        if (preference && preference.length == 2) {
-                            setConfigPreference(preference[0], preference[1]);
-                        }
-                    });
+                element = element.trim();
+                if(element && element.indexOf('XWALK') == 0) {
+                    var preference = element.split('=');
+                    if (preference && preference.length == 2) {
+                        setConfigPreference(preference[0], preference[1]);
+                    }
                 }
             });
         }
@@ -107,12 +116,14 @@ module.exports = function(context) {
         // Add the permission of writing external storage when using shared mode
         if (xwalkVariables['xwalkMode'] == 'shared') {
             addPermission();
+        } else if (xwalkVariables['xwalkMode'] == 'lite' && specificVersion == false) {
+            xwalkVariables['xwalkVersion'] = xwalkLiteVersion;
         }
 
         // Configure the final value in the config.xml
         var configXmlRoot = XmlHelpers.parseElementtreeSync(projectConfigurationFile);
         var preferenceUpdated = false;
-        for (name in xwalkVariables) {
+        for (var name in xwalkVariables) {
             var child = configXmlRoot.find('./preference[@name="' + name + '"]');
             if(!child) {
                 preferenceUpdated = true;
@@ -133,13 +144,51 @@ module.exports = function(context) {
         }
 
         var configXmlRoot = XmlHelpers.parseElementtreeSync(projectConfigurationFile);
-        for (name in xwalkVariables) {
+        for (var name in xwalkVariables) {
             var child = configXmlRoot.find('./preference[@name="' + name + '"]');
             if (child) {
                 XmlHelpers.pruneXML(configXmlRoot, [child], '/*');
             }
         }
         fs.writeFileSync(projectConfigurationFile, configXmlRoot.write({indent: 4}), 'utf-8');
+    }
+
+    var build64bit = function() {
+        var build64bit = false;
+        var commandlineVariablesList = argumentsString.split('--');
+
+        if (commandlineVariablesList) {
+            commandlineVariablesList.forEach(function(element) {
+                element = element.trim();
+                if(element && element.indexOf(xwalk64bit) == 0) {
+                    build64bit = true;
+                }
+            });
+        }
+        return build64bit;
+    }
+
+    this.beforeBuild64bit = function() {
+        if(build64bit()) {
+            var configXmlRoot = XmlHelpers.parseElementtreeSync(projectConfigurationFile);
+            var child = configXmlRoot.find('./preference[@name="' + xwalk64bit + '"]');
+            if(!child) {
+                child = et.XML('<preference name="' + xwalk64bit + '" value="' + xwalk64bit + '" />');
+                XmlHelpers.graftXML(configXmlRoot, [child], '/*');
+                fs.writeFileSync(projectConfigurationFile, configXmlRoot.write({indent: 4}), 'utf-8');
+            }
+        }
+    }
+
+    this.afterBuild64bit = function() {
+        if(build64bit()) {
+            var configXmlRoot = XmlHelpers.parseElementtreeSync(projectConfigurationFile);
+            var child = configXmlRoot.find('./preference[@name="' + xwalk64bit + '"]');
+            if (child) {
+                XmlHelpers.pruneXML(configXmlRoot, [child], '/*');
+                fs.writeFileSync(projectConfigurationFile, configXmlRoot.write({indent: 4}), 'utf-8');
+            }
+        }
     }
 
     xwalkVariables = defaultPreferences();
