@@ -2,7 +2,7 @@ angular.module('starter.services', ['ngCookies'])
 
 .service('urlService', function() {
 	this.getBaseUrl = function() {
-		return "http://10.0.3.2:8100";
+		return "http://192.168.1.17:3000";
 	};
 })
 
@@ -96,11 +96,12 @@ angular.module('starter.services', ['ngCookies'])
 				$cordovaFileTransfer.download(fileUri, cordova.file.dataDirectory + 'my-image.jpg', {}, true)
 					.then(function(fileEntry)
 	                    {
+	                    	console.log('download working.');
 	                        $scope.images.imageUri = fileEntry.nativeURL;
 	                    },
 	                    function (error)
 	                    {
-	                        console.log(error);
+	                        console.log('Error: '+error);
 	                    }
 	                );
 			});

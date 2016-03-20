@@ -24,7 +24,8 @@
     {
       "locator": "https://github.com/crosswalk-project/cordova-plugin-crosswalk-webview.git",
       "id": "cordova-plugin-crosswalk-webview"
-    }
+    },
+    "org.apache.cordova.file"
   ],
   "cordovaPlatforms": [
     "ios",

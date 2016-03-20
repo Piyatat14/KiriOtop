@@ -57,6 +57,8 @@ angular.module('starter.userCtrl', [])
 				console.log(Authen.getUser());
 				$state.go('app.product', {}, {reload:true});
 			}
+		}).error(function(err) {
+			console.log('Error: ' + err);
 		})
 	};
 
@@ -153,24 +155,24 @@ angular.module('starter.userCtrl', [])
 		                var options = {
 		                    quality: 50,
 		                    destinationType: Camera.DestinationType.FILE_URI,
-		                    sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+		                    sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY,
 		                    saveToPhotoAlbum: false
 		                };
 
 		                $cordovaCamera.getPicture(options).then(function(fileUri) {
-		                        console.log(fileUri);
+		                        
 		                        $cordovaFileTransfer.download(fileUri, cordova.file.dataDirectory + 'my-image.jpg', {}, true)
 		                        .then(function(fileEntry) {
 		                                $scope.images.imageUri = fileEntry.nativeURL;
-		                                console.log($scope.images.imageUri);
+		                                console.log('THEN: ' + $scope.images.imageUri);
 		                            }, function (error) {
 		                                console.log(error);
 		                            }
 		                        );
-		                    }, function(error) {
-		                        console.log(error);
-		                    }
-		                );
+		                        
+	                    }, function(error) {
+	                        console.log(error);
+	                    });
 
 						
 					}
