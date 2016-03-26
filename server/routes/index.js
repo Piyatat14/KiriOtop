@@ -16,5 +16,7 @@ router.get('/getBanks', bank.getBank);
 router.post('/insertBankAccounts', bank.insertBankAccount);
 //Update Bank Account Data
 router.put('/updateBankAccounts', bank.updateBankAccount);
+//Upload image to server
+router.post('/images', users.addImage);
 
 module.exports = router;

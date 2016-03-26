@@ -84,6 +84,9 @@
         },
         "com-badrit-base64": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-filepath": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
         }
     },
     "dependent_plugins": {}
