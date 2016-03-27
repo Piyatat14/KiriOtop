@@ -4,6 +4,11 @@
 	height: 120px;
 }
 
+.image-view-userGroup{
+	width: 90px;
+	height: 90px;
+}
+
 .cardCustom{
 	width:150px; 
 	height:190px;
@@ -116,6 +121,75 @@
     padding: 20px;
     border-width: 1px;
     font-size: 16px;
+}
+
+.forAreaUserGroup{
+	margin: 3px 3px 3px 3px;
+	text-align: center;
+	color: #666;
+	text-decoration: none;
+	margin: auto;
+}
+
+.positionBottomRight{
+	position: absolute;
+	bottom: 10px;
+	right: 15px;
+}
+
+.setPositionPlus{
+	font-size: 54px;
+	color: #FF4000;
+}
+
+.imageUserGroup{
+	width: 120px;
+	height: 120px;
+}
+
+.onePicture{
+	float: left;
+	padding: 10px 0px 10px 10px;
+}
+
+.forAroundPlus{
+	float:left;
+	cursor: pointer;
+	width: 100px; 
+	height: 100px;
+	box-shadow: 0 1px 3px;
+	margin: 20px 10px;
+	border-radius: 5px;
+	background-color: #fff;
+	text-align: center;
+}
+
+.forIconPlus{
+	font-size: 80px;
+	line-height: 1.2;
+}
+
+.image-modal {
+    width: 100% !important;
+    height: 100%;
+    top: 0 !important;
+    left: 0 !important;
+}
+ 
+.transparent {
+    background: transparent !important;
+}
+ 
+.fullscreen-image {
+    max-width: 100%;
+    max-height: 100%;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    overflow: auto;
+    position: fixed;
+    right: 0;
+    top: 0;
 }
 
 /* css use ionicActionSheet for android design same ios */

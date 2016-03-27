@@ -50,6 +50,12 @@
               ข้อมูลส่วนตัว
             </div>
           </a>
+          <a class="menuTagA" href="#/app/userGroup">
+            <div class="groupList">
+              <i class="ion-person-add"></i>
+              เครือข่าย
+            </div>
+          </a>
         </ion-item>
 
         <ion-item menu-close class="item item-complex" ng-if="dataUser">
@@ -64,13 +70,13 @@
         <ion-item menu-close class="item item-complex" ng-if="!dataUser">
           <a class="menuTagA" href="">
             <div class="groupList" ng-click="login()">
-              <i class="ion-unlocked"></i>
+              <i class="ion-unlocked" style="color:green;"></i>
               เข้าสู่ระบบ
             </div>
           </a>
           <a class="menuTagA" href="#/app/register">
             <div class="groupList">
-              <i class="ion-android-person-add"></i>
+              <i class="ion-android-person-add" style="color:orange;"></i>
               สมัครสมาชิก
             </div>
           </a>

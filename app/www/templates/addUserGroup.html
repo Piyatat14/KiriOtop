@@ -1,0 +1,33 @@
+<ion-view view-title="เพิ่ม, แก้ไขเครือข่าย">
+	<ion-content>
+		<ion-list>
+			<ion-scroll direction="x" overflow-scroll="false" style="overflow:hidden;">
+				<a class="onePicture">
+					<img class="imageUserGroup" src="img/ionic.png"/>
+				</a>
+				<a class="forAroundPlus" ng-click="addMedia()">
+					<i class="icon ion-plus-round forIconPlus"></i>
+				</a>
+			</ion-scroll>
+			<label class="item item-input item-stacked-label">
+				<span class="input-label">ชื่อ (กลุ่ม/ร้าน)</span>
+				<input type="text" placeholder="ชื่อ (กลุ่ม/ร้าน)" />
+			</label>
+
+			<a class="item item-icon-right" href="#">
+				สถานที่
+				<i class="icon ion-location" style="color: #0040FF;"></i>
+			</a>
+
+			<label class="item item-input item-stacked-label">
+				<span class="input-label">เบอร์ติดต่อ</span>
+				<input type="tel" placeholder="เบอร์ติดต่อ" />
+			</label>
+
+			<div class="content padding has-header">
+				<button class="button button-block button-positive button-assertive">ยืนยัน</button>
+			</div>
+
+		</ion-list>
+	</ion-content>
+</ion-view>

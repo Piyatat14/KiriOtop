@@ -182,17 +182,3 @@ angular.module('starter.userCtrl', [])
 		
 	});
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
