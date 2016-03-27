@@ -2,8 +2,8 @@
 -- version 4.5.1
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Feb 14, 2016 at 03:22 AM
+-- Host: 127.0.0.1
+-- Generation Time: Mar 22, 2016 at 04:29 AM
 -- Server version: 10.1.8-MariaDB
 -- PHP Version: 5.6.14
 
@@ -64,6 +64,18 @@ CREATE TABLE `book_bank` (
   `book_bank_branch` varchar(100) NOT NULL COMMENT 'สาขาสมุดบัญชี'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ข้อมูลสมุดบัญชีธนาคาร';
 
+--
+-- Dumping data for table `book_bank`
+--
+
+INSERT INTO `book_bank` (`book_bank_id`, `profile_id`, `logo_bank_id`, `book_bank_account`, `book_bank_name`, `book_bank_branch`) VALUES
+(44, 1, 1, 'qwe', 'qwe', 'qew'),
+(45, 1, 2, 'qwe', 'qwe', 'qwe'),
+(46, 1, 3, 'qwe', 'qwe', 'wqe'),
+(47, 1, 4, 'qweqq', 'qwe', 'wqe'),
+(48, 2, 5, '123', '123', '213'),
+(49, 1, 5, 'tqwe', 'wqe', 'qwe');
+
 -- --------------------------------------------------------
 
 --
@@ -102,6 +114,24 @@ CREATE TABLE `logo_bank` (
   `logo_bank_name` varchar(100) NOT NULL COMMENT 'ชื่อธนาคาร',
   `image` text NOT NULL COMMENT 'ชื่อไฟล์รูป'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ข้อมูลสัญลักษณ์ธนาคาร';
+
+--
+-- Dumping data for table `logo_bank`
+--
+
+INSERT INTO `logo_bank` (`logo_bank_id`, `logo_bank_name`, `image`) VALUES
+(1, 'ธนาคารกรุงศรีอยุธยา', ''),
+(2, 'ธนาคารกรุงเทพ', ''),
+(3, 'ธนาคารกสิกรไทย', ''),
+(4, 'ธนาคารไทยพาณิชย์', ''),
+(5, 'ธนาคารกรุงไทย', ''),
+(6, 'ธนาคารซีไอเอ็มบีไทย', ''),
+(7, 'ธนาคารทหารไทย', ''),
+(8, 'ธนาคารยูโอบี', ''),
+(9, 'ธนาคารแลนด์แอนด์เฮ้าส์', ''),
+(10, 'ธนาคารสแตนดาร์ดชาร์เตอร์ดไทย', ''),
+(11, 'ธนาคารธนชาต', ''),
+(12, 'ธนาคารออมสิน', '');
 
 -- --------------------------------------------------------
 
@@ -220,6 +250,17 @@ CREATE TABLE `user_info` (
   `user_status` varchar(50) NOT NULL COMMENT 'สถานะสมาชิก'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ข้อมูลเบื้องต้นสมาชิก';
 
+--
+-- Dumping data for table `user_info`
+--
+
+INSERT INTO `user_info` (`user_id`, `email`, `password`, `register_date`, `user_status`) VALUES
+(1, 'test@email.com', 'test', '2016-02-01', 'test'),
+(2, '555', '55', '2016-02-25', 'test'),
+(3, 'qwewe@qwe', 'qwe', '2016-02-29', 'test'),
+(4, 'test2@hotmail.com', 'test', '2016-02-29', 'test'),
+(5, 'o_l3k_o@hotmail.com', 'ะำหะ', '2016-03-01', 'User');
+
 -- --------------------------------------------------------
 
 --
@@ -273,8 +314,7 @@ ALTER TABLE `admin_log`
 -- Indexes for table `book_bank`
 --
 ALTER TABLE `book_bank`
-  ADD PRIMARY KEY (`book_bank_id`),
-  ADD UNIQUE KEY `book_bank_account` (`book_bank_account`);
+  ADD PRIMARY KEY (`book_bank_id`);
 
 --
 -- Indexes for table `chat_message`
@@ -374,7 +414,7 @@ ALTER TABLE `admin_log`
 -- AUTO_INCREMENT for table `book_bank`
 --
 ALTER TABLE `book_bank`
-  MODIFY `book_bank_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสสมุดบัญชี';
+  MODIFY `book_bank_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสสมุดบัญชี', AUTO_INCREMENT=50;
 --
 -- AUTO_INCREMENT for table `chat_message`
 --
@@ -389,7 +429,7 @@ ALTER TABLE `chat_room`
 -- AUTO_INCREMENT for table `logo_bank`
 --
 ALTER TABLE `logo_bank`
-  MODIFY `logo_bank_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสธนาคาร';
+  MODIFY `logo_bank_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสธนาคาร', AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT for table `order_buyer`
 --
@@ -429,7 +469,7 @@ ALTER TABLE `user_group_image`
 -- AUTO_INCREMENT for table `user_info`
 --
 ALTER TABLE `user_info`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสสมาชิก';
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสสมาชิก', AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `user_product_rating`
 --

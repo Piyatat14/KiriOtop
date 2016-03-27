@@ -106,38 +106,12 @@ angular.module('starter.userCtrl', [])
 .controller('ImageCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, ImageService, FileService, urlService, $ionicActionSheet) {
 
 	$ionicPlatform.ready(function() {
-		$scope.images = { imageUri: '' };
-		/*
-		$scope.images = FileService.images();
-		$scope.$apply();
+		$scope.images = { 
+			imageUri: '', 
+			filename: '',
+			extension: ''
+		};
 
-		$scope.urlForImage = function(imageName) {
-			var trueOrigin = cordova.file.dataDirectory + imageName;
-			return trueOrigin;
-		}
-
-		$scope.addMedia = function() {
-			$scope.hideSheet = $ionicActionSheet.show({
-				buttons: [
-					{text: "Take Photo"},
-					{text: "Photo from library"}
-				],
-				titleText: 'Add profile image',
-				cancelText: 'Cancel',
-				buttonClicked: function(index) {
-					$scope.addImage(index);
-				}
-			});
-		}
-
-		$scope.addImage = function(type) {
-			$scope.hideSheet();
-			ImageService.handleMediaDialog(type).then(function() {
-				$scope.$apply();
-			});
-		}*/
-
-		// test anothe way.
 		$scope.addMedia = function() {
 			$scope.hideSheet = $ionicActionSheet.show({
 				buttons: [
@@ -149,21 +123,37 @@ angular.module('starter.userCtrl', [])
 				buttonClicked: function(index) {
 					if(index == 0) {
 						$scope.hideSheet();
-						console.log("Take Photo")
+						console.log("Take Photo");
+						takePicture();
 					}else if(index == 1) {
 						$scope.hideSheet();
 		                var options = {
 		                    quality: 50,
 		                    destinationType: Camera.DestinationType.FILE_URI,
-		                    sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY,
+		                    sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+		                    encodingType: Camera.EncodingType.JPEG,
+		                    targetWidth: 1000,
+		                    targetHeight: 1000,
 		                    saveToPhotoAlbum: false
 		                };
 
-		                $cordovaCamera.getPicture(options).then(function(fileUri) {
-		                        
-		                        $cordovaFileTransfer.download(fileUri, cordova.file.dataDirectory + 'my-image.jpg', {}, true)
+		                $cordovaCamera.getPicture(options).then(function(imageUri) {
+		                	console.log('imageUri: ' + imageUri);
+		                	
+		                	//substring for choosed image in gallary after file name is xxxx.jpg?42341
+		                	var filename = imageUri.substring(imageUri.lastIndexOf('/') + 1, imageUri.lastIndexOf('?'));
+		                	
+		                	var extension = filename.substr(filename.lastIndexOf('.') + 1);
+		                	$scope.images.extension = extension;
+		                	$scope.images.filename = filename;
+		                	console.log('extension: ' + $scope.images.extension);
+		                	console.log('Filename: ' + $scope.images.filename);
+		                	upload(imageUri, filename);   
+		                        $cordovaFileTransfer.download(imageUri, cordova.file.dataDirectory + $scope.images.filename, {}, true)
 		                        .then(function(fileEntry) {
 		                                $scope.images.imageUri = fileEntry.nativeURL;
+		                                //upload to server.
+		                				      
 		                                console.log('THEN: ' + $scope.images.imageUri);
 		                            }, function (error) {
 		                                console.log(error);
@@ -179,6 +169,53 @@ angular.module('starter.userCtrl', [])
 				}
 			});
 		}
+
+		//function upload image to server.
+		upload = function(imageURI, filename) {
+			var options = new FileUploadOptions();
+			options.fileKey = 'image';
+			options.fileName = filename;
+			options.mimeType = 'image/jpg';
+			options.chunkedMode = false;
+			options.params = {'directory' : 'uploads/img', 'fileName' : filename};
+			
+			var ft = new FileTransfer();
+			ft.upload(imageURI, encodeURI(urlService.getBaseUrl() + '/images'),
+
+			function(res) {
+				console.log("Code = " + res.responseCode);
+				console.log("Response = " + res.response);
+				console.log("Sent = " + res.bytesSent);
+			}, function(error) {
+				alert("An error has occurred: Code = " + error.code);
+			    console.log("upload error source " + error.source);
+			    console.log("upload error target " + error.target);
+			}, options)
+		};
+
+		takePicture = function (e) {
+            var options = {
+                quality: 45,
+                targetWidth: 1000,
+                targetHeight: 1000,
+                destinationType: Camera.DestinationType.FILE_URI,
+                encodingType: Camera.EncodingType.JPEG,
+                sourceType: Camera.PictureSourceType.CAMERA
+            };
+
+            navigator.camera.getPicture(
+                function (imageURI) {
+                    console.log(imageURI);
+                    upload(imageURI);
+                },
+                function (message) {
+                    // We typically get here because the use canceled the photo operation. Fail silently.
+                }, options);
+
+            return false;
+
+        };
+
 		
 	});
 })

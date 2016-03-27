@@ -8,6 +8,8 @@ var mysql = require('mysql'),
 	});
 
 connection.connect();
+
+var multer = require('multer');
 	
 exports.findUser = function(req, res) {
 	var emailUser = req.body.username;
@@ -65,3 +67,41 @@ exports.insertRegis = function(req, res) {
 		}
 	});
 };
+
+exports.addImage = function(req, res) {
+	var storage = multer.diskStorage({
+		destination: function (req, file, cb) {
+			cb(null, './uploads/img');
+		},
+		filename: function (req, file, cb) {
+			cb(null, file.originalname + '-' + Date.now() + '.jpg'); //Appending mimeType.
+		}
+	});
+
+	var upload = multer({ storage: storage }).single('image');
+
+	upload(req, res, function (err) {
+    if (err) {
+      // An error occurred when uploading
+      res.send('Error: ' + err.message);
+    }
+    // Everything went fine
+	console.log(req.body);
+	console.log(req.file);
+	res.status(204).end();
+  })
+	
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
