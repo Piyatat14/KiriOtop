@@ -1,0 +1,39 @@
+<ion-view view-title="รายการสินค้า">
+	<ion-content>
+		<form>
+			<ion-list>
+				<ion-scroll direction="x" overflow-scroll="false" style="overflow:hidden;">
+					<div class="row">
+						<a class="onePicture" ng-repeat="image in images.imageUri">
+							<img class="imageUserGroup" ng-src="{{image.path}}" on-release="deletePicture(image)"/>
+						</a>
+						<a class="forAroundPlus" ng-click="addMedia()" ng-if="imgLength != 6">
+							<i class="icon ion-plus-round forIconPlus"></i>
+						</a>
+					</div>
+				</ion-scroll>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">รหัสสินค้า</span>
+					<input type="text" placeholder="รหัสสินค้า (ถ้ามี)" />
+				</label>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">ชื่อสินค้า</span>
+					<input type="text" placeholder="ชื่อสินค้า" />
+				</label>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">ราคาสินค้า</span>
+					<input type="number" placeholder="ราคาสินค้า" min="1" />
+				</label>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">จำนวนสินค้า</span>
+					<input type="number" placeholder="ราคาสจำนวนสินค้าินค้า" min="1"/>
+				</label>
+
+				<div class="content padding has-header">
+					<button class="button button-block button-positive button-assertive">ยืนยัน</button>
+				</div>
+
+			</ion-list>
+		</form>
+	</ion-content>
+</ion-view>

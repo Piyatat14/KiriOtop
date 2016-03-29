@@ -2,12 +2,14 @@
 	<ion-content>
 		<ion-list>
 			<ion-scroll direction="x" overflow-scroll="false" style="overflow:hidden;">
-				<a class="onePicture">
-					<img class="imageUserGroup" src="img/ionic.png"/>
-				</a>
-				<a class="forAroundPlus" ng-click="addMedia()">
-					<i class="icon ion-plus-round forIconPlus"></i>
-				</a>
+				<div class="row">
+					<a class="onePicture" ng-repeat="image in images.imageUri">
+						<img class="imageUserGroup" ng-src="{{image.path}}" on-release="deletePicture(image)"/>
+					</a>
+					<a class="forAroundPlus" ng-click="addMedia()" ng-if="imgLength != 6">
+						<i class="icon ion-plus-round forIconPlus"></i>
+					</a>
+				</div>
 			</ion-scroll>
 			<label class="item item-input item-stacked-label">
 				<span class="input-label">ชื่อ (กลุ่ม/ร้าน)</span>

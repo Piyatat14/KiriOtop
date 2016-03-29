@@ -7,6 +7,15 @@
         "files": {}
     },
     "installed_plugins": {
+        "com-badrit-base64": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-crosswalk-webview": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
         "cordova-plugin-device": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
@@ -14,6 +23,12 @@
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-filepath": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-image-picker": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "cordova-plugin-splashscreen": {
@@ -26,21 +41,6 @@
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "ionic-plugin-keyboard": {
-            "PACKAGE_NAME": "com.ionicframework.app445426"
-        },
-        "cordova-plugin-image-picker": {
-            "PACKAGE_NAME": "com.ionicframework.app445426"
-        },
-        "cordova-plugin-camera": {
-            "PACKAGE_NAME": "com.ionicframework.app445426"
-        },
-        "cordova-plugin-crosswalk-webview": {
-            "PACKAGE_NAME": "com.ionicframework.app445426"
-        },
-        "com-badrit-base64": {
-            "PACKAGE_NAME": "com.ionicframework.app445426"
-        },
-        "cordova-plugin-filepath": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         }
     },

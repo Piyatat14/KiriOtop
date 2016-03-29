@@ -4,7 +4,11 @@ var products = require('./product');
 var users = require('./users-info');
 var bank = require('./banks');
 
-router.get('/products', products.getProduct);
+//Get Products For Show Public
+router.get('/products', products.getProducts);
+//Get Products For Show Saler
+router.get('/getProducts', products.getProduct);
+
 router.post('/findUsers', users.findUser);
 //Check Email Register
 router.post('/checkRegister', users.checkRegis);

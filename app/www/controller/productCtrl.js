@@ -1,10 +1,10 @@
 angular.module('starter.productCtrl', [])
 
-	.controller('ProductCtrl', function($scope, $http, $ionicHistory) {
+	.controller('ProductCtrl', function($scope, $http, $ionicHistory, urlService) {
 		$ionicHistory.nextViewOptions({
 			disableBack: true
 		});
-		$http.get('http://localhost:8100/products').then(function(resp) {
+		$http.get(urlService.getBaseUrl() + '/products').then(function(resp) {
 			console.log('Success', resp);
 		});
 		$scope.dataTest = [{
@@ -23,9 +23,9 @@ angular.module('starter.productCtrl', [])
 					"name" : "5555",
 					"detail" : "5555555555555555"
 				}]
-				$scope.slideChanged = function(index) {
-    $scope.slideIndex = index;
-  };
+		$scope.slideChanged = function(index) {
+			$scope.slideIndex = index;
+		};
 	  // $http.get('/products')
 	  //   .success(function(response) {
 	  //     console.log(response);
@@ -33,5 +33,15 @@ angular.module('starter.productCtrl', [])
 	  //   });
 	})
 
-	.controller('PlaylistCtrl', function($scope, $stateParams) {
+	.controller('showProductCtrl', function($http, $scope, $stateParams, urlService, Authen) {
+
+		$scope.getDataProducts = function() {
+			$http
+				.get(urlService.getBaseUrl() + '/getProducts', {params: {pId: '1'}})
+				.success(function(response) {
+					$scope.productData = response;
+					console.log($scope.productData);
+				})
+		}
+		$scope.getDataProducts();
 	});

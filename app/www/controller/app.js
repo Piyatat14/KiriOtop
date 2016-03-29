@@ -94,7 +94,27 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     url: '/addUserGroup',
     views: {
       'menuContent': {
-        templateUrl: 'templates/addUserGroup.html'
+        templateUrl: 'templates/addUserGroup.html',
+        controller: 'ImageUserGroupCtrl'
+      }
+    }
+  })
+
+  .state('app.showProducts', {
+    url: '/showProducts',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/showProducts.html',
+        controller: 'showProductCtrl'
+      }
+    }
+  })
+
+  .state('app.addProducts', {
+    url: '/addProducts',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/addProducts.html'
       }
     }
   })
