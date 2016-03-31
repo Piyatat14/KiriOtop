@@ -1,25 +1,12 @@
 <ion-view view-title="เครือข่าย">
 	<ion-content>
-		<div class="row">
-			<a class="forAreaUserGroup" href="#">
+		<li class="item" ng-if="!userGroupData" style="text-align:center;">ไม่มีเครือข่าย</li>
+			<a class="forAreaUserGroup" href="#/app/editUserGroup/{{userGroup.group_id}}" collection-repeat="userGroup in userGroupData" item-width="33%" item-height="140px">
 				<div class="bodyCardCustom">
-					<img class="image-view-userGroup" src="img/ionic.png">
-					<p class="forTextUserGroup">qew</p>
+					<img class="image-view-userGroup" src="{{userGroup.image}}">
+					<p class="forTextUserGroup">{{userGroup.group_name}}</p>
 				</div>
 			</a>
-			<a class="forAreaUserGroup" href="#">
-				<div class="bodyCardCustom">
-					<img class="image-view-userGroup" src="img/ionic.png">
-					<p class="forTextUserGroup">qwe</p>
-				</div>
-			</a>
-			<a class="forAreaUserGroup" href="#">
-				<div class="bodyCardCustom">
-					<img class="image-view-userGroup" src="img/ionic.png">
-					<p class="forTextUserGroup">qwe</p>
-				</div>
-			</a>
-		</div>
 	</ion-content>
 	<a class="positionBottomRight" href="#/app/addUserGroup">
 		<i class="ion-plus-circled setPositionPlus"></i>

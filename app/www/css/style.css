@@ -32,6 +32,10 @@
 	background-color: #fff;
 }
 
+.bodyCardCustom:active{
+	background-color: #F2F2F2;
+}
+
 .forNameCustom{
 	padding-top: 10px;
 }
@@ -128,7 +132,6 @@
 	text-align: center;
 	color: #666;
 	text-decoration: none;
-	margin: auto;
 }
 
 .positionBottomRight{

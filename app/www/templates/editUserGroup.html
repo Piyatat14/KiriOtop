@@ -1,11 +1,11 @@
-<ion-view view-title="เพิ่มเครือข่าย">
+<ion-view view-title="แก้ไขเครือข่าย">
 	<ion-content>
 		<form name="userGroupForm">
 			<ion-list>
 				<ion-scroll direction="x" overflow-scroll="false" style="overflow:hidden;">
 					<div class="row">
 						<a class="onePicture" ng-repeat="image in images.imageUri">
-							<img class="imageUserGroup" ng-src="{{image.path}}" on-release="deletePicture(image)"/>
+							<img class="imageUserGroup" ng-src="{{image.fileName}}" on-release="deletePicture(image)"/>
 						</a>
 						<a class="forAroundPlus" ng-click="addMedia()" ng-if="imgLength != 6">
 							<i class="icon ion-plus-round forIconPlus"></i>
@@ -14,22 +14,22 @@
 				</ion-scroll>
 				<label class="item item-input item-stacked-label item-icon-right">
 					<span class="input-label">ชื่อ (กลุ่ม/ร้าน)</span>
-					<input type="text" name="nameGroup" ng-model="userGroupData.nameGroup" placeholder="ชื่อ (กลุ่ม/ร้าน)" required/>
+					<input type="text" name="nameGroup" ng-model="editGroupData.nameGroup" placeholder="ชื่อ (กลุ่ม/ร้าน)" required/>
 					<i ng-show="userGroupForm.nameGroup.$error.required && !userGroupForm.nameGroup.$pristine" class="icon ion-close-circled" style="color:red;"></i>
 				</label>
 				<label class="item item-input item-stacked-label item-icon-right">
 					<span class="input-label">สถานที่</span>
-					<input type="text" name="placeGroup" ng-model="userGroupData.placeGroup" placeholder="สถานที่" required/>
+					<input type="text" name="placeGroup" ng-model="editGroupData.placeGroup" placeholder="สถานที่" required/>
 					<i ng-show="userGroupForm.placeGroup.$error.required && !userGroupForm.placeGroup.$pristine" class="icon ion-close-circled" style="color:red;"></i>
 				</label>
 				<label class="item item-input item-stacked-label item-icon-right">
 					<span class="input-label">เบอร์ติดต่อ</span>
-					<input type="tel" name="telephone" ng-model="userGroupData.telephone" placeholder="เบอร์ติดต่อ" required/>
+					<input type="tel" name="telephone" ng-model="editGroupData.telephone" placeholder="เบอร์ติดต่อ" required/>
 					<i ng-show="userGroupForm.telephone.$error.required && !userGroupForm.telephone.$pristine" class="icon ion-close-circled" style="color:red;"></i>
 				</label>
 
 				<div class="content padding has-header">
-					<button class="button button-block button-positive button-assertive" ng-click="insertUserGroup()" ng-disabled="userGroupForm.$invalid || userGroupForm.$pristine">ยืนยัน</button>
+					<button class="button button-block button-positive button-assertive" ng-click="updateUserGroup()" ng-disabled="userGroupForm.$invalid || userGroupForm.$pristine">ยืนยัน</button>
 				</div>
 			</ion-list>
 		</form>

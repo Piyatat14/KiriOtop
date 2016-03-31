@@ -33,6 +33,7 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
 
   .state('app.register', {
     url: '/register',
+    cache: false,
     views: {
       'menuContent': {
         templateUrl: 'templates/register.html',
@@ -85,17 +86,29 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     url: '/userGroup',
     views: {
       'menuContent': {
-        templateUrl: 'templates/userGroup.html'
+        templateUrl: 'templates/userGroup.html',
+        controller: 'showUserGroupCtrl'
       }
     }
   })
 
   .state('app.addUserGroup', {
     url: '/addUserGroup',
+    cache: false,
     views: {
       'menuContent': {
         templateUrl: 'templates/addUserGroup.html',
         controller: 'ImageUserGroupCtrl'
+      }
+    }
+  })
+
+  .state('app.editUserGroup', {
+    url: '/editUserGroup/:groupId',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/editUserGroup.html',
+        controller: 'editUserGroupCtrl'
       }
     }
   })

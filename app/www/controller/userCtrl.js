@@ -71,7 +71,7 @@ angular.module('starter.userCtrl', [])
 
 })
 
-.controller('registerCtrl', function($scope, $http, $ionicPopup, urlService, $ionicHistory) {
+.controller('registerCtrl', function($scope, $http, $ionicPopup, urlService, $ionicHistory, $state) {
 	$ionicHistory.nextViewOptions({
 		disableBack: true
 	});
@@ -90,6 +90,7 @@ angular.module('starter.userCtrl', [])
 					$http
 					.post(urlService.getBaseUrl() + '/insertRegister', $scope.registerData)
 					.success(function(response) {
+						$state.go('app.product', {}, {reload:true});
 						$scope.login();
 					})
 				}else{

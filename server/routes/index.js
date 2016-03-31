@@ -3,6 +3,7 @@ var router = express.Router();
 var products = require('./product');
 var users = require('./users-info');
 var bank = require('./banks');
+var userGroup = require('./user-group');
 
 //Get Products For Show Public
 router.get('/products', products.getProducts);
@@ -22,5 +23,21 @@ router.post('/insertBankAccounts', bank.insertBankAccount);
 router.put('/updateBankAccounts', bank.updateBankAccount);
 //Upload image to server
 router.post('/images', users.addImage);
+//get User Group
+router.get('/getUserGroups', userGroup.getUserGroup);
+//Insert User Group
+router.post('/insertUserGroups', userGroup.insertUserGroup);
+//Insert Image User Group
+router.post('/insertImageUserGroups', userGroup.insertImageUserGroup);
+//Edit User Group
+router.get('/editUserGroups', userGroup.editUserGroup);
+//Insert Image User Group
+router.post('/imageUserGroups', userGroup.addImage);
+//Delete Image User Group
+router.delete('/editDeleteImages', userGroup.editDeleteImage);
+//Delete All Image User Group
+router.delete('/editAllDeleteImages', userGroup.editAllDeleteImage);
+//Update User Group Data
+router.put('/updateUserGroups', userGroup.updateUserGroup);
 
 module.exports = router;
