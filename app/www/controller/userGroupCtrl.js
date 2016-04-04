@@ -31,15 +31,17 @@ angular.module('starter.userGroupCtrl', [])
 			$scope.userGroupData = response;
 			for(var i=0; i<response.length; i++){
 				if(response[i].image == null){
-					$scope.userGroupData[i].image = urlService.getBaseUrl() + 'null.png'
+					$scope.userGroupData[i].image = urlService.getBaseUrl() + 'Workspace/KiriOtop/Server/uploads/img/null.png'
 				}else{
-					$scope.userGroupData[i].image = urlService.getBaseUrl() + '/uploads/img/' + response[i].image;
+					$scope.userGroupData[i].image = urlService.getBaseUrl() + 'Workspace/KiriOtop/Server/uploads/img/' + response[i].image;
 				}
 			}
 		})
 })
 
-.controller('ImageUserGroupCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $state, $ionicPlatform, $cordovaFile, ImageService, FileService, urlService, $ionicActionSheet) {
+.controller('ImageUserGroupCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $state, $ionicPlatform, $cordovaFile, ImageService, FileService, urlService, $ionicActionSheet, Authen) {
+
+	var userID = Authen.getUser().userID;
 
 	$scope.userGroupData = {};
 
@@ -90,7 +92,7 @@ angular.module('starter.userGroupCtrl', [])
 	                        .then(function(fileEntry) {
 	                                $scope.images.imageUri.push({
 	                                	path: fileEntry.nativeURL,
-	                                	fileName: filename
+	                                	fileName: userID + '-' + filename + '-' + Date.now()
 	                                });
 	                                $scope.imgLength = $scope.images.imageUri.length;
 	                                //upload to server.
@@ -193,6 +195,9 @@ angular.module('starter.userGroupCtrl', [])
 })
 
 .controller('editUserGroupCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $state, $ionicPlatform, $cordovaFile, ImageService, FileService, urlService, $ionicActionSheet, $stateParams, Authen, urlService) {
+	
+	var userID = Authen.getUser().userID;
+
 	$scope.userGroupData = {};
 	$scope.editGroupData = {};
 	$scope.imgGroupData = {};
@@ -244,7 +249,7 @@ angular.module('starter.userGroupCtrl', [])
 	                        .then(function(fileEntry) {
 	                                $scope.images.imageUri.push({
 	                                	path: fileEntry.nativeURL,
-	                                	fileName: filename
+	                                	fileName: userID + '-' + filename + '-' + Date.now()
 	                                });
 	                                $scope.imgLength = $scope.images.imageUri.length;
 	                                //upload to server.
@@ -329,7 +334,7 @@ angular.module('starter.userGroupCtrl', [])
 	});
 
 	$http
-		.get(urlService.getBaseUrl() + '/editUserGroups', {params: {pId: '1', group_id: $stateParams.group_id}})
+		.get(urlService.getBaseUrl() + '/editUserGroups', {params: {pId: '1', groupId: $stateParams.groupId}})
 		.success(function(response) {
 			console.log(response);
 			$scope.editGroupData.idGroup = response[0].group_id;
@@ -341,7 +346,7 @@ angular.module('starter.userGroupCtrl', [])
 				if(response[i].image != null){
 					$scope.images.imageUri.push({
 						group_image_id: response[i].group_image_id,
-	                	fileName: urlService.getBaseUrl() + '/uploads/img/' + response[i].image
+	                	fileName: response[i].image
 	                });
 				}
 			}
@@ -359,7 +364,7 @@ angular.module('starter.userGroupCtrl', [])
 						for(var i=0; i<$scope.images.imageUri.length; i++){
 							forImageData = {
 								group_id: $scope.editGroupData.idGroup,
-								image: $scope.images.imageUri[i].fileName
+								image: userID + '-' + $scope.images.imageUri[i].fileName + '-' + Date.now()
 							}
 							$http
 								.post(urlService.getBaseUrl() + '/insertImageUserGroups', forImageData)

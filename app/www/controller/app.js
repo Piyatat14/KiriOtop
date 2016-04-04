@@ -127,7 +127,18 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     url: '/addProducts',
     views: {
       'menuContent': {
-        templateUrl: 'templates/addProducts.html'
+        templateUrl: 'templates/addProducts.html',
+        controller: 'addProductCtrl'
+      }
+    }
+  })
+
+  .state('app.editProducts', {
+    url: '/editProducts/:productId',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/editProducts.html',
+        controller: 'editProductCtrl'
       }
     }
   })

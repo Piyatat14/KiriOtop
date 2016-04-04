@@ -58,8 +58,8 @@ exports.insertImageUserGroup = function(req, res) {
 };
 
 exports.editUserGroup = function(req, res) {
-	strQuery = "SELECT user_group.group_id, user_group.profile_id, user_group.group_name, user_group.address_location, user_group.tel_no, user_group_image.group_image_id, user_group_image.image FROM user_group LEFT JOIN user_group_image ON user_group.group_id = user_group_image.group_id WHERE user_group.profile_id=?";
-	connection.query(strQuery, [req.query.pId], function(err, rows){
+	strQuery = "SELECT user_group.group_id, user_group.profile_id, user_group.group_name, user_group.address_location, user_group.tel_no, user_group_image.group_image_id, user_group_image.image FROM user_group LEFT JOIN user_group_image ON user_group.group_id = user_group_image.group_id WHERE user_group.profile_id=? AND user_group.group_id=?";
+	connection.query(strQuery, [req.query.pId, req.query.groupId], function(err, rows){
 		if(err) {
 			console.log(err);
 			throw err;
@@ -117,7 +117,7 @@ exports.addImage = function(req, res) {
 			cb(null, './uploads/img');
 		},
 		filename: function (req, file, cb) {
-			cb(null, file.originalname + '-' + Date.now() + '.jpg'); //Appending mimeType.
+			cb(null, file.originalname + '.jpg'); //Appending mimeType.
 		}
 	});
 
