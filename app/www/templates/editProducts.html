@@ -1,4 +1,4 @@
-<ion-view view-title="แก้ไขรายการสินค้า">
+<ion-view view-title="แก้ไขสินค้า">
 	<ion-content>
 		<form name="productForm">
 			<ion-list>
@@ -36,16 +36,26 @@
 					<div class="input-label">
 						หมวดหมู่
 					</div>
-					<select name="category" ng-model="products.category">
+					<select name="categoryText" ng-model="products.categoryText">
 						<option>อาหาร</option>
 						<option>เครื่องดื่ม</option>
-						<option>เครื่องแต่งกาย</option>
-						<option>ของใช้ประดับตกแต่ง</option>
-						<option>สมุนไพร</option>
+						<option>ผ้า เครื่องแต่งกาย</option>
+						<option>ของใช้และของประดับตกแต่ง</option>
+						<option>ศิลปะประดิษฐ์และของที่ระลึก</option>
+						<option>สมุนไพรที่ไม่ใช่อาหาร</option>
+					</select>
+				</label>
+				<label class="item item-input item-select">
+					<div class="input-label">
+						เครือข่าย
+					</div>
+					<select name="idGroup" ng-model="products.idGroup" required>
+						<option value="" selected>เลือกเครือข่าย</option>
+						<option ng-repeat="userGroup in userGroupData" value="{{userGroup.group_id}}">{{userGroup.group_name}}</option>
 					</select>
 				</label>
 				<div class="content padding has-header">
-					<button class="button button-block button-positive button-assertive" ng-click="insertProducts()" ng-disabled="productForm.$invalid || productForm.$pristine">ยืนยัน</button>
+					<button class="button button-block button-positive button-assertive" ng-click="updateProduct()" ng-disabled="productForm.$invalid || productForm.$pristine">ยืนยัน</button>
 				</div>
 
 			</ion-list>

@@ -14,13 +14,13 @@ router.post('/insertProducts', products.insertProduct);
 //Insert Product Data For Saler
 router.post('/insertImageProducts', products.insertImageProduct);
 //Edit Product Data For Saler
-router.post('/editProducts', products.editProduct);
+router.get('/editProducts', products.editProduct);
 //Edit Product Data For Saler
 router.delete('/editProductImageDeletes', products.editProductImageDelete);
 //Update Product Data
-router.delete('/updateProducts', products.updateProduct);
+router.put('/updateProducts', products.updateProduct);
 //Insert Image Product
-router.delete('/insertImageProducts', products.insertImageProduct);
+router.post('/insertImageProducts', products.insertImageProduct);
 
 //Get User
 router.post('/findUsers', users.findUser);
@@ -38,6 +38,8 @@ router.post('/insertBankAccounts', bank.insertBankAccount);
 //Update Bank Account Data
 router.put('/updateBankAccounts', bank.updateBankAccount);
 
+//Get User Group For Product
+router.get('/getUserGroupForProducts', userGroup.getUserGroupForProduct);
 //get User Group
 router.get('/getUserGroups', userGroup.getUserGroup);
 //Insert User Group

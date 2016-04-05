@@ -40,7 +40,6 @@ angular.module('starter.productCtrl', [])
 				.get(urlService.getBaseUrl() + '/getProducts', {params: {pId: '1'}})
 				.success(function(response) {
 					$scope.productData = response;
-					console.log($scope.productData);
 				})
 		}
 		$scope.getDataProducts();
@@ -51,7 +50,7 @@ angular.module('starter.productCtrl', [])
 		var userID = Authen.getUser().userID;
 
 		$scope.products = {};
-		$scope.products.category = 'อาหาร';
+		$scope.products.categoryText = 'อาหาร';
 
 		$ionicPlatform.ready(function() {
 			$scope.images = { 
@@ -59,6 +58,12 @@ angular.module('starter.productCtrl', [])
 				filename: '',
 				extension: ''
 			};
+
+			$http
+				.get(urlService.getBaseUrl() + '/getUserGroupForProducts', {params: {pId: '1'}})
+				.success(function(response) {
+					$scope.userGroupData = response;
+				})
 
 			$scope.addMedia = function() {
 				$scope.hideSheet = $ionicActionSheet.show({
@@ -207,7 +212,6 @@ angular.module('starter.productCtrl', [])
 		var userID = Authen.getUser().userID;
 
 		$scope.products = {};
-		$scope.editProducts = {};
 		$scope.imgGroupData = {};
 
 		$ionicPlatform.ready(function() {
@@ -216,6 +220,12 @@ angular.module('starter.productCtrl', [])
 				filename: '',
 				extension: ''
 			};
+
+			$http
+				.get(urlService.getBaseUrl() + '/getUserGroupForProducts', {params: {pId: '1'}})
+				.success(function(response) {
+					$scope.userGroupData = response;
+				})
 
 			$scope.addMedia = function() {
 				$scope.hideSheet = $ionicActionSheet.show({
@@ -333,17 +343,16 @@ angular.module('starter.productCtrl', [])
 	            return false;
 	        };
 		});
-
 		$http
-			.get(urlService.getBaseUrl() + '/editProducts', {params: {pId: '1'}})
+			.get(urlService.getBaseUrl() + '/editProducts', {params: {pId: '1', productId: $stateParams.productId}})
 			.success(function(response) {
 				console.log(response);
-				$scope.editGroupData.primaryProduct = response[0].product_id;
-				$scope.editGroupData.productId = response[0].product_user_id;
-				$scope.editGroupData.productName = response[0].product_name;
-				$scope.editGroupData.productPrice = response[0].productPrice;
-				$scope.editGroupData.telephone = response[0].product_amount;
-				$scope.editGroupData.telephone = response[0].release_date;
+				$scope.products.primaryProduct = response[0].product_id;
+				$scope.products.productId = response[0].product_user_id;
+				$scope.products.productName = response[0].product_name;
+				$scope.products.productPrice = response[0].product_price;
+				$scope.products.productAmount = response[0].product_amount;
+				$scope.products.categoryText = response[0].product_category;
 				$scope.imgLength = response.length;
 				for(var i=0; i<$scope.imgLength; i++){
 					if(response[i].image != null){
@@ -353,20 +362,21 @@ angular.module('starter.productCtrl', [])
 		                });
 					}
 				}
+				console.log($scope.products);
 			})
 
-		$scope.updateUserGroup = function(){
+		$scope.updateProduct = function(){
 			$http
-			.delete(urlService.getBaseUrl() + '/editProductImageDeletes', {params: {product_id: $scope.editGroupData.primaryProduct}})
+			.delete(urlService.getBaseUrl() + '/editProductImageDeletes', {params: {product_id: $scope.products.primaryProduct}})
 			.success(function(response) {
 				var forImageData = {};
 				$http
-					.put(urlService.getBaseUrl() + '/updateProducts', $scope.editGroupData)
+					.put(urlService.getBaseUrl() + '/updateProducts', $scope.products)
 					.success(function(response) {
 						if($scope.images.imageUri != null){
 							for(var i=0; i<$scope.images.imageUri.length; i++){
 								forImageData = {
-									product_id: $scope.editGroupData.primaryProduct,
+									product_id: $scope.products.primaryProduct,
 									image: userID + '-' + $scope.images.imageUri[i].fileName + '-' + Date.now()
 								}
 								$http
@@ -376,7 +386,7 @@ angular.module('starter.productCtrl', [])
 									})
 							}
 						}
-						$state.go('app.userGroup', {}, {reload:true});
+						$state.go('app.showProducts', {}, {reload:true});
 					})
 				//upload($scope.images.imageUri[i].path, $scope.images.imageUri[i].fileName);
 			})

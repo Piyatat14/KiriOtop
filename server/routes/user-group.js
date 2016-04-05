@@ -11,6 +11,18 @@ connection.connect();
 
 var multer = require('multer');
 
+exports.getUserGroupForProduct = function(req, res) {
+	strQuery = "SELECT group_id, group_name FROM user_group WHERE profile_id=?";
+	connection.query(strQuery, [req.query.pId], function(err, rows){
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
+		}
+	});
+};
+
 exports.getUserGroup = function(req, res) {
 	strQuery = "SELECT user_group.group_id, user_group.profile_id, user_group.group_name, user_group_image.image FROM user_group LEFT JOIN user_group_image ON user_group.group_id = user_group_image.group_id WHERE user_group.profile_id=? GROUP BY user_group.group_id";
 	connection.query(strQuery, [req.query.pId], function(err, rows){

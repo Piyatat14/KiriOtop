@@ -37,9 +37,11 @@ exports.getProduct = function(req, res, next) {
 
 exports.insertProduct = function(req, res, next) {
 	var productData = {
+		profile_id : '1',
+		group_id : req.body.idGroup,
 		product_user_id : req.body.productId,
 		product_name : req.body.productName,
-		product_category : req.body.category,
+		product_category : req.body.categoryText,
 		product_price : req.body.productPrice,
 		product_rating : '0',
 		product_view : '0',
@@ -75,13 +77,13 @@ exports.insertImageProduct = function(req, res) {
 };
 
 exports.editProduct = function(req, res) {
-	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_price, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.profile_id=?";
-	connection.query(strQuery, [req.query.pId], function(err, rows){
+	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_price, product.product_category, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.profile_id=? AND product.product_id=?";
+	connection.query(strQuery, [req.query.pId, req.query.productId], function(err, rows){
 		if(err) {
 			console.log(err);
 			throw err;
 		}else {
-			res.send("Success");
+			res.send(rows);
 		}
 	});
 };
@@ -99,8 +101,18 @@ exports.editProductImageDelete = function(req, res) {
 };
 
 exports.updateProduct = function(req, res) {
+	console.log(req.body);
+	var updateProductData = {
+		profile_id : '1',
+		group_id : req.body.idGroup,
+		product_user_id : req.body.productId,
+		product_name : req.body.productName,
+		product_category : req.body.categoryText,
+		product_price : req.body.productPrice,
+		product_amount : req.body.productAmount
+	}
 	strQuery = "UPDATE product SET ? WHERE product_id=?";
-	connection.query(strQuery, [req.query.product_id], function(err, rows){
+	connection.query(strQuery, [updateProductData, req.body.primaryProduct], function(err, rows){
 		if(err) {
 			console.log(err);
 			throw err;
