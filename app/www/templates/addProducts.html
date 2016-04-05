@@ -49,9 +49,9 @@
 					<div class="input-label">
 						เครือข่าย
 					</div>
-					<select name="idGroup" ng-model="products.idGroup" required>
+					<select name="idGroup" ng-model="products.idGroup" ng-options="userGroup.group_id as userGroup.group_name for userGroup in userGroupData"  required>
 						<option value="" selected>เลือกเครือข่าย</option>
-						<option ng-repeat="userGroup in userGroupData" value="{{userGroup.group_id}}">{{userGroup.group_name}}</option>
+						<!--<option ng-repeat="userGroup in userGroupData" value="{{userGroup.group_id}}">{{userGroup.group_name}}</option>-->
 					</select>
 				</label>
 				<div class="content padding has-header">

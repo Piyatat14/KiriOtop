@@ -184,26 +184,7 @@ angular.module('starter.productCtrl', [])
 		});
 		
 		$scope.insertProducts = function(){
-			$http
-			.post(urlService.getBaseUrl() + '/insertProducts', $scope.products)
-			.success(function(response) {
-				var forImageData = {};
-				if($scope.images.imageUri != null){
-					for(var i=0; i<$scope.images.imageUri.length; i++){
-						forImageData = {
-							product_id: response.insertId,
-							image: $scope.images.imageUri[i].fileName
-						}
-						$http
-						.post(urlService.getBaseUrl() + '/insertImageProducts', forImageData)
-						.success(function(response) {
-
-						})
-						upload($scope.images.imageUri[i].path, $scope.images.imageUri[i].fileName);
-					}
-				}
-				$state.go('app.showProducts', {}, {reload:true});
-			})
+			console.log($scope.products.idGroup);
 		};
 	})
 
@@ -225,6 +206,28 @@ angular.module('starter.productCtrl', [])
 				.get(urlService.getBaseUrl() + '/getUserGroupForProducts', {params: {pId: '1'}})
 				.success(function(response) {
 					$scope.userGroupData = response;
+				})
+			
+			$http
+				.get(urlService.getBaseUrl() + '/editProducts', {params: {pId: '1', productId: $stateParams.productId}})
+				.success(function(response) {
+					console.log(response);
+					$scope.products.primaryProduct = response[0].product_id;
+					$scope.products.productId = response[0].product_user_id;
+					$scope.products.productName = response[0].product_name;
+					$scope.products.productPrice = response[0].product_price;
+					$scope.products.productAmount = response[0].product_amount;
+					$scope.products.categoryText = response[0].product_category;
+					$scope.products.idGroup = response[0].group_id;
+					$scope.imgLength = response.length;
+					for(var i=0; i<$scope.imgLength; i++){
+						if(response[i].image != null){
+							$scope.images.imageUri.push({
+								product_id: response[i].product_id,
+			                	fileName: response[i].image
+			                });
+						}
+					}
 				})
 
 			$scope.addMedia = function() {
@@ -343,27 +346,6 @@ angular.module('starter.productCtrl', [])
 	            return false;
 	        };
 		});
-		$http
-			.get(urlService.getBaseUrl() + '/editProducts', {params: {pId: '1', productId: $stateParams.productId}})
-			.success(function(response) {
-				console.log(response);
-				$scope.products.primaryProduct = response[0].product_id;
-				$scope.products.productId = response[0].product_user_id;
-				$scope.products.productName = response[0].product_name;
-				$scope.products.productPrice = response[0].product_price;
-				$scope.products.productAmount = response[0].product_amount;
-				$scope.products.categoryText = response[0].product_category;
-				$scope.imgLength = response.length;
-				for(var i=0; i<$scope.imgLength; i++){
-					if(response[i].image != null){
-						$scope.images.imageUri.push({
-							product_id: response[i].product_id,
-		                	fileName: response[i].image
-		                });
-					}
-				}
-				console.log($scope.products);
-			})
 
 		$scope.updateProduct = function(){
 			$http
