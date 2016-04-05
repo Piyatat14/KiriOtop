@@ -1,45 +1,51 @@
 <ion-view view-title="ข้อมูลส่วนตัว">
 	<ion-content>
-		<ion-list>
-			<div class="user-profile">
-				<a class="item image-profile" ng-click="addMedia()">
-					<img ng-src="{{images.imageUri}}" />
-				</a>
-			</div>
-			{{images.filename}}
+		<form name="profileForm">
+			<ion-list>
+				<div class="user-profile">
+					<a class="item image-profile" ng-click="addMedia()">
+						<img ng-src="{{images.imageUri}}" />
+					</a>
+				</div>
+				{{images.filename}}
 
-			<div style="margin-bottom: 10px; margin-left: 40px;">
-				<a style="text-decoration: underline;" ui-sref="#">แก้ไขรูป</a>
-			</div>
+				<div style="margin-bottom: 10px; margin-left: 40px;">
+					<a style="text-decoration: underline;" ng-click="addMedia()">แก้ไขรูป</a>
+				</div>
 
-			<label class="item item-input item-stacked-label">
-				<span class="input-label">ชื่อ</span>
-				<input type="text" placeholder="ชื่อ" />
-			</label>
+				<label class="item item-input item-stacked-label item-icon-right">
+					<span class="input-label">ชื่อ</span>
+					<input type="text" placeholder="ชื่อ" name="firstname" ng-model="profileData.firstname" required />
+					<i ng-show="profileForm.firstname.$error.required && !profileForm.firstname.$pristine" class="icon ion-close-circled" style="color: red;"></i>
+				</label>
 
-			<label class="item item-input item-stacked-label">
-				<span class="input-label">นามสกุล</span>
-				<input type="text" placeholder="นามสกุล" />
-			</label>
+				<label class="item item-input item-stacked-label item-icon-right">
+					<span class="input-label">นามสกุล</span>
+					<input type="text" placeholder="นามสกุล" name="lastname" ng-model="profileData.lastname" required />
+					<i ng-show="profileForm.lastname.$error.required && !profileForm.lastname.$pristine" class="icon ion-close-circled" style="color: red;"></i>
+				</label>
 
-			<label class="item item-input item-stacked-label">
-				<span class="input-label">ที่อยู่</span>
-				<input type="text" placeholder="ที่อยู่" />
-			</label>
+				<label class="item item-input item-stacked-label item-icon-right">
+					<span class="input-label">ที่อยู่</span>
+					<input type="text" placeholder="ที่อยู่" name="address" ng-model="profileData.address" required />
+					<i ng-show="profileForm.address.$error.required && !profileForm.address.$pristine" class="icon ion-close-circled" style="color: red;"></i>
+				</label>
 
-			<label class='item item-input item-stacked-label'>
-				<span class="input-label">เบอร์โทรศัพท์</span>
-				<input type="tel" placeholder="เบอร์โทรศัพท์" />
-			</label>
+				<label class='item item-input item-stacked-label item-icon-right'>
+					<span class="input-label">เบอร์โทรศัพท์</span>
+					<input type="tel" maxlength="10" placeholder="xxxxxxxxxx" name="tel" ng-model="profileData.tel" required />
+					<i ng-show="profileForm.tel.$error.required && !profileForm.tel.$pristine" class="icon ion-close-circled" style="color: red;"></i>
+				</label>
 
-			<div style="padding-top:2px;"></div>
+				<div style="padding-top:2px;"></div>
 
-			<ion-checkbox class="checkbox-square" style="border-style:none;">ต้องการลงขายสินค้า</ion-checkbox>
+				<ion-checkbox style="border-style:none;" ng-model="profileData.sell" ng-true-value="1" ng-false-value="0">ต้องการลงขายสินค้า</ion-checkbox>
 
-			<div class="content padding has-header">
-				<button class="button button-block button-positive button-assertive">ยืนยัน</button>
-			</div>
+				<div class="content padding has-header">
+					<button class="button button-block button-positive button-assertive" ng-disabled="profileForm.$invalid || profileForm.$pristine" ng-click="preAddDataProfile()">ยืนยัน</button>
+				</div>
 
-		</ion-list>
+			</ion-list>
+		</form>
 	</ion-content>
 </ion-view>

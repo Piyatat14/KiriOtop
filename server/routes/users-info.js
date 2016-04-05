@@ -74,7 +74,7 @@ exports.addImage = function(req, res) {
 			cb(null, './uploads/img');
 		},
 		filename: function (req, file, cb) {
-			cb(null, file.originalname + '-' + Date.now() + '.jpg'); //Appending mimeType.
+			cb(null, req.body.userID + '-' + file.originalname + '-' + Date.now() + '.jpg'); //Appending mimeType.
 		}
 	});
 
@@ -88,6 +88,7 @@ exports.addImage = function(req, res) {
     // Everything went fine
 	console.log(req.body);
 	console.log(req.file);
+	res.send(req.file.filename);				//return filename destination in folder uploads/img in server.
 	res.status(204).end();
   })
 	

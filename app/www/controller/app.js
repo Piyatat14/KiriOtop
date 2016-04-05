@@ -63,11 +63,12 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
   })
 
   .state('app.profile', {
+    cache: false,
     url: '/profile',
     views: {
       'menuContent': {
         templateUrl: 'templates/profile.html',
-        controller: 'ImageCtrl'
+        controller: 'AddProfileCtrl'
       }
     }
   })
