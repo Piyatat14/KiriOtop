@@ -5,8 +5,12 @@ var users = require('./users-info');
 var bank = require('./banks');
 var userGroup = require('./user-group');
 
-//Get Products For Show Public
-router.get('/products', products.getProducts);
+//Get Products For Show Public RecommendProduct
+router.get('/recommendProducts', products.recommendProduct);
+//Get Products For Show Public SalableProduct
+router.get('/salableProducts', products.salableProduct);
+//Get Products For Show Public NewProduct
+router.get('/newProducts', products.newProduct);
 //Get Products For Show Saler
 router.get('/getProducts', products.getProduct);
 //Insert Product Data For Saler

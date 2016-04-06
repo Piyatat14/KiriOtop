@@ -52,6 +52,16 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     }
   })
 
+  .state('app.kindOfProduct', {
+    url: '/kindOfProduct/:idOfKind',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/kindOfProduct.html',
+        controller: 'kindProductCtrl'
+      }
+    }
+  })
+
   .state('app.single', {
     url: '/playlists/:playlistId',
     views: {

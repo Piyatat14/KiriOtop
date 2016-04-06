@@ -3,34 +3,80 @@
 		<ion-list>
 			<div class="card">
 				<div class="item item-divider">
-					สินค้าแนะนำ
-					<div style="float:right;"><a href="" class="">เพิ่มเติม</a></div>
+					<i class="icon ion-android-globe" style="padding-right: 5px; color: blue;"></i>สินค้าแนะนำ
+					<div style="float:right;"><a class="productTagA" href="#/app/kindOfProduct/1">เพิ่มเติม</a></div>
 				</div>
 				<ion-scroll direction="x" overflow-scroll="false" style="overflow:hidden;">
 					<div class="item item-text-wrap row">
-						<div class="cardCustom" ng-repeat="test in dataTest">
+						<div class="cardCustom" ng-repeat="recData in recommendData">
 							<div class="bodyCardCustom">
 								<img class="image-view-product" src="img/ionic.png">
-								<p class="forNameCustom">{{test.name}}</p>
+							</div>
+							<div class="textCardCustom">
+								<p class="row">
+									<span class="col col-75" style="color: #000000">{{recData.product_name | limitTo: 10}}{{recData.product_name.length > 10 ? '&hellip;' : ''}}</span>
+									<span class="col">{{recData.product_rating}}<i class="icon ion-ios-star" style="color:yellow;"></i></span>
+								</p>
+								<p class="row">
+									<span class="col" style="color: #6E6E6E">{{recData.product_price | currency : 'ราคา : ' | limitTo: 16}}{{recData.product_rating.length > 16 ? '&hellip;' : ''}}</span>
+								</p>
+								<div style="margin-top:-10px; text-align: right; color: #6E6E6E;">
+									<span style="color: #6E6E6E">{{recData.first_name | limitTo: 15}}{{recData.first_name.length > 15 ? '&hellip;' : ''}}</span>
+								</div>
 							</div>
 						</div>
 					</div>
 				</ion-scroll>
 			</div>
-		</ion-list>
-
-		<ion-list>
 			<div class="card">
 				<div class="item item-divider">
-					สินค้าแนะนำ
-					<div style="float:right;"><a href="" class="">เพิ่มเติม</a></div>
+					<i class="icon ion-ios-flame" style="padding-right: 5px; color: red;"></i>สินค้าขายดี
+					<div style="float:right;"><a class="productTagA" href="#/app/kindOfProduct/2">เพิ่มเติม</a></div>
 				</div>
-				<ion-scroll direction="x" overflow-scroll="false" style=" overflow: hidden;">
+				<ion-scroll direction="x" overflow-scroll="false" style="overflow:hidden;">
 					<div class="item item-text-wrap row">
-						<div class="cardCustom" ng-repeat="test in dataTest">
+						<div class="cardCustom" ng-repeat="saleData in salableData">
 							<div class="bodyCardCustom">
 								<img class="image-view-product" src="img/ionic.png">
-								<p class="forNameCustom">{{test.name}}</p>
+							</div>
+							<div class="textCardCustom">
+								<p class="row">
+									<span class="col col-75" style="color: #000000">{{saleData.product_name | limitTo: 10}}{{saleData.product_name.length > 10 ? '&hellip;' : ''}}</span>
+									<span class="col">{{saleData.product_rating}}<i class="icon ion-ios-star" style="color:yellow;"></i></span>
+								</p>
+								<p class="row">
+									<span class="col" style="color: #6E6E6E">{{saleData.product_price | currency : 'ราคา : ' | limitTo: 16}}{{saleData.product_rating.length > 16 ? '&hellip;' : ''}}</span>
+								</p>
+								<div style="margin-top:-10px; text-align: right; color: #6E6E6E;">
+									<span style="color: #6E6E6E">{{saleData.first_name | limitTo: 15}}{{saleData.first_name.length > 15 ? '&hellip;' : ''}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</ion-scroll>
+			</div>
+			<div class="card">
+				<div class="item item-divider">
+					<i class="icon ion-android-done-all" style="padding-right: 5px; color: green;"></i>สินค้าใหม่
+					<div style="float:right;"><a class="productTagA" href="#/app/kindOfProduct/3">เพิ่มเติม</a></div>
+				</div>
+				<ion-scroll direction="x" overflow-scroll="false" style="overflow:hidden;">
+					<div class="item item-text-wrap row">
+						<div class="cardCustom" ng-repeat="newData in newsData">
+							<div class="bodyCardCustom">
+								<img class="image-view-product" src="img/ionic.png">
+							</div>
+							<div class="textCardCustom">
+								<p class="row">
+									<span class="col col-75" style="color: #000000">{{newData.product_name | limitTo: 10}}{{newData.product_name.length > 10 ? '&hellip;' : ''}}</span>
+									<span class="col">{{newData.product_rating}}<i class="icon ion-ios-star" style="color:yellow;"></i></span>
+								</p>
+								<p class="row">
+									<span class="col" style="color: #6E6E6E">{{newData.product_price | currency : 'ราคา : ' | limitTo: 16}}{{newData.product_rating.length > 16 ? '&hellip;' : ''}}</span>
+								</p>
+								<div style="margin-top:-10px; text-align: right; color: #6E6E6E;">
+									<span style="color: #6E6E6E">{{newData.first_name | limitTo: 15}}{{newData.first_name.length > 15 ? '&hellip;' : ''}}</span>
+								</div>
 							</div>
 						</div>
 					</div>

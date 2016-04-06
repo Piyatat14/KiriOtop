@@ -4,33 +4,38 @@ angular.module('starter.productCtrl', [])
 		$ionicHistory.nextViewOptions({
 			disableBack: true
 		});
-		$http.get(urlService.getBaseUrl() + '/products').then(function(resp) {
-			console.log('Success', resp);
-		});
-		$scope.dataTest = [{
-					"name" : "กระเป็า",
-					"detail" : "ก็ลองดูจ่าาาาาาาาาาาาา"
-				},
-				{
-					"name" : "5555",
-					"detail" : "5555555555555555"
-				},
-				{
-					"name" : "5555",
-					"detail" : "5555555555555555"
-				},
-				{
-					"name" : "5555",
-					"detail" : "5555555555555555"
-				}]
-		$scope.slideChanged = function(index) {
-			$scope.slideIndex = index;
-		};
-	  // $http.get('/products')
-	  //   .success(function(response) {
-	  //     console.log(response);
-	  //     $scope.playlists = response;
-	  //   });
+		$http
+			.get(urlService.getBaseUrl() + '/recommendProducts')
+			.success(function(response) {
+				$scope.recommendData = response;
+			})
+		$http
+			.get(urlService.getBaseUrl() + '/salableProducts')
+			.success(function(response) {
+				$scope.salableData = response;
+			})
+		$http
+			.get(urlService.getBaseUrl() + '/newProducts')
+			.success(function(response) {
+				$scope.newsData = response;
+			})
+	})
+
+	.controller('kindProductCtrl', function($scope, $http, urlService, $stateParams) {
+		switch($stateParams.idOfKind){
+			case '1' :
+				$scope.setTitle = "สินค้าแนะนำ";
+				break;
+			case '2' :
+				$scope.setTitle = "สินค้าขายดี";
+				break;
+			case '3' :
+				$scope.setTitle = "สินค้าใหม่";
+				break;
+			default :
+				$scope.setTitle = "สินค้า";
+				break;
+		}
 	})
 
 	.controller('showProductCtrl', function($http, $scope, $stateParams, urlService, Authen) {
@@ -45,7 +50,7 @@ angular.module('starter.productCtrl', [])
 		$scope.getDataProducts();
 	})
 
-	.controller('addProductCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $state, $ionicPlatform, $cordovaFile, ImageService, FileService, urlService, $ionicActionSheet, Authen) {
+	.controller('addProductCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $state, $ionicPlatform, $cordovaFile, ImageService, FileService, urlService, $ionicActionSheet, Authen, $filter) {
 
 		var userID = Authen.getUser().userID;
 
@@ -184,7 +189,27 @@ angular.module('starter.productCtrl', [])
 		});
 		
 		$scope.insertProducts = function(){
-			console.log($scope.products.idGroup);
+			$scope.products.dateRelease = $filter('date')(new Date(), 'yyyy-MM-dd');
+			$http
+			.post(urlService.getBaseUrl() + '/insertProducts', $scope.products)
+			.success(function(response) {
+				var forImageData = {};
+				if($scope.images.imageUri != null){
+					for(var i=0; i<$scope.images.imageUri.length; i++){
+						forImageData = {
+							group_id: response.insertId,
+							image: $scope.images.imageUri[i].fileName
+						}
+						$http
+						.post(urlService.getBaseUrl() + '/insertImageProducts', forImageData)
+						.success(function(response) {
+
+						})
+						upload($scope.images.imageUri[i].path, $scope.images.imageUri[i].fileName);
+					}
+				}
+				$state.go('app.showProducts', {}, {reload:true});
+			})
 		};
 	})
 
