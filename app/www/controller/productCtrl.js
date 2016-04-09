@@ -1,9 +1,9 @@
 angular.module('starter.productCtrl', [])
 
-	.controller('ProductCtrl', function($scope, $http, $ionicHistory, urlService) {
-		$ionicHistory.nextViewOptions({
-			disableBack: true
-		});
+	.controller('ProductCtrl', function($scope, $http, urlService) { //$ionicHistory,
+		// $ionicHistory.nextViewOptions({
+		// 	disableBack: true
+		// });
 		$http
 			.get(urlService.getBaseUrl() + '/recommendProducts')
 			.success(function(response) {
@@ -22,20 +22,37 @@ angular.module('starter.productCtrl', [])
 	})
 
 	.controller('kindProductCtrl', function($scope, $http, urlService, $stateParams) {
+		var textPath = '';
 		switch($stateParams.idOfKind){
 			case '1' :
 				$scope.setTitle = "สินค้าแนะนำ";
+				textPath = 'recommendAllProducts';
 				break;
 			case '2' :
 				$scope.setTitle = "สินค้าขายดี";
+				textPath = 'salableAllProducts';
 				break;
 			case '3' :
 				$scope.setTitle = "สินค้าใหม่";
+				textPath = 'newAllProducts';
 				break;
 			default :
 				$scope.setTitle = "สินค้า";
 				break;
 		}
+		$http
+			.get(urlService.getBaseUrl() + '/' + textPath)
+			.success(function(response) {
+				$scope.productData = response;
+			})
+	})
+
+	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams) {
+		$http
+			.get(urlService.getBaseUrl() + '/getDetailProducts', {params: {pId : $stateParams.idProduct}})
+			.success(function(response) {
+				$scope.productDetailData = response;
+			})
 	})
 
 	.controller('showProductCtrl', function($http, $scope, $stateParams, urlService, Authen) {

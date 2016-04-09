@@ -10,7 +10,15 @@ router.get('/recommendProducts', products.recommendProduct);
 //Get Products For Show Public SalableProduct
 router.get('/salableProducts', products.salableProduct);
 //Get Products For Show Public NewProduct
-router.get('/newProducts', products.newProduct);
+router.get('/newAllProducts', products.newProduct);
+//Get Products For Show Public RecommendAllProduct
+router.get('/recommendAllProducts', products.recommendAllProduct);
+//Get Products For Show Public SalableAllProduct
+router.get('/salableAllProducts', products.salableAllProduct);
+//Get Products For Show Public NewAllProduct
+router.get('/newProducts', products.newAllProduct);
+//Get Products For Show Public NewAllProduct
+router.get('/getDetailProducts', products.getDetailProduct);
 //Get Products For Show Saler
 router.get('/getProducts', products.getProduct);
 //Insert Product Data For Saler

@@ -8,7 +8,7 @@
 				</div>
 				<ion-scroll direction="x" overflow-scroll="false" style="overflow:hidden;">
 					<div class="item item-text-wrap row">
-						<div class="cardCustom" ng-repeat="recData in recommendData">
+						<a class="cardCustom" href="#/app/detailProduct/{{recData.product_id}}" ng-repeat="recData in recommendData">
 							<div class="bodyCardCustom">
 								<img class="image-view-product" src="img/ionic.png">
 							</div>
@@ -24,7 +24,7 @@
 									<span style="color: #6E6E6E">{{recData.first_name | limitTo: 15}}{{recData.first_name.length > 15 ? '&hellip;' : ''}}</span>
 								</div>
 							</div>
-						</div>
+						</a>
 					</div>
 				</ion-scroll>
 			</div>
@@ -35,7 +35,7 @@
 				</div>
 				<ion-scroll direction="x" overflow-scroll="false" style="overflow:hidden;">
 					<div class="item item-text-wrap row">
-						<div class="cardCustom" ng-repeat="saleData in salableData">
+						<a class="cardCustom" href="#/app/detailProduct/{{saleData.product_id}}" ng-repeat="saleData in salableData">
 							<div class="bodyCardCustom">
 								<img class="image-view-product" src="img/ionic.png">
 							</div>
@@ -51,7 +51,7 @@
 									<span style="color: #6E6E6E">{{saleData.first_name | limitTo: 15}}{{saleData.first_name.length > 15 ? '&hellip;' : ''}}</span>
 								</div>
 							</div>
-						</div>
+						</a>
 					</div>
 				</ion-scroll>
 			</div>
@@ -62,7 +62,7 @@
 				</div>
 				<ion-scroll direction="x" overflow-scroll="false" style="overflow:hidden;">
 					<div class="item item-text-wrap row">
-						<div class="cardCustom" ng-repeat="newData in newsData">
+						<a class="cardCustom" href="#/app/detailProduct/{{newData.product_id}}" ng-repeat="newData in newsData">
 							<div class="bodyCardCustom">
 								<img class="image-view-product" src="img/ionic.png">
 							</div>
@@ -78,7 +78,7 @@
 									<span style="color: #6E6E6E">{{newData.first_name | limitTo: 15}}{{newData.first_name.length > 15 ? '&hellip;' : ''}}</span>
 								</div>
 							</div>
-						</div>
+						</a>
 					</div>
 				</ion-scroll>
 			</div>

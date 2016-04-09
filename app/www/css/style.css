@@ -19,6 +19,9 @@
 	margin: 20px 10px;
 	border-radius: 2px;
 	background-color: #fff;
+	cursor: pointer;
+	text-decoration: none;
+
 }
 
 .bodyCardCustom{
@@ -29,10 +32,6 @@
 	margin: 10px 10px 0px;
 	border-radius: 2px;
 	background-color: #fff;
-}
-
-.textCardCustom{
-
 }
 
 .cardCustom:active{
@@ -193,6 +192,28 @@
     position: fixed;
     right: 0;
     top: 0;
+}
+
+.forFirstDetailProduct{
+	width: 100%;
+	text-decoration: none;
+}
+
+.forNextDetailProduct{
+	width: 18%;
+	text-decoration: none;
+}
+
+.forTextDetailProduct{
+	padding-bottom: 5px;
+
+}
+
+.forIconDetailProduct{
+	padding-top: 5px;
+	padding-right: 10px;
+	font-size: 32px;
+	color: #0080ff;
 }
 
 /* css use ionicActionSheet for android design same ios */
