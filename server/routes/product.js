@@ -82,7 +82,7 @@ exports.newAllProduct = function(req, res, next) {
 };
 
 exports.getDetailProduct = function(req, res, next) {
-	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_price, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.product_id=?";
+	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_detail, product.product_price, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image, user_profile.first_name, user_group.address_location FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id JOIN user_group ON product.group_id = user_group.group_id WHERE product.product_id=?";
 	connection.query(strQuery, [req.query.pId], function(err, rows){
 		if(err) {
 			console.log(err);

@@ -97,6 +97,10 @@
 	text-decoration: none;
 }
 
+.productTagA:active{
+	color: #fff;
+}
+
 .groupList i{
 	padding-right: 15px;
 }

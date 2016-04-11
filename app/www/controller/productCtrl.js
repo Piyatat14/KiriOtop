@@ -47,12 +47,47 @@ angular.module('starter.productCtrl', [])
 			})
 	})
 
-	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams) {
+	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen) {
+		$scope.forReportData = {};
+		$scope.forReportData.userID = Authen.getUser();
+		if(angular.isUndefined($scope.forReportData.userID)){
+			$scope.forReportData.userID = '';
+		}
+		console.log($scope.forReportData.userID);
 		$http
 			.get(urlService.getBaseUrl() + '/getDetailProducts', {params: {pId : $stateParams.idProduct}})
 			.success(function(response) {
-				$scope.productDetailData = response;
+				$scope.nameProduct = response[0].product_name;
+				$scope.nameOwned = response[0].first_name;
+				$scope.address = response[0].address_location;
+				$scope.detailProduct = response[0].product_detail;
+				$scope.viewProduct = response[0].product_view;
+				$scope.ratingProduct = response[0].product_rating;
+				console.log(response);
 			})
+		$scope.showPopup = function() {
+			$scope.report = {};
+			var myPopup = $ionicPopup.show({
+			    template: '<input type="text" ng-model="report.reportProduct">',
+			    title: 'รายงานสิค้า',
+			    subTitle: 'กรุณาใส่หมายเหตุที่รายงานสินค้านี้',
+			    scope: $scope,
+			    buttons: [
+			    	{ text: 'ยกเลิก' },
+			    	{
+				        text: '<b>ส่งรายงาน</b>',
+				        type: 'button-positive',
+				        onTap: function(e) {
+				        	$http
+							.post(urlService.getBaseUrl() + '/insertReportProducts')
+							.success(function(response) {
+								
+							})
+			        	}
+			      	}
+			    ]
+			});
+		};
 	})
 
 	.controller('showProductCtrl', function($http, $scope, $stateParams, urlService, Authen) {

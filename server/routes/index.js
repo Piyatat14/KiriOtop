@@ -4,6 +4,7 @@ var products = require('./product');
 var users = require('./users-info');
 var bank = require('./banks');
 var userGroup = require('./user-group');
+var report = require('./report');
 
 //Get Products For Show Public RecommendProduct
 router.get('/recommendProducts', products.recommendProduct);
@@ -68,5 +69,8 @@ router.delete('/editDeleteImages', userGroup.editDeleteImage);
 router.delete('/editAllDeleteImages', userGroup.editAllDeleteImage);
 //Update User Group Data
 router.put('/updateUserGroups', userGroup.updateUserGroup);
+
+//Insert Report Product
+router.delete('/insertReportProducts', report.insertReportProduct);
 
 module.exports = router;

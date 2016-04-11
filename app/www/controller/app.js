@@ -72,16 +72,6 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     }
   })
 
-  .state('app.single', {
-    url: '/playlists/:playlistId',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/playlist.html',
-        controller: 'PlaylistCtrl'
-      }
-    }
-  })
-
   .state('app.profile', {
     cache: false,
     url: '/profile',
