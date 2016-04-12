@@ -226,7 +226,7 @@ exports.insertOrderBuyer = function(req, res) {
 	var orderData = {
 		product_id : req.body.productId,
 		profile_id : '1',
-		group_id : '1',
+		group_id : req.body.groupId,
 		order_id : req.body.orderId,
 		oder_amount : '1',
 		date_of_within : '1',

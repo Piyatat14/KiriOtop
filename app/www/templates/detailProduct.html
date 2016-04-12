@@ -6,11 +6,7 @@
 					<div class="col col-50">
 						<a href="#"><img src="img/ionic.png" class="forFirstDetailProduct"></a>
 						<div>
-							<a href="#"><img src="img/ionic.png" class="forNextDetailProduct"></a>
-							<a href="#"><img src="img/ionic.png" class="forNextDetailProduct"></a>
-							<a href="#"><img src="img/ionic.png" class="forNextDetailProduct"></a>
-							<a href="#"><img src="img/ionic.png" class="forNextDetailProduct"></a>
-							<a href="#"><img src="img/ionic.png" class="forNextDetailProduct"></a>
+							<img ng-repeat="test in testImg" ng-src="{{test.src}}" class="forNextDetailProduct" ng-click="showImages($index)">
 						</div>
 					</div>
 					<div class="col">

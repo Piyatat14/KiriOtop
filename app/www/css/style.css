@@ -198,13 +198,19 @@
     top: 0;
 }
 
+.slider {
+    width: 100%;
+    height: 100%;
+}
+
 .forFirstDetailProduct{
 	width: 100%;
 	text-decoration: none;
 }
 
 .forNextDetailProduct{
-	width: 18%;
+	padding-right: 4px;
+	width: 20%;
 	text-decoration: none;
 }
 

@@ -47,7 +47,7 @@ angular.module('starter.productCtrl', [])
 			})
 	})
 
-	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, $filter) {
+	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, $filter, $ionicModal) {
 		$scope.forReportData = {};
 		$scope.forOrderBuyer = {};
 		if(angular.isUndefined(Authen.getUser())){
@@ -55,6 +55,13 @@ angular.module('starter.productCtrl', [])
 		}else{
 			$scope.forReportData.userID = Authen.getUser().userID;
 		}
+		$scope.testImg = [
+			{'src' : 'img/ionic.png'}, 
+			{'src' : 'img/ionic.png'},
+			{'src' : 'img/ionic.png'},
+			{'src' : 'img/ionic.png'}, 
+			{'src' : 'img/ionic.png'}
+		];
 		$http
 			.get(urlService.getBaseUrl() + '/getDetailProducts', {params: {pId : $stateParams.idProduct}})
 			.success(function(response) {
@@ -149,6 +156,27 @@ angular.module('starter.productCtrl', [])
 						}
 					]
 			});
+		};
+
+		$scope.showImages = function(index) {
+			$scope.activeSlide = index;
+			$scope.showModal('templates/showImageFull.html');
+		}
+	 
+		$scope.showModal = function(templateUrl) {
+			$ionicModal.fromTemplateUrl(templateUrl, {
+				scope: $scope,
+				animation: 'slide-in-up'
+			}).then(function(modal) {
+				$scope.modal = modal;
+				$scope.modal.show();
+			});
+		}
+	 
+		// Close the modal
+		$scope.closeModal = function() {
+			$scope.modal.hide();
+			$scope.modal.remove();
 		};
 
 	})
