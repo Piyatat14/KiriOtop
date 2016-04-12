@@ -35,7 +35,7 @@ exports.findUser = function(req, res) {
 };
 
 exports.findProfileUser = function(req, res) {
-	strQuery = "SELECT profile_id FROM user_profile WHERE user_id=? LIMIT 1";
+	strQuery = "SELECT profile_id, first_name, last_name, address, tel_no, user_image, can_sell FROM user_profile WHERE user_id=? LIMIT 1";
 	connection.query(strQuery, req.body.userID, function(err, rows) {
 		if(err) {
 			console.log('err');

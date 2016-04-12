@@ -59,9 +59,15 @@ angular.module('starter.userCtrl', [])
 					.success(function(res) {
 						//if profile_id for user is have.But not have Users.getUserData equal undefined
 						if(res !== 'ERROR' && Users.getUserData() === undefined) {
-							//set cookie for user profile_id.
+							//set cookie for user about profile data.
 							Users.setUserData({
-								profileID: res[0].profile_id
+								profileID: res[0].profile_id,
+								firstname: res[0].first_name,
+								lastname: res[0].last_name,
+								address: res[0].address,
+								tel: res[0].tel_no,
+								image: res[0].user_image,
+								sell: res[0].can_sell
 							});
 						}
 					}
@@ -117,29 +123,44 @@ angular.module('starter.userCtrl', [])
 	};
 })
 
-.controller('AddProfileCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet) {
+.controller('ProfileCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet) {
 	//this controller must login.
 	$ionicPlatform.ready(function() {
 
 		//object for Authen.
 		var userDetail = Authen.getUser();
 
-		//object for user data.
-		var profileId = Users.getUserData();
+		//object for user data after view call this controller.
+		var profileUser = Users.getUserData();
 
 		//object for image.
 		$scope.images = { 
 			imageUri: '', 
-			filename: '',
-			extension: ''
+			filename: ''
 		};
 
 		//object for data user profile.
 		$scope.profileData = {
 			sell: 0,
+			firstname: '',
 			imageName: '',
 			userID: ''
 		};
+
+
+		//if profileUser is have in database. get data show on profile view.
+		if(profileUser !== undefined) {
+			console.log("OK JA");
+			console.log(profileUser);
+			$scope.profileData.firstname = profileUser.firstname;
+			$scope.profileData.lastname = profileUser.lastname;
+			$scope.profileData.address = profileUser.address;
+			$scope.profileData.tel = profileUser.tel;
+			$scope.profileData.sell = profileUser.sell;
+			console.log($scope.profileData.firstname);
+			$scope.images.imageUri = urlService.getBaseUrl() + /img/ + profileUser.image;
+			$scope.images.filename = profileUser.image;
+		}
 
 		$scope.preAddDataProfile = function() {
 			//if image ready to uploads server.
@@ -174,10 +195,10 @@ angular.module('starter.userCtrl', [])
 		upload = function(imageURI, filename) {
 			var options = new FileUploadOptions();
 			options.fileKey = 'image';
-			options.fileName = filename;
+			options.fileName = $scope.images.filename;
 			options.mimeType = 'image/jpg';
 			options.chunkedMode = false;
-			options.params = {'directory' : 'uploads/img', 'fileName' : filename, 'userID' : userData.userID};
+			options.params = {'directory' : 'uploads/img', 'fileName' : $scope.images.filename, 'userID' : userDetail.userID};
 			
 			var ft = new FileTransfer();
 			ft.upload(imageURI, encodeURI(urlService.getBaseUrl() + '/images'),
@@ -254,13 +275,12 @@ angular.module('starter.userCtrl', [])
         }
 
         addDataProfile = function() {
-
-        	//assign object to profileId. In case update data profile but no exit profile.html
-			profileId = Users.getUserData();
-			if(profileId !== undefined) {
-				console.log('now : ' + profileId.profileID);
+        	//assign object to profileUser. In case update data profile but no exit profile.html
+			profileUser = Users.getUserData();
+			if(profileUser !== undefined) {
+				console.log('now : ' + profileUser.profileID);
 			}else {
-				console.log('now : ' + profileId);
+				console.log('now : ' + profileUser);
 			}
 
         	//userID must have.
@@ -269,10 +289,10 @@ angular.module('starter.userCtrl', [])
         		$scope.profileData.userID = userDetail.userID;
         	}
 
-        	//if profileId != undefined show that user needed update profile data.
-        	if(profileId !== undefined) {
+        	//if profileUser != undefined show that user needed update profile data.
+        	if(profileUser !== undefined) {
         		console.log('update');
-        		$scope.profileData.profileID = profileId.profileID;
+        		$scope.profileData.profileID = profileUser.profileID;
         		//update user profile data into database.
         		$http.post(urlService.getBaseUrl() + '/updateProfileUsers', $scope.profileData)
         		.success(function(response) {

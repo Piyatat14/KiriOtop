@@ -78,7 +78,7 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     views: {
       'menuContent': {
         templateUrl: 'templates/profile.html',
-        controller: 'AddProfileCtrl'
+        controller: 'ProfileCtrl'
       }
     }
   })

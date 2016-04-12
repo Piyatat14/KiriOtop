@@ -4,10 +4,9 @@
 			<ion-list>
 				<div class="user-profile">
 					<a class="item image-profile" ng-click="addMedia()">
-						<img ng-src="{{images.imageUri}}" />
+						<img name="profile_image" ng-src="{{images.imageUri}}" />
 					</a>
 				</div>
-				{{images.filename}}
 
 				<div style="margin-bottom: 10px; margin-left: 40px;">
 					<a style="text-decoration: underline;" ng-click="addMedia()">แก้ไขรูป</a>
@@ -42,7 +41,7 @@
 				<ion-checkbox style="border-style:none;" ng-model="profileData.sell" ng-true-value="1" ng-false-value="0">ต้องการลงขายสินค้า</ion-checkbox>
 
 				<div class="content padding has-header">
-					<button class="button button-block button-positive button-assertive" ng-disabled="profileForm.$invalid || profileForm.$pristine" ng-click="preAddDataProfile()">ยืนยัน</button>
+					<button class="button button-block button-positive button-assertive" ng-disabled="profileForm.$invalid || profileForm.$pristine || images.imageUri != '' " ng-click="preAddDataProfile()">ยืนยัน</button>
 				</div>
 
 			</ion-list>
