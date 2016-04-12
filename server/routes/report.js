@@ -11,10 +11,11 @@ connection.connect();
 	
 exports.insertReportProduct = function(req, res) {
 	var reportProductData = {
-		user_id : '1',
-		product_id : req.body.idGroup,
-		log_comment : req.body.productId,
-		log_date : req.body.productName,
+		user_id : req.body.userID,
+		product_id : req.body.productId,
+		admin_id : '1',
+		log_comment : req.body.reportProduct,
+		log_date : req.body.logDate,
 	}
 	strQuery = "INSERT INTO admin_log SET ?";
 	connection.query(strQuery, [reportProductData], function(err, rows){

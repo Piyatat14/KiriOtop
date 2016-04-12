@@ -47,28 +47,31 @@ angular.module('starter.productCtrl', [])
 			})
 	})
 
-	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen) {
+	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, $filter) {
 		$scope.forReportData = {};
-		$scope.forReportData.userID = Authen.getUser();
-		if(angular.isUndefined($scope.forReportData.userID)){
-			$scope.forReportData.userID = '';
+		$scope.forOrderBuyer = {};
+		if(angular.isUndefined(Authen.getUser())){
+			$scope.forReportData.userID = null;
+		}else{
+			$scope.forReportData.userID = Authen.getUser().userID;
 		}
-		console.log($scope.forReportData.userID);
 		$http
 			.get(urlService.getBaseUrl() + '/getDetailProducts', {params: {pId : $stateParams.idProduct}})
 			.success(function(response) {
+				$scope.idProfile = response[0].profile_id;
+				$scope.idGroup = response[0].group_id;
+				$scope.idProduct = response[0].product_id;
 				$scope.nameProduct = response[0].product_name;
 				$scope.nameOwned = response[0].first_name;
 				$scope.address = response[0].address_location;
 				$scope.detailProduct = response[0].product_detail;
 				$scope.viewProduct = response[0].product_view;
 				$scope.ratingProduct = response[0].product_rating;
-				console.log(response);
+				$scope.telNo = response[0].tel_no;
 			})
-		$scope.showPopup = function() {
-			$scope.report = {};
+		$scope.reportProduct = function() {
 			var myPopup = $ionicPopup.show({
-			    template: '<input type="text" ng-model="report.reportProduct">',
+			    template: '<input type="text" ng-model="forReportData.reportProduct">',
 			    title: 'รายงานสิค้า',
 			    subTitle: 'กรุณาใส่หมายเหตุที่รายงานสินค้านี้',
 			    scope: $scope,
@@ -76,18 +79,78 @@ angular.module('starter.productCtrl', [])
 			    	{ text: 'ยกเลิก' },
 			    	{
 				        text: '<b>ส่งรายงาน</b>',
-				        type: 'button-positive',
+				        type: 'button-assertive',
 				        onTap: function(e) {
+				        	$scope.forReportData.productId = $scope.idProduct;
+				        	$scope.forReportData.logDate = $filter('date')(new Date(), 'yyyy-MM-dd');
 				        	$http
-							.post(urlService.getBaseUrl() + '/insertReportProducts')
+							.post(urlService.getBaseUrl() + '/insertReportProducts', $scope.forReportData)
 							.success(function(response) {
-								
+								var alertPopup = $ionicPopup.alert({
+							     	title: 'รายงานสำเร็จ',
+							     	template: 'ขอบคุณสำหรับการรายงาน'
+							   	});
 							})
 			        	}
 			      	}
 			    ]
 			});
 		};
+
+		$scope.callToOwned = function() {
+			var confirmPopup = $ionicPopup.confirm({
+				title: 'ติดต่อเจ้าของผลิตภัณฑ์',
+				template: 'คุณต้องการติดต่อกับเจ้าของภัณฑ์ ?',
+				buttons: [
+						{text: 'ยกเลิก'},
+						{
+							text: '<b>ติดต่อ</b>',
+				        	type: 'button-balanced',
+				        	onTap: function(e){
+				        		document.location.href = "tel:" + $scope.telNo;
+				        	}
+						}
+					]
+			});
+		};
+
+		$scope.buyProduct = function() {
+			$scope.forOrderBuyer.productId = $scope.idProduct;
+			$scope.forOrderBuyer.groupId = $scope.idGroup;
+			$scope.forOrderBuyer.orderDate = $filter('date')(new Date(), 'yyyy-MM-dd');
+			var buyPopup = $ionicPopup.confirm({
+				title: 'สั่งซื้อสินค้านี้',
+				template: 'คุณต้องสั่งซื้อสินค้าชิ้นนี้ ?',
+				buttons: [
+						{text: 'ยกเลิก'},
+						{
+							text: '<b>สั่งซื้อ</b>',
+				        	type: 'button-positive',
+				        	onTap: function(e){
+				        		$http
+								.get(urlService.getBaseUrl() + '/buildOrderIds', {params: {prodId : $scope.forOrderBuyer.productId, profId : '1', gId : $scope.idGroup}})
+								.success(function(response) {
+									var runOrder;
+									if(response == ''){
+										runOrder = '001';
+									}else{
+										response[0].order_id++;
+										runOrder = response[0].order_id;
+									}
+									$scope.forOrderBuyer.orderId = runOrder;
+									//$scope.idProduct + $scope.forOrderBuyer.groupId + '1' + runOrder
+								})
+				        		$http
+								.post(urlService.getBaseUrl() + '/insertOrderBuyers', $scope.forReportData)
+								.success(function(response) {
+									
+								})
+				        	}
+						}
+					]
+			});
+		};
+
 	})
 
 	.controller('showProductCtrl', function($http, $scope, $stateParams, urlService, Authen) {

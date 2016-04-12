@@ -35,7 +35,7 @@
 				</div>
 				<div style="padding-top:7px;">
 					<span>{{viewProduct}}<i class="icon ion-eye" style="padding-left:3px; font-size:20px; padding-right:30%;"></i></span>
-					<button class="button button-small button-assertive"><i class="icon ion-ios-cart-outline" style="padding-right:10px;"></i>ซื้อ</button>
+					<button class="button button-small button-assertive" ng-click="buyProduct()"><i class="icon ion-ios-cart-outline" style="padding-right:10px;"></i>ซื้อ</button>
 				</div>
 			</li>
 			<li class="item">
@@ -64,7 +64,7 @@
 				<div><p>ความคิดเห็น</p></div>
 				<div class="row">
 					<div class="col col-33">
-						<a><img src="img/ionic.png" style="width:80px;"></a>
+						<a href="#"><img src="img/ionic.png" style="width:80px;"></a>
 					</div>
 					<div class="col">
 						<p>Name Jar </p>
@@ -90,11 +90,11 @@
 		<i class="icon ion-person-stalker"></i>
 		พูดคุย
 	</a>
-	<a class="tab-item">
+	<a class="tab-item" ng-click="callToOwned()">
 		<i class="icon ion-ios-telephone"></i>
 		ติดต่อ
 	</a>
-	<a class="tab-item" ng-click="showPopup()">
+	<a class="tab-item" ng-click="reportProduct()">
 		<i class="icon ion-android-alert"></i>
 		รายงาน
 	</a>

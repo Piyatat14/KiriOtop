@@ -82,7 +82,7 @@ exports.newAllProduct = function(req, res, next) {
 };
 
 exports.getDetailProduct = function(req, res, next) {
-	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_detail, product.product_price, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image, user_profile.first_name, user_group.address_location FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id JOIN user_group ON product.group_id = user_group.group_id WHERE product.product_id=?";
+	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_detail, product.product_price, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image, user_profile.profile_id, user_profile.first_name, user_group.group_id, user_group.address_location, user_group.tel_no FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id JOIN user_group ON product.group_id = user_group.group_id WHERE product.product_id=?";
 	connection.query(strQuery, [req.query.pId], function(err, rows){
 		if(err) {
 			console.log(err);
@@ -201,6 +201,42 @@ exports.insertImageProduct = function(req, res) {
 	}
 	strQuery = "INSERT INTO product_image SET ?";
 	connection.query(strQuery, imageProducts, function(err, rows){
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send("Success");
+		}
+	});
+};
+
+exports.buildOrderId = function(req, res) {
+	strQuery = "SELECT order_id FROM order_buyer ORDER BY order_id DESC LIMIT 1";
+	connection.query(strQuery, [req.query.prodId, req.query.profId, req.query.gId], function(err, rows){
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
+		}
+	});
+};
+
+exports.insertOrderBuyer = function(req, res) {
+	var orderData = {
+		product_id : req.body.productId,
+		profile_id : '1',
+		group_id : '1',
+		order_id : req.body.orderId,
+		oder_amount : '1',
+		date_of_within : '1',
+		buyer_status_name : 'รอการยืนยัน',
+		product_order_price : '1',
+		order_date : req.body.orderDate
+		
+	}
+	strQuery = "INSERT INTO order_buyer SET ?";
+	connection.query(strQuery, orderData, function(err, rows){
 		if(err) {
 			console.log(err);
 			throw err;

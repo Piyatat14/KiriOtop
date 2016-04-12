@@ -34,6 +34,11 @@ router.delete('/editProductImageDeletes', products.editProductImageDelete);
 router.put('/updateProducts', products.updateProduct);
 //Insert Image Product
 router.post('/insertImageProducts', products.insertImageProduct);
+//Check And Build Order ID
+router.get('/buildOrderIds', products.buildOrderId);
+//Insert Order For Buyer
+router.post('/insertOrderBuyers', products.insertOrderBuyer);
+
 
 //Get User
 router.post('/findUsers', users.findUser);
@@ -71,6 +76,6 @@ router.delete('/editAllDeleteImages', userGroup.editAllDeleteImage);
 router.put('/updateUserGroups', userGroup.updateUserGroup);
 
 //Insert Report Product
-router.delete('/insertReportProducts', report.insertReportProduct);
+router.post('/insertReportProducts', report.insertReportProduct);
 
 module.exports = router;
