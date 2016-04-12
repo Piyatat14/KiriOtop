@@ -52,12 +52,22 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     }
   })
 
-  .state('app.single', {
-    url: '/playlists/:playlistId',
+  .state('app.kindOfProduct', {
+    url: '/kindOfProduct/:idOfKind',
     views: {
       'menuContent': {
-        templateUrl: 'templates/playlist.html',
-        controller: 'PlaylistCtrl'
+        templateUrl: 'templates/kindOfProduct.html',
+        controller: 'kindProductCtrl'
+      }
+    }
+  })
+
+  .state('app.detailProduct', {
+    url: '/detailProduct/:idProduct',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/detailProduct.html',
+        controller: 'detailProductCtrl'
       }
     }
   })

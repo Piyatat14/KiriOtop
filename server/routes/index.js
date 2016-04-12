@@ -4,9 +4,22 @@ var products = require('./product');
 var users = require('./users-info');
 var bank = require('./banks');
 var userGroup = require('./user-group');
+var report = require('./report');
 
-//Get Products For Show Public
-router.get('/products', products.getProducts);
+//Get Products For Show Public RecommendProduct
+router.get('/recommendProducts', products.recommendProduct);
+//Get Products For Show Public SalableProduct
+router.get('/salableProducts', products.salableProduct);
+//Get Products For Show Public NewProduct
+router.get('/newAllProducts', products.newProduct);
+//Get Products For Show Public RecommendAllProduct
+router.get('/recommendAllProducts', products.recommendAllProduct);
+//Get Products For Show Public SalableAllProduct
+router.get('/salableAllProducts', products.salableAllProduct);
+//Get Products For Show Public NewAllProduct
+router.get('/newProducts', products.newAllProduct);
+//Get Products For Show Public NewAllProduct
+router.get('/getDetailProducts', products.getDetailProduct);
 //Get Products For Show Saler
 router.get('/getProducts', products.getProduct);
 //Insert Product Data For Saler
@@ -21,6 +34,11 @@ router.delete('/editProductImageDeletes', products.editProductImageDelete);
 router.put('/updateProducts', products.updateProduct);
 //Insert Image Product
 router.post('/insertImageProducts', products.insertImageProduct);
+//Check And Build Order ID
+router.get('/buildOrderIds', products.buildOrderId);
+//Insert Order For Buyer
+router.post('/insertOrderBuyers', products.insertOrderBuyer);
+
 
 //Get User
 router.post('/findUsers', users.findUser);
@@ -62,5 +80,8 @@ router.delete('/editDeleteImages', userGroup.editDeleteImage);
 router.delete('/editAllDeleteImages', userGroup.editAllDeleteImage);
 //Update User Group Data
 router.put('/updateUserGroups', userGroup.updateUserGroup);
+
+//Insert Report Product
+router.post('/insertReportProducts', report.insertReportProduct);
 
 module.exports = router;

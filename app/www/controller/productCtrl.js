@@ -1,36 +1,156 @@
 angular.module('starter.productCtrl', [])
 
-	.controller('ProductCtrl', function($scope, $http, $ionicHistory, urlService) {
-		$ionicHistory.nextViewOptions({
-			disableBack: true
-		});
-		$http.get(urlService.getBaseUrl() + '/products').then(function(resp) {
-			console.log('Success', resp);
-		});
-		$scope.dataTest = [{
-					"name" : "กระเป็า",
-					"detail" : "ก็ลองดูจ่าาาาาาาาาาาาา"
-				},
-				{
-					"name" : "5555",
-					"detail" : "5555555555555555"
-				},
-				{
-					"name" : "5555",
-					"detail" : "5555555555555555"
-				},
-				{
-					"name" : "5555",
-					"detail" : "5555555555555555"
-				}]
-		$scope.slideChanged = function(index) {
-			$scope.slideIndex = index;
+	.controller('ProductCtrl', function($scope, $http, urlService) { //$ionicHistory,
+		// $ionicHistory.nextViewOptions({
+		// 	disableBack: true
+		// });
+		$http
+			.get(urlService.getBaseUrl() + '/recommendProducts')
+			.success(function(response) {
+				$scope.recommendData = response;
+			})
+		$http
+			.get(urlService.getBaseUrl() + '/salableProducts')
+			.success(function(response) {
+				$scope.salableData = response;
+			})
+		$http
+			.get(urlService.getBaseUrl() + '/newProducts')
+			.success(function(response) {
+				$scope.newsData = response;
+			})
+	})
+
+	.controller('kindProductCtrl', function($scope, $http, urlService, $stateParams) {
+		var textPath = '';
+		switch($stateParams.idOfKind){
+			case '1' :
+				$scope.setTitle = "สินค้าแนะนำ";
+				textPath = 'recommendAllProducts';
+				break;
+			case '2' :
+				$scope.setTitle = "สินค้าขายดี";
+				textPath = 'salableAllProducts';
+				break;
+			case '3' :
+				$scope.setTitle = "สินค้าใหม่";
+				textPath = 'newAllProducts';
+				break;
+			default :
+				$scope.setTitle = "สินค้า";
+				break;
+		}
+		$http
+			.get(urlService.getBaseUrl() + '/' + textPath)
+			.success(function(response) {
+				$scope.productData = response;
+			})
+	})
+
+	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, $filter) {
+		$scope.forReportData = {};
+		$scope.forOrderBuyer = {};
+		if(angular.isUndefined(Authen.getUser())){
+			$scope.forReportData.userID = null;
+		}else{
+			$scope.forReportData.userID = Authen.getUser().userID;
+		}
+		$http
+			.get(urlService.getBaseUrl() + '/getDetailProducts', {params: {pId : $stateParams.idProduct}})
+			.success(function(response) {
+				$scope.idProfile = response[0].profile_id;
+				$scope.idGroup = response[0].group_id;
+				$scope.idProduct = response[0].product_id;
+				$scope.nameProduct = response[0].product_name;
+				$scope.nameOwned = response[0].first_name;
+				$scope.address = response[0].address_location;
+				$scope.detailProduct = response[0].product_detail;
+				$scope.viewProduct = response[0].product_view;
+				$scope.ratingProduct = response[0].product_rating;
+				$scope.telNo = response[0].tel_no;
+			})
+		$scope.reportProduct = function() {
+			var myPopup = $ionicPopup.show({
+			    template: '<input type="text" ng-model="forReportData.reportProduct">',
+			    title: 'รายงานสิค้า',
+			    subTitle: 'กรุณาใส่หมายเหตุที่รายงานสินค้านี้',
+			    scope: $scope,
+			    buttons: [
+			    	{ text: 'ยกเลิก' },
+			    	{
+				        text: '<b>ส่งรายงาน</b>',
+				        type: 'button-assertive',
+				        onTap: function(e) {
+				        	$scope.forReportData.productId = $scope.idProduct;
+				        	$scope.forReportData.logDate = $filter('date')(new Date(), 'yyyy-MM-dd');
+				        	$http
+							.post(urlService.getBaseUrl() + '/insertReportProducts', $scope.forReportData)
+							.success(function(response) {
+								var alertPopup = $ionicPopup.alert({
+							     	title: 'รายงานสำเร็จ',
+							     	template: 'ขอบคุณสำหรับการรายงาน'
+							   	});
+							})
+			        	}
+			      	}
+			    ]
+			});
 		};
-	  // $http.get('/products')
-	  //   .success(function(response) {
-	  //     console.log(response);
-	  //     $scope.playlists = response;
-	  //   });
+
+		$scope.callToOwned = function() {
+			var confirmPopup = $ionicPopup.confirm({
+				title: 'ติดต่อเจ้าของผลิตภัณฑ์',
+				template: 'คุณต้องการติดต่อกับเจ้าของภัณฑ์ ?',
+				buttons: [
+						{text: 'ยกเลิก'},
+						{
+							text: '<b>ติดต่อ</b>',
+				        	type: 'button-balanced',
+				        	onTap: function(e){
+				        		document.location.href = "tel:" + $scope.telNo;
+				        	}
+						}
+					]
+			});
+		};
+
+		$scope.buyProduct = function() {
+			$scope.forOrderBuyer.productId = $scope.idProduct;
+			$scope.forOrderBuyer.groupId = $scope.idGroup;
+			$scope.forOrderBuyer.orderDate = $filter('date')(new Date(), 'yyyy-MM-dd');
+			var buyPopup = $ionicPopup.confirm({
+				title: 'สั่งซื้อสินค้านี้',
+				template: 'คุณต้องสั่งซื้อสินค้าชิ้นนี้ ?',
+				buttons: [
+						{text: 'ยกเลิก'},
+						{
+							text: '<b>สั่งซื้อ</b>',
+				        	type: 'button-positive',
+				        	onTap: function(e){
+				        		$http
+								.get(urlService.getBaseUrl() + '/buildOrderIds', {params: {prodId : $scope.forOrderBuyer.productId, profId : '1', gId : $scope.idGroup}})
+								.success(function(response) {
+									var runOrder;
+									if(response == ''){
+										runOrder = '001';
+									}else{
+										response[0].order_id++;
+										runOrder = response[0].order_id;
+									}
+									$scope.forOrderBuyer.orderId = runOrder;
+									//$scope.idProduct + $scope.forOrderBuyer.groupId + '1' + runOrder
+								})
+				        		$http
+								.post(urlService.getBaseUrl() + '/insertOrderBuyers', $scope.forReportData)
+								.success(function(response) {
+									
+								})
+				        	}
+						}
+					]
+			});
+		};
+
 	})
 
 	.controller('showProductCtrl', function($http, $scope, $stateParams, urlService, Authen) {
@@ -45,7 +165,7 @@ angular.module('starter.productCtrl', [])
 		$scope.getDataProducts();
 	})
 
-	.controller('addProductCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $state, $ionicPlatform, $cordovaFile, ImageService, FileService, urlService, $ionicActionSheet, Authen) {
+	.controller('addProductCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $state, $ionicPlatform, $cordovaFile, ImageService, FileService, urlService, $ionicActionSheet, Authen, $filter) {
 
 		var userID = Authen.getUser().userID;
 
@@ -184,7 +304,27 @@ angular.module('starter.productCtrl', [])
 		});
 		
 		$scope.insertProducts = function(){
-			console.log($scope.products.idGroup);
+			$scope.products.dateRelease = $filter('date')(new Date(), 'yyyy-MM-dd');
+			$http
+			.post(urlService.getBaseUrl() + '/insertProducts', $scope.products)
+			.success(function(response) {
+				var forImageData = {};
+				if($scope.images.imageUri != null){
+					for(var i=0; i<$scope.images.imageUri.length; i++){
+						forImageData = {
+							group_id: response.insertId,
+							image: $scope.images.imageUri[i].fileName
+						}
+						$http
+						.post(urlService.getBaseUrl() + '/insertImageProducts', forImageData)
+						.success(function(response) {
+
+						})
+						upload($scope.images.imageUri[i].path, $scope.images.imageUri[i].fileName);
+					}
+				}
+				$state.go('app.showProducts', {}, {reload:true});
+			})
 		};
 	})
 

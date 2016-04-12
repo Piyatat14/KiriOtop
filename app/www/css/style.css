@@ -1,7 +1,7 @@
 /* Empty. Add your own CSS if you like */
 .image-view-product{
-	width: 120px;
-	height: 120px;
+	width: 100px;
+	height: 100px;
 }
 
 .image-view-userGroup{
@@ -10,8 +10,7 @@
 }
 
 .cardCustom{
-	width:150px; 
-	height:190px;
+	height: 200px;
 	padding-top: 1px;
 	padding-bottom: 1px;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
@@ -20,24 +19,23 @@
 	margin: 20px 10px;
 	border-radius: 2px;
 	background-color: #fff;
+	cursor: pointer;
+	text-decoration: none;
+
 }
 
 .bodyCardCustom{
+	clear:both;
 	padding-top: 1px;
-	padding-bottom: 1px;
-	padding-right: 1px;
-  	padding-left: 1px;
-	margin: 10px 10px;
+	padding-right: 8px;
+  	padding-left: 8px;
+	margin: 10px 10px 0px;
 	border-radius: 2px;
 	background-color: #fff;
 }
 
-.bodyCardCustom:active{
+.cardCustom:active{
 	background-color: #F2F2F2;
-}
-
-.forNameCustom{
-	padding-top: 10px;
 }
 
 .menuProfile{
@@ -93,6 +91,14 @@
 	color: #666;
 	text-decoration: none;
 	width: 100%;
+}
+
+.productTagA{
+	text-decoration: none;
+}
+
+.productTagA:active{
+	color: #fff;
 }
 
 .groupList i{
@@ -190,6 +196,28 @@
     position: fixed;
     right: 0;
     top: 0;
+}
+
+.forFirstDetailProduct{
+	width: 100%;
+	text-decoration: none;
+}
+
+.forNextDetailProduct{
+	width: 18%;
+	text-decoration: none;
+}
+
+.forTextDetailProduct{
+	padding-bottom: 5px;
+
+}
+
+.forIconDetailProduct{
+	padding-top: 5px;
+	padding-right: 10px;
+	font-size: 32px;
+	color: #0080ff;
 }
 
 /* css use ionicActionSheet for android design same ios */
