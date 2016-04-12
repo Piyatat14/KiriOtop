@@ -1,7 +1,7 @@
 angular.module('starter.userCtrl', [])
 
 
-.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, $timeout, Authen, urlService, $state, $ionicHistory) {
+.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, $timeout, Authen, Users, urlService, $state, $ionicHistory) {
 
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
@@ -38,7 +38,6 @@ angular.module('starter.userCtrl', [])
 
 	// Perform the login action when the user submits the login form
 	$scope.doLogin = function() {
-		console.log($scope.loginData);
 		$http
 		.post(urlService.getBaseUrl() + '/findUsers', $scope.loginData)
 		.success(function(response) {
@@ -48,13 +47,27 @@ angular.module('starter.userCtrl', [])
 					template: response
 				});
 			}else{
+				//login success Authen set user detail.
 				Authen.setUser({
 					userID : response[0].user_id,
 					email : response[0].email
 				});
 				$scope.dataUser = Authen.getUser();
+
+				//get profile_id each user.
+				$http.post(urlService.getBaseUrl() + '/findProfileUsers', $scope.dataUser)
+					.success(function(res) {
+						//if profile_id for user is have.But not have Users.getUserData equal undefined
+						if(res !== 'ERROR' && Users.getUserData() === undefined) {
+							//set cookie for user profile_id.
+							Users.setUserData({
+								profileID: res[0].profile_id
+							});
+						}
+					}
+				);
+
 				$scope.closeLogin();
-				console.log(Authen.getUser());
 				$state.go('app.product', {}, {reload:true});
 			}
 		}).error(function(err) {
@@ -104,12 +117,15 @@ angular.module('starter.userCtrl', [])
 	};
 })
 
-.controller('AddProfileCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, urlService, $ionicActionSheet) {
-
+.controller('AddProfileCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet) {
+	//this controller must login.
 	$ionicPlatform.ready(function() {
 
 		//object for Authen.
-		var userData = Authen.getUser();
+		var userDetail = Authen.getUser();
+
+		//object for user data.
+		var profileId = Users.getUserData();
 
 		//object for image.
 		$scope.images = { 
@@ -120,13 +136,17 @@ angular.module('starter.userCtrl', [])
 
 		//object for data user profile.
 		$scope.profileData = {
-			sell: 0
+			sell: 0,
+			imageName: '',
+			userID: ''
 		};
 
 		$scope.preAddDataProfile = function() {
 			//if image ready to uploads server.
 			if($scope.images.imageUri != '') {
 				upload($scope.images.imageUri, $scope.images.filename);
+			}else {
+				addDataProfile();
 			}
 		}
 
@@ -169,7 +189,7 @@ angular.module('starter.userCtrl', [])
 					$scope.profileData.imageName = res.response;
 					addDataProfile();
 				}, function(error) {
-					alert("An error has occurred: Code = " + error.code);
+					alert("ไม่สามารถทำการอัพโหลดรูปภาพของคุณได้");
 				    console.log("upload error source " + error.source);
 				    console.log("upload error target " + error.target);
 				}, options
@@ -234,13 +254,54 @@ angular.module('starter.userCtrl', [])
         }
 
         addDataProfile = function() {
-			console.log($scope.profileData.firstname);
-			console.log($scope.profileData.lastname);
-			console.log($scope.profileData.address);
-			console.log($scope.profileData.tel);
-			console.log($scope.profileData.sell);
-			console.log($scope.profileData.imageName);
-			console.log(userData.userID);
+
+        	//assign object to profileId. In case update data profile but no exit profile.html
+			profileId = Users.getUserData();
+			if(profileId !== undefined) {
+				console.log('now : ' + profileId.profileID);
+			}else {
+				console.log('now : ' + profileId);
+			}
+
+        	//userID must have.
+        	if(userDetail !== undefined) {
+        		//get userID save value to $scope.profileData.userID.
+        		$scope.profileData.userID = userDetail.userID;
+        	}
+
+        	//if profileId != undefined show that user needed update profile data.
+        	if(profileId !== undefined) {
+        		console.log('update');
+        		$scope.profileData.profileID = profileId.profileID;
+        		//update user profile data into database.
+        		$http.post(urlService.getBaseUrl() + '/updateProfileUsers', $scope.profileData)
+        		.success(function(response) {
+        			alert("อัพเดทข้อมูลสำเร็จ");
+        			console.log("response database : " + response);
+        		}).error(function(err) {
+        			console.log(err);
+        			alert("[ผิดพลาด] ไม่สามารถอัพเดทข้อมูลได้");
+        		})
+        	}else {
+        		console.log('insert');
+        		//save user profile data into database.
+	        	$http.post(urlService.getBaseUrl() + '/insertProfileUsers', $scope.profileData)
+	        	.success(function(response) {
+	        		//save cookie profile_id each user.
+	        		Users.setUserData({
+	        			profileID: response.profileID
+	        		});
+
+	        		alert("บันทึกข้อมูลสำเร็จ");
+	        		console.log("response database : " + response);
+	        	}).error(function(err) {
+	        		console.log(err);
+	        		alert("[ผิดพลาด] ไม่สามารถบันทึกข้อมูลได้");
+	        	});
+        	}
+
+        	
+
         }
 
 	});

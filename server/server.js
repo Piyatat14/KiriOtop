@@ -27,7 +27,6 @@ var allowCrossDomain = function(req, res, next) {
 app.use(allowCrossDomain);
 app.use('/', require('./routes/index'));
 
-
 app.set('port', process.env.PORT || 3000);
 app.listen(app.get('port'), function() {
 	// start the server
