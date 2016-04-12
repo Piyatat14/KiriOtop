@@ -2,9 +2,7 @@ angular.module('starter.services', ['ngCookies'])
 
 .service('urlService', function() {
 	this.getBaseUrl = function() {
-
-		return "http://127.0.1:3000";
-
+		return "http://192.168.1.15:3000";
 	};
 })
 
@@ -30,87 +28,23 @@ angular.module('starter.services', ['ngCookies'])
 	}
 })
 
-//save file to LocalStorage for get URi render show image.
-.factory('FileService', function() {
-	var images;
-	var IMAGE_STORAGE_KEY = 'images';
-
-	function getImage() {
-
-		var img = window.localStorage.getItem(IMAGE_STORAGE_KEY);
-
-		if(img) {
-			images = JSON.parse(img);
-		}else {
-			images = "";
-		}
-		console.log('getImage: '+images);
-		return images;
-	};
-
-	function addImage(img) {
-		images = img;
-		window.localStorage.setItem(IMAGE_STORAGE_KEY, JSON.stringify(images));
-	}
+//get needed user data.
+.factory('Users', function($cookieStore) {
+	//key in users: profileID, firstname, lastname, address, tell, image, sell
+	var users = $cookieStore.get('user');
 
 	return {
-		storeImage: addImage,
-		images: getImage
+		setUserData: function(data) {
+			users = data;
+			$cookieStore.put('user', users);
+		},
+		getUserData: function() {
+			return users;
+		},
+		removeUserData: function() {
+			$cookieStore.remove('user');
+			users = null;
+		}
 	}
 })
 
-//service of images
-.factory('ImageService', function($cordovaCamera, $q, $cordovaFile, FileService) {
-	function optionsForType(type) {
-		var source;
-
-		switch (type) {
-			case 0:
-				source = Camera.PictureSourceType.CAMERA;
-				break;
-			case 1:
-				source = Camera.PictureSourceType.PHOTOLIBRARY;
-				break;
-		}
-
-		return {
-			quality: 80,
-			destinationType: Camera.DestinationType.FILE_URI,
-			sourceType: source,
-			allowEdit: false,
-			encodingType: Camera.EncodingType.JPEG,
-			popoverOptions: CameraPopoverOptions,
-			saveToPhotoAlbum: false
-		};
-	};
-
-	function saveMedia(type) {
-		//working on background
-		return $q(function(reslove, reject) {
-			var options = optionsForType(type);
-
-			$cordovaCamera.getPicture(options).then(function(imageUrl) {
-				console.log(imageUrl);
-				var name = imageUrl.substr(imageUrl.lastIndexOf('/') + 1);
-				var namePath = imageUrl.substr(0, imageUrl.lastIndexOf('/') + 1);
-				var newName = name;
-				console.log('new name: '+newName);
-				$cordovaFileTransfer.download(fileUri, cordova.file.dataDirectory + 'my-image.jpg', {}, true)
-					.then(function(fileEntry)
-	                    {
-	                    	console.log('download working.');
-	                        $scope.images.imageUri = fileEntry.nativeURL;
-	                    },
-	                    function (error)
-	                    {
-	                        console.log('Error: '+error);
-	                    }
-	                );
-			});
-		})
-	}
-
-	return {
-			handleMediaDialog: saveMedia
-	}
-});

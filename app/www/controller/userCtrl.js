@@ -1,7 +1,7 @@
 angular.module('starter.userCtrl', [])
 
 
-.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, $timeout, Authen, urlService, $state, $ionicHistory) {
+.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, $timeout, Authen, Users, urlService, $state, $ionicHistory) {
 
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
@@ -38,7 +38,6 @@ angular.module('starter.userCtrl', [])
 
 	// Perform the login action when the user submits the login form
 	$scope.doLogin = function() {
-		console.log($scope.loginData);
 		$http
 		.post(urlService.getBaseUrl() + '/findUsers', $scope.loginData)
 		.success(function(response) {
@@ -48,13 +47,33 @@ angular.module('starter.userCtrl', [])
 					template: response
 				});
 			}else{
+				//login success Authen set user detail.
 				Authen.setUser({
 					userID : response[0].user_id,
 					email : response[0].email
 				});
 				$scope.dataUser = Authen.getUser();
+
+				//get profile_id each user.
+				$http.post(urlService.getBaseUrl() + '/findProfileUsers', $scope.dataUser)
+					.success(function(res) {
+						//if profile_id for user is have.But not have Users.getUserData equal undefined
+						if(res !== 'ERROR' && Users.getUserData() === undefined) {
+							//set cookie for user about profile data.
+							Users.setUserData({
+								profileID: res[0].profile_id,
+								firstname: res[0].first_name,
+								lastname: res[0].last_name,
+								address: res[0].address,
+								tel: res[0].tel_no,
+								image: res[0].user_image,
+								sell: res[0].can_sell
+							});
+						}
+					}
+				);
+
 				$scope.closeLogin();
-				console.log(Authen.getUser());
 				$state.go('app.product', {}, {reload:true});
 			}
 		}).error(function(err) {
@@ -104,29 +123,51 @@ angular.module('starter.userCtrl', [])
 	};
 })
 
-.controller('AddProfileCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, urlService, $ionicActionSheet) {
-
+.controller('ProfileCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet) {
+	//this controller must login.
 	$ionicPlatform.ready(function() {
 
 		//object for Authen.
-		var userData = Authen.getUser();
+		var userDetail = Authen.getUser();
+
+		//object for user data after view call this controller.
+		var profileUser = Users.getUserData();
 
 		//object for image.
 		$scope.images = { 
 			imageUri: '', 
-			filename: '',
-			extension: ''
+			filename: ''
 		};
 
 		//object for data user profile.
 		$scope.profileData = {
-			sell: 0
+			sell: 0,
+			firstname: '',
+			imageName: '',
+			userID: ''
 		};
+
+
+		//if profileUser is have in database. get data show on profile view.
+		if(profileUser !== undefined) {
+			console.log("OK JA");
+			console.log(profileUser);
+			$scope.profileData.firstname = profileUser.firstname;
+			$scope.profileData.lastname = profileUser.lastname;
+			$scope.profileData.address = profileUser.address;
+			$scope.profileData.tel = profileUser.tel;
+			$scope.profileData.sell = profileUser.sell;
+			console.log($scope.profileData.firstname);
+			$scope.images.imageUri = urlService.getBaseUrl() + /img/ + profileUser.image;
+			$scope.images.filename = profileUser.image;
+		}
 
 		$scope.preAddDataProfile = function() {
 			//if image ready to uploads server.
 			if($scope.images.imageUri != '') {
 				upload($scope.images.imageUri, $scope.images.filename);
+			}else {
+				addDataProfile();
 			}
 		}
 
@@ -154,10 +195,10 @@ angular.module('starter.userCtrl', [])
 		upload = function(imageURI, filename) {
 			var options = new FileUploadOptions();
 			options.fileKey = 'image';
-			options.fileName = filename;
+			options.fileName = $scope.images.filename;
 			options.mimeType = 'image/jpg';
 			options.chunkedMode = false;
-			options.params = {'directory' : 'uploads/img', 'fileName' : filename, 'userID' : userData.userID};
+			options.params = {'directory' : 'uploads/img', 'fileName' : $scope.images.filename, 'userID' : userDetail.userID};
 			
 			var ft = new FileTransfer();
 			ft.upload(imageURI, encodeURI(urlService.getBaseUrl() + '/images'),
@@ -169,7 +210,7 @@ angular.module('starter.userCtrl', [])
 					$scope.profileData.imageName = res.response;
 					addDataProfile();
 				}, function(error) {
-					alert("An error has occurred: Code = " + error.code);
+					alert("ไม่สามารถทำการอัพโหลดรูปภาพของคุณได้");
 				    console.log("upload error source " + error.source);
 				    console.log("upload error target " + error.target);
 				}, options
@@ -234,13 +275,53 @@ angular.module('starter.userCtrl', [])
         }
 
         addDataProfile = function() {
-			console.log($scope.profileData.firstname);
-			console.log($scope.profileData.lastname);
-			console.log($scope.profileData.address);
-			console.log($scope.profileData.tel);
-			console.log($scope.profileData.sell);
-			console.log($scope.profileData.imageName);
-			console.log(userData.userID);
+        	//assign object to profileUser. In case update data profile but no exit profile.html
+			profileUser = Users.getUserData();
+			if(profileUser !== undefined) {
+				console.log('now : ' + profileUser.profileID);
+			}else {
+				console.log('now : ' + profileUser);
+			}
+
+        	//userID must have.
+        	if(userDetail !== undefined) {
+        		//get userID save value to $scope.profileData.userID.
+        		$scope.profileData.userID = userDetail.userID;
+        	}
+
+        	//if profileUser != undefined show that user needed update profile data.
+        	if(profileUser !== undefined) {
+        		console.log('update');
+        		$scope.profileData.profileID = profileUser.profileID;
+        		//update user profile data into database.
+        		$http.post(urlService.getBaseUrl() + '/updateProfileUsers', $scope.profileData)
+        		.success(function(response) {
+        			alert("อัพเดทข้อมูลสำเร็จ");
+        			console.log("response database : " + response);
+        		}).error(function(err) {
+        			console.log(err);
+        			alert("[ผิดพลาด] ไม่สามารถอัพเดทข้อมูลได้");
+        		})
+        	}else {
+        		console.log('insert');
+        		//save user profile data into database.
+	        	$http.post(urlService.getBaseUrl() + '/insertProfileUsers', $scope.profileData)
+	        	.success(function(response) {
+	        		//save cookie profile_id each user.
+	        		Users.setUserData({
+	        			profileID: response.profileID
+	        		});
+
+	        		alert("บันทึกข้อมูลสำเร็จ");
+	        		console.log("response database : " + response);
+	        	}).error(function(err) {
+	        		console.log(err);
+	        		alert("[ผิดพลาด] ไม่สามารถบันทึกข้อมูลได้");
+	        	});
+        	}
+
+        	
+
         }
 
 	});

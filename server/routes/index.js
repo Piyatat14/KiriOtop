@@ -42,12 +42,18 @@ router.post('/insertOrderBuyers', products.insertOrderBuyer);
 
 //Get User
 router.post('/findUsers', users.findUser);
+//Get Profile User with data json.
+router.post('/findProfileUsers', users.findProfileUser);
 //Check Email Register
 router.post('/checkRegister', users.checkRegis);
 //Insert Register
 router.post('/insertRegister', users.insertRegis);
 //Upload image to server
 router.post('/images', users.addImage);
+//Insert user profile data.
+router.post('/insertProfileUsers', users.insertProfileUser);
+//Update user profile data.
+router.post('/updateProfileUsers', users.updateProfileUser);
 
 //Get Banks
 router.get('/getBanks', bank.getBank);
