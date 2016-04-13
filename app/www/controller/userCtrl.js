@@ -83,6 +83,7 @@ angular.module('starter.userCtrl', [])
 
 	$scope.logout = function() {
 		Authen.logout();
+		Users.removeUserData();
 		$state.go('app.product', {}, {reload:true});
 		$scope.dataUser = Authen.getUser();
 		console.log(Authen.getUser());
@@ -123,7 +124,10 @@ angular.module('starter.userCtrl', [])
 	};
 })
 
-.controller('ProfileCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet) {
+.controller('ProfileCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory) {
+	$ionicHistory.nextViewOptions({
+		disableBack: true
+	});
 	//this controller must login.
 	$ionicPlatform.ready(function() {
 

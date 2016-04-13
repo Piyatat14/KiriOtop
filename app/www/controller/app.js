@@ -98,7 +98,28 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     views: {
       'menuContent': {
         templateUrl: 'templates/userGroup.html',
-        controller: 'showUserGroupCtrl'
+        controller: 'showUserGroupCtrl',
+        resolve:{
+          "check": 
+            function(Users, $location, $ionicPopup){
+              var profileUser = Users.getUserData();
+              if(profileUser == null || profileUser == undefined){
+                var confirmPopup = $ionicPopup.confirm({
+                  title: 'ไม่มีสิทธิการเข้าถึง',
+                  template: 'คุณต้องลงทะเบียนข้อมูลส่วนตัวก่อนเพื่อเข้าถึง',
+                  buttons: [
+                    {
+                      text: 'ตกลง',
+                      type: 'button-balanced',
+                      onTap: function(e){
+                       $location.path('/app/profile');
+                      }
+                    }
+                  ]
+                });
+              }
+            }
+        }
       }
     }
   })

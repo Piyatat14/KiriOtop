@@ -1,42 +1,26 @@
 angular.module('starter.userGroupCtrl', [])
 
-
-.controller('modalImageView', function($scope, $http, $ionicModal) {
-	$scope.showModalImage = function(index) {
-		$scope.activeSlide = index;
-		$scope.showModal('templates/showImageFull.html');
+.controller('showUserGroupCtrl', function($scope, $http, Authen, Users, urlService, $ionicHistory) {
+	var profileData = {};
+	profileData = Users.getUserData();
+	console.log(profileData);
+	if(profileData == undefined && profileData == null){
+		console.log('5555555');
+		
 	}
- 
-	$scope.showModal = function(templateUrl) {
-		$ionicModal.fromTemplateUrl(templateUrl, {
-			scope: $scope,
-			animation: 'slide-in-up'
-		}).then(function(modal) {
-			$scope.modal = modal;
-			$scope.modal.show();
-		});
-	}
- 
-	// Close the modal
-	$scope.closeModal = function() {
-		$scope.modal.hide();
-		$scope.modal.remove()
-	};
-})
-
-.controller('showUserGroupCtrl', function($scope, $http, Authen, urlService) {
+	console.log(Users.getUserData());
 	$http
-		.get(urlService.getBaseUrl() + '/getUserGroups', {params: {pId: '1'}})
-		.success(function(response) {
-			$scope.userGroupData = response;
-			for(var i=0; i<response.length; i++){
-				if(response[i].image == null){
-					$scope.userGroupData[i].image = urlService.getBaseUrl() + 'Workspace/KiriOtop/Server/uploads/img/null.png'
-				}else{
-					$scope.userGroupData[i].image = urlService.getBaseUrl() + 'Workspace/KiriOtop/Server/uploads/img/' + response[i].image;
-				}
+	.get(urlService.getBaseUrl() + '/getUserGroups', {params: {pId: '1'}})
+	.success(function(response) {
+		$scope.userGroupData = response;
+		for(var i=0; i<response.length; i++){
+			if(response[i].image == null){
+				$scope.userGroupData[i].image = urlService.getBaseUrl() + 'Workspace/KiriOtop/Server/uploads/img/null.png'
+			}else{
+				$scope.userGroupData[i].image = urlService.getBaseUrl() + 'Workspace/KiriOtop/Server/uploads/img/' + response[i].image;
 			}
-		})
+		}
+	})
 })
 
 .controller('ImageUserGroupCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $state, $ionicPlatform, $cordovaFile, ImageService, FileService, urlService, $ionicActionSheet, Authen) {

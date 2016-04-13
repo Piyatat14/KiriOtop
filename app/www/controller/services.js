@@ -2,7 +2,7 @@ angular.module('starter.services', ['ngCookies'])
 
 .service('urlService', function() {
 	this.getBaseUrl = function() {
-		return "http://192.168.1.15:3000";
+		return "http://127.0.0.1:3000";
 	};
 })
 
@@ -43,8 +43,7 @@ angular.module('starter.services', ['ngCookies'])
 		},
 		removeUserData: function() {
 			$cookieStore.remove('user');
-			users = null;
+			users = undefined;
 		}
 	}
 })
-
