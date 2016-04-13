@@ -101,7 +101,7 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
         controller: 'showUserGroupCtrl',
         resolve:{
           "check": 
-            function(Users, $location, $ionicPopup){
+            function(Users, $location, $ionicPopup, $ionicHistory){
               var profileUser = Users.getUserData();
               if(profileUser == null || profileUser == undefined){
                 var confirmPopup = $ionicPopup.confirm({
@@ -112,7 +112,10 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
                       text: 'ตกลง',
                       type: 'button-balanced',
                       onTap: function(e){
-                       $location.path('/app/profile');
+                        $ionicHistory.nextViewOptions({
+                          disableBack: true
+                        });
+                        $location.path('/app/profile');
                       }
                     }
                   ]

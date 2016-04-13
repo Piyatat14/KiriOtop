@@ -1,6 +1,6 @@
 angular.module('starter.userGroupCtrl', [])
 
-.controller('showUserGroupCtrl', function($scope, $http, Authen, Users, urlService, $ionicHistory) {
+.controller('showUserGroupCtrl', function($scope, $http, Authen, Users, urlService) {
 	var profileData = {};
 	profileData = Users.getUserData();
 	console.log(profileData);
