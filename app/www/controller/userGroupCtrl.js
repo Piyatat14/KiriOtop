@@ -10,8 +10,6 @@ angular.module('starter.userGroupCtrl', [])
 	}else{
 		idProfile = profileData.profileID;
 	}
-	console.log(profileData);
-	console.log(Users.getUserData());
 	$http
 	.get(urlService.getBaseUrl() + '/getUserGroups', {params: {pId: idProfile}})
 	.success(function(response) {
@@ -52,16 +50,12 @@ angular.module('starter.userGroupCtrl', [])
 		$scope.addMedia = function() {
 			$scope.hideSheet = $ionicActionSheet.show({
 				buttons: [
-					{text: 'Take Photo'},
 					{text: 'Photo from library'}
 				],
 				titleText: 'Add images',
 				cancelText: 'Cancel',
 				buttonClicked: function(index) {
 					if(index == 0) {
-						$scope.hideSheet();
-						takePicture();
-					}else if(index == 1) {
 						$scope.hideSheet();
 						selectImage();
 					}
@@ -97,25 +91,6 @@ angular.module('starter.userGroupCtrl', [])
 				}, options
 			);
 		};
-
-		//function take picture.
-		takePicture = function () {
-            var options = {
-                quality: 45,
-                targetWidth: 1000,
-                targetHeight: 1000,
-                correctOrientation: true,
-                destinationType: Camera.DestinationType.FILE_URI,
-                encodingType: Camera.EncodingType.JPEG,
-                sourceType: Camera.PictureSourceType.CAMERA,
-            };
-
-            navigator.camera.getPicture(function (imageURI) {
-            	dowloadImgIntoPackage(imageURI);
-            }, function(error) {
-            	console.log(error);
-            }, options);
-        };
 
         selectImage = function() {
         	var options = {
@@ -236,8 +211,16 @@ angular.module('starter.userGroupCtrl', [])
 			console.log($scope.images);
 			if($scope.images.length > 0) {
 				for(var i=0; i<$scope.images.length; i++){
-					console.log($scope.images[i].filename);
-					upload($scope.images[i].imageUri, $scope.images[i].filename);
+					if($scope.images[i].group_image_id == undefined){
+						upload($scope.images[i].imageUri, $scope.images[i].filename);
+					}else{
+						$scope.realImageName.push({
+							realNameImg: $scope.images[i].filename
+						});
+						if($scope.images.length == $scope.realImageName.length){
+							updateUserGroup();
+						}
+					}
 				}
 			}else {
 				updateUserGroup();
@@ -247,16 +230,12 @@ angular.module('starter.userGroupCtrl', [])
 		$scope.addMedia = function() {
 			$scope.hideSheet = $ionicActionSheet.show({
 				buttons: [
-					{text: 'Take Photo'},
 					{text: 'Photo from library'}
 				],
 				titleText: 'Add images',
 				cancelText: 'Cancel',
 				buttonClicked: function(index) {
 					if(index == 0) {
-						$scope.hideSheet();
-						takePicture();
-					}else if(index == 1) {
 						$scope.hideSheet();
 						selectImage();
 					}
@@ -293,25 +272,6 @@ angular.module('starter.userGroupCtrl', [])
 			);
 		};
 
-		//function take picture.
-		takePicture = function () {
-            var options = {
-                quality: 45,
-                targetWidth: 1000,
-                targetHeight: 1000,
-                correctOrientation: true,
-                destinationType: Camera.DestinationType.FILE_URI,
-                encodingType: Camera.EncodingType.JPEG,
-                sourceType: Camera.PictureSourceType.CAMERA,
-            };
-
-            navigator.camera.getPicture(function (imageURI) {
-            	dowloadImgIntoPackage(imageURI);
-            }, function(error) {
-            	console.log(error);
-            }, options);
-        };
-
         selectImage = function() {
         	var options = {
                 quality: 50,
@@ -344,7 +304,6 @@ angular.module('starter.userGroupCtrl', [])
 						imageUri: fileEntry.nativeURL,
 						filename: filename
 					});
-					console.log($scope.images);
 					$scope.imgLength = $scope.images.length;
                     // $scope.images.imageUri = fileEntry.nativeURL;
                     // console.log('THEN: ' + $scope.images.imageUri);
@@ -370,31 +329,31 @@ angular.module('starter.userGroupCtrl', [])
 
 
         updateUserGroup = function(){
-        $scope.editGroupData.idProfile = profileUser.profileID;
-		$http
-		.delete(urlService.getBaseUrl() + '/editAllDeleteImages', {params: {group_id: $scope.editGroupData.idGroup}})
-		.success(function(response) {
-			var forImageData = {};
+	        $scope.editGroupData.idProfile = profileUser.profileID;
 			$http
-				.put(urlService.getBaseUrl() + '/updateUserGroups', $scope.editGroupData)
-				.success(function(response) {
-					if($scope.images.imageUri != null){
-						for(var i=0; i<$scope.images.imageUri.length; i++){
-							forImageData = {
-								group_id: $scope.editGroupData.idGroup,
-								image: $scope.realImageName[i].realNameImg
+			.delete(urlService.getBaseUrl() + '/editAllDeleteImages', {params: {group_id: $scope.editGroupData.idGroup}})
+			.success(function(response) {
+				var forImageData = {};
+				$http
+					.put(urlService.getBaseUrl() + '/updateUserGroups', $scope.editGroupData)
+					.success(function(response) {
+						if($scope.images.length > 0){
+							for(var i=0; i<$scope.images.length; i++){
+								forImageData = {
+									group_id: $scope.editGroupData.idGroup,
+									image: $scope.realImageName[i].realNameImg
+								}
+								$http
+									.post(urlService.getBaseUrl() + '/insertImageUserGroups', forImageData)
+									.success(function(response) {
+										$state.go('app.userGroup', {}, {reload:true});
+									})
 							}
-							$http
-								.post(urlService.getBaseUrl() + '/insertImageUserGroups', forImageData)
-								.success(function(response) {
-									$state.go('app.userGroup', {}, {reload:true});
-								})
+						}else{
+							$state.go('app.userGroup', {}, {reload:true});
 						}
-					}else{
-						$state.go('app.userGroup', {}, {reload:true});
-					}
-				})
-		})
+					})
+			})
 	};
 	});
 })

@@ -3,7 +3,7 @@
 		<ion-list>
 			<li class="item" ng-if="productData == ''" style="text-align:center;">ไม่มีรายการสินค้า</li>
 			<a class="item item-thumbnail-left" href="#/app/editProducts/{{products.product_id}}" ng-repeat="products in productData">
-				<img src="img/ionic.png">
+				<img src="{{products.image}}">
 				<h2>{{products.product_name}}</h2>
 				<p>จำนวน : {{products.product_amount}}</p>
 				<p>{{products.product_rating}}<i class="icon ion-ios-star" style="color:yellow; padding-right:10px;"></i>{{products.product_view}}<i class="icon ion-eye"></i></p>

@@ -95,7 +95,7 @@ exports.getDetailProduct = function(req, res, next) {
 };
 
 exports.getProduct = function(req, res, next) {
-	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_price, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.profile_id=?";
+	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_price, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.profile_id=? GROUP BY product.product_id";
 	connection.query(strQuery, [req.query.pId], function(err, rows){
 		if(err) {
 			console.log(err);
@@ -109,7 +109,7 @@ exports.getProduct = function(req, res, next) {
 
 exports.insertProduct = function(req, res, next) {
 	var productData = {
-		profile_id : '1',
+		profile_id : req.body.idProfile,
 		group_id : req.body.idGroup,
 		product_user_id : req.body.productId,
 		product_name : req.body.productName,
@@ -162,7 +162,7 @@ exports.editProduct = function(req, res) {
 
 exports.editProductImageDelete = function(req, res) {
 	strQuery = "DELETE FROM product_image WHERE product_id=?";
-	connection.query(strQuery, [req.query.product_id], function(err, rows){
+	connection.query(strQuery, [req.query.pId], function(err, rows){
 		if(err) {
 			console.log(err);
 			throw err;
@@ -173,9 +173,8 @@ exports.editProductImageDelete = function(req, res) {
 };
 
 exports.updateProduct = function(req, res) {
-	console.log(req.body);
 	var updateProductData = {
-		profile_id : '1',
+		profile_id : req.body.idProfile,
 		group_id : req.body.idGroup,
 		product_user_id : req.body.productId,
 		product_name : req.body.productName,

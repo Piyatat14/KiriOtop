@@ -181,42 +181,63 @@ angular.module('starter.productCtrl', [])
 
 	})
 
-	.controller('showProductCtrl', function($http, $scope, $stateParams, urlService, Authen) {
-
-		$scope.getDataProducts = function() {
-			$http
-				.get(urlService.getBaseUrl() + '/getProducts', {params: {pId: '1'}})
-				.success(function(response) {
-					$scope.productData = response;
-				})
+	.controller('showProductCtrl', function($http, $scope, $stateParams, urlService, Authen, Users) {
+		var profileData = {};
+		var idProfile;
+		profileData.profileID = '';
+		profileData = Users.getUserData();
+		if(profileData == undefined){
+			idProfile = '0';
+		}else{
+			idProfile = profileData.profileID;
 		}
-		$scope.getDataProducts();
+		$http
+			.get(urlService.getBaseUrl() + '/getProducts', {params: {pId: idProfile}})
+			.success(function(response) {
+				$scope.productData = response;
+				for(var i=0; i<response.length; i++){
+					if(response[i].image == null){
+						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + 'nullProduct.jpg';
+					}else{
+						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
+					}
+				}
+			})
 	})
 
-	.controller('addProductCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $state, $ionicPlatform, $cordovaFile, ImageService, FileService, urlService, $ionicActionSheet, Authen, $filter) {
+	.controller('addProductCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $filter) {
 
 		var userID = Authen.getUser().userID;
+		//object for user data after view call this controller.
+		var profileUser = Users.getUserData();
 
 		$scope.products = {};
 		$scope.products.categoryText = 'อาหาร';
 
 		$ionicPlatform.ready(function() {
-			$scope.images = { 
-				imageUri: [], 
-				filename: '',
-				extension: ''
-			};
+			$scope.images = [];
+			$scope.realImageName = [];
 
 			$http
-				.get(urlService.getBaseUrl() + '/getUserGroupForProducts', {params: {pId: '1'}})
+				.get(urlService.getBaseUrl() + '/getUserGroupForProducts', {params: {pId: profileUser.profileID}})
 				.success(function(response) {
 					$scope.userGroupData = response;
 				})
 
+			$scope.preInsertProduct = function() {
+				//if image ready to uploads server.
+				if($scope.images.length > 0) {
+					for(var i=0; i<$scope.images.length; i++){
+						upload($scope.images[i].imageUri, $scope.images[i].filename);
+					}
+				}else {
+					insertProducts();
+				}
+			};
+
 			$scope.addMedia = function() {
 				$scope.hideSheet = $ionicActionSheet.show({
 					buttons: [
-						{text: 'Take Photo'},
 						{text: 'Photo from library'}
 					],
 					titleText: 'Add images',
@@ -224,63 +245,9 @@ angular.module('starter.productCtrl', [])
 					buttonClicked: function(index) {
 						if(index == 0) {
 							$scope.hideSheet();
-							console.log("Take Photo");
-							takePicture();
-						}else if(index == 1) {
-							$scope.hideSheet();
-			                var options = {
-			                    quality: 50,
-			                    destinationType: Camera.DestinationType.FILE_URI,
-			                    sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
-			                    encodingType: Camera.EncodingType.JPEG,
-			                    targetWidth: 1000,
-			                    targetHeight: 1000,
-			                    saveToPhotoAlbum: false
-			                };
-
-			                $cordovaCamera.getPicture(options).then(function(imageUri) {
-			                	console.log('imageUri: ' + imageUri);
-			                	
-			                	//substring for choosed image in gallary after file name is xxxx.jpg?42341
-			                	var filename = imageUri.substring(imageUri.lastIndexOf('/') + 1, imageUri.lastIndexOf('?'));
-			                	
-			                	var extension = filename.substr(filename.lastIndexOf('.') + 1);
-			                	$scope.images.extension = extension;
-			                	//$scope.images.filename = filename;
-			                	console.log('extension: ' + $scope.images.extension);
-			                	//console.log('Filename: ' + $scope.images.filename);   
-		                        $cordovaFileTransfer.download(imageUri, cordova.file.dataDirectory + filename, {}, true)
-		                        .then(function(fileEntry) {
-		                                $scope.images.imageUri.push({
-		                                	path: fileEntry.nativeURL,
-		                                	fileName: userID + '-' + filename + '-' + Date.now()
-		                                });
-		                                $scope.imgLength = $scope.images.imageUri.length;
-		                                //upload to server.
-		                				      
-		                                console.log('THEN: ' + $scope.images.imageUri);
-		                            }, function (error) {
-		                                console.log(error);
-		                            }
-		                        );
-		                    }, function(error) {
-		                        console.log(error);
-		                    });
+							selectImage();
 						}
 					}
-				});
-			}
-
-			$scope.deletePicture = function(image){
-				var hideSheet = $ionicActionSheet.show({
-					titleText: 'Picture',
-				    destructiveText: 'Delete',
-				    cancelText: 'Cancel',
-				    destructiveButtonClicked: function() {
-						var index = $scope.images.imageUri.indexOf(image);
-						$scope.images.imageUri.splice(index, 1);
-						return true;
-				    }
 				});
 			};
 
@@ -291,95 +258,132 @@ angular.module('starter.productCtrl', [])
 				options.fileName = filename;
 				options.mimeType = 'image/jpg';
 				options.chunkedMode = false;
-				options.params = {'directory' : 'uploads/img', 'fileName' : filename};
-				
+				options.params = {'directory' : 'uploads/img', 'fileName' : filename, 'userID' : userID};
 				var ft = new FileTransfer();
-				ft.upload(imageURI, encodeURI(urlService.getBaseUrl() + '/imageUserGroups'),
-
-				function(res) {
-					console.log("Code = " + res.responseCode);
-					console.log("Response = " + res.response);
-					console.log("Sent = " + res.bytesSent);
-				}, function(error) {
-					alert("An error has occurred: Code = " + error.code);
-				    console.log("upload error source " + error.source);
-				    console.log("upload error target " + error.target);
-				}, options)
+				ft.upload(imageURI, encodeURI(urlService.getBaseUrl() + '/images'),
+					function(res) {
+						//response filename image from destination uploads/img folder at server.
+						console.log("Code = " + res.responseCode);
+						console.log("Response = " + res.response);
+						console.log("Sent = " + res.bytesSent);
+						$scope.realImageName.push({
+							realNameImg: res.response
+						});
+						if($scope.images.length == $scope.realImageName.length){
+							insertProducts();
+						}
+					}, function(error) {
+						alert("ไม่สามารถทำการอัพโหลดรูปภาพของคุณได้");
+					    console.log("upload error source " + error.source);
+					    console.log("upload error target " + error.target);
+					}, options
+				);
 			};
 
-			takePicture = function (e) {
-	            var options = {
-	                quality: 45,
+	        selectImage = function() {
+	        	var options = {
+	                quality: 50,
+	                destinationType: Camera.DestinationType.FILE_URI,
+	                sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+	                encodingType: Camera.EncodingType.JPEG,
 	                targetWidth: 1000,
 	                targetHeight: 1000,
-	                destinationType: Camera.DestinationType.FILE_URI,
-	                encodingType: Camera.EncodingType.JPEG,
-	                sourceType: Camera.PictureSourceType.CAMERA
+	                saveToPhotoAlbum: false
 	            };
 
-	            navigator.camera.getPicture(
-	                function (imageURI) {
-	                    console.log(imageURI);
-	                    upload(imageURI);
-	                },
-	                function (message) {
-	                    // We typically get here because the use canceled the photo operation. Fail silently.
-	                }, options);
-
-	            return false;
-
+	            $cordovaCamera.getPicture(options).then(function(imageUri) {
+	            	dowloadImgIntoPackage(imageUri); 
+	            }, function(error) {
+	                console.log(error);
+	            });
 	        };
-		});
-		
-		$scope.insertProducts = function(){
-			$scope.products.dateRelease = $filter('date')(new Date(), 'yyyy-MM-dd');
-			$http
-			.post(urlService.getBaseUrl() + '/insertProducts', $scope.products)
-			.success(function(response) {
-				var forImageData = {};
-				if($scope.images.imageUri != null){
-					for(var i=0; i<$scope.images.imageUri.length; i++){
-						forImageData = {
-							group_id: response.insertId,
-							image: $scope.images.imageUri[i].fileName
-						}
-						$http
-						.post(urlService.getBaseUrl() + '/insertImageProducts', forImageData)
-						.success(function(response) {
 
-						})
-						upload($scope.images.imageUri[i].path, $scope.images.imageUri[i].fileName);
-					}
-				}
-				$state.go('app.showProducts', {}, {reload:true});
-			})
-		};
-	})
+	        dowloadImgIntoPackage = function(imageUriSource) {
+	        	console.log('imageUri: ' + imageUriSource);
+	        	//substring for choosed image in gallary after file name is xxxx(.jpg)
+	        	var filename = imageUriSource.substring(imageUriSource.lastIndexOf('/') + 1, imageUriSource.lastIndexOf('.'));
+	        	//$scope.images.filename = filename;
+	        	//console.log('Filename: ' + $scope.images.filename);
+	        	//dowload image from device to app package because URI of image in device not working in preview.
+	            $cordovaFileTransfer.download(imageUriSource, cordova.file.dataDirectory + filename, {}, true)
+	                .then(function(fileEntry) {
+	            		//get nativeURL into $scope.images.imageUri after dowload image from device to application package.
+	            		$scope.images.push({
+							imageUri: fileEntry.nativeURL,
+							filename: filename
+						});
+						console.log($scope.images);
+						$scope.imgLength = $scope.images.length;
+	                    // $scope.images.imageUri = fileEntry.nativeURL;
+	                    // console.log('THEN: ' + $scope.images.imageUri);
+	                }, function (error) {
+	                    console.log(error);
+	                }
+	            );
+	        };
 
-	.controller('editProductCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $state, $ionicPlatform, $cordovaFile, ImageService, FileService, urlService, $ionicActionSheet, $stateParams, Authen, urlService) {
-		
-		var userID = Authen.getUser().userID;
-
-		$scope.products = {};
-		$scope.imgGroupData = {};
-
-		$ionicPlatform.ready(function() {
-			$scope.images = { 
-				imageUri: [], 
-				filename: '',
-				extension: ''
+			$scope.deletePicture = function(image){
+				var hideSheet = $ionicActionSheet.show({
+					titleText: 'Picture',
+				    destructiveText: 'Delete',
+				    cancelText: 'Cancel',
+				    destructiveButtonClicked: function() {
+						var index = $scope.images.indexOf(image);
+						$scope.images.splice(index, 1);
+						$scope.imgLength = $scope.images.length;
+						return true;
+				    }
+				});
 			};
 
+			insertProducts = function(){
+				$scope.products.dateRelease = $filter('date')(new Date(), 'yyyy-MM-dd');
+				$scope.products.idProfile = profileUser.profileID;
+				$http
+				.post(urlService.getBaseUrl() + '/insertProducts', $scope.products)
+				.success(function(response) {
+					var forImageData = {};
+					if($scope.images.length > 0){
+						for(var i=0; i<$scope.images.length; i++){
+							forImageData = {
+								group_id: response.insertId,
+								image: $scope.realImageName[i].realNameImg
+							}
+							$http
+							.post(urlService.getBaseUrl() + '/insertImageProducts', forImageData)
+							.success(function(response) {
+								$state.go('app.showProducts', {}, {reload:true});
+							})
+						}
+					}else{
+						$state.go('app.showProducts', {}, {reload:true});
+					}
+				})
+			};
+		});
+	})
+
+	.controller('editProductCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $stateParams) {
+		
+		var userID = Authen.getUser().userID;
+		//object for user data after view call this controller.
+		var profileUser = Users.getUserData();
+
+		$scope.products = {};
+
+		$ionicPlatform.ready(function() {
+			$scope.images = [];
+			$scope.realImageName = [];
+
 			$http
-				.get(urlService.getBaseUrl() + '/getUserGroupForProducts', {params: {pId: '1'}})
+				.get(urlService.getBaseUrl() + '/getUserGroupForProducts', {params: {pId: profileUser.profileID}})
 				.success(function(response) {
 					$scope.userGroupData = response;
 				})
 			
 			$http
-				.get(urlService.getBaseUrl() + '/editProducts', {params: {pId: '1', productId: $stateParams.productId}})
+				.get(urlService.getBaseUrl() + '/editProducts', {params: {pId: profileUser.profileID, productId: $stateParams.productId}})
 				.success(function(response) {
-					console.log(response);
 					$scope.products.primaryProduct = response[0].product_id;
 					$scope.products.productId = response[0].product_user_id;
 					$scope.products.productName = response[0].product_name;
@@ -390,18 +394,38 @@ angular.module('starter.productCtrl', [])
 					$scope.imgLength = response.length;
 					for(var i=0; i<$scope.imgLength; i++){
 						if(response[i].image != null){
-							$scope.images.imageUri.push({
+							$scope.images.push({
 								product_id: response[i].product_id,
-			                	fileName: response[i].image
+								imageUri: urlService.getBaseUrl() + /img/ + response[i].image,
+			                	filename: response[i].image
 			                });
 						}
 					}
 				})
 
+			$scope.preUpdateProduct = function() {
+				//if image ready to uploads server.
+				if($scope.images.length > 0) {
+					for(var i=0; i<$scope.images.length; i++){
+						if($scope.images[i].product_id == undefined){
+							upload($scope.images[i].imageUri, $scope.images[i].filename);
+						}else{
+							$scope.realImageName.push({
+								realNameImg: $scope.images[i].filename
+							});
+							if($scope.images.length == $scope.realImageName.length){
+								updateProduct();
+							}
+						}
+					}
+				}else {
+					updateProduct();
+				}
+			};
+
 			$scope.addMedia = function() {
 				$scope.hideSheet = $ionicActionSheet.show({
 					buttons: [
-						{text: 'Take Photo'},
 						{text: 'Photo from library'}
 					],
 					titleText: 'Add images',
@@ -409,63 +433,9 @@ angular.module('starter.productCtrl', [])
 					buttonClicked: function(index) {
 						if(index == 0) {
 							$scope.hideSheet();
-							console.log("Take Photo");
-							takePicture();
-						}else if(index == 1) {
-							$scope.hideSheet();
-			                var options = {
-			                    quality: 50,
-			                    destinationType: Camera.DestinationType.FILE_URI,
-			                    sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
-			                    encodingType: Camera.EncodingType.JPEG,
-			                    targetWidth: 1000,
-			                    targetHeight: 1000,
-			                    saveToPhotoAlbum: false
-			                };
-
-			                $cordovaCamera.getPicture(options).then(function(imageUri) {
-			                	console.log('imageUri: ' + imageUri);
-			                	
-			                	//substring for choosed image in gallary after file name is xxxx.jpg?42341
-			                	var filename = imageUri.substring(imageUri.lastIndexOf('/') + 1, imageUri.lastIndexOf('?'));
-			                	
-			                	var extension = filename.substr(filename.lastIndexOf('.') + 1);
-			                	$scope.images.extension = extension;
-			                	//$scope.images.filename = filename;
-			                	console.log('extension: ' + $scope.images.extension);
-			                	//console.log('Filename: ' + $scope.images.filename);   
-		                        $cordovaFileTransfer.download(imageUri, cordova.file.dataDirectory + filename, {}, true)
-		                        .then(function(fileEntry) {
-		                                $scope.images.imageUri.push({
-		                                	path: fileEntry.nativeURL,
-		                                	fileName: userID + '-' + filename + '-' + Date.now()
-		                                });
-		                                $scope.imgLength = $scope.images.imageUri.length;
-		                                //upload to server.
-		                				      
-		                                console.log('THEN: ' + $scope.images.imageUri);
-		                            }, function (error) {
-		                                console.log(error);
-		                            }
-		                        );
-		                    }, function(error) {
-		                        console.log(error);
-		                    });
+							selectImage();
 						}
 					}
-				});
-			}
-
-			$scope.deletePicture = function(image){
-				var hideSheet = $ionicActionSheet.show({
-					titleText: 'Picture',
-				    destructiveText: 'Delete',
-				    cancelText: 'Cancel',
-				    destructiveButtonClicked: function() {
-				    	var index = $scope.images.imageUri.indexOf(image);
-						$scope.images.imageUri.splice(index, 1);
-						return true;
-				    }
 				});
 			};
 
@@ -476,69 +446,111 @@ angular.module('starter.productCtrl', [])
 				options.fileName = filename;
 				options.mimeType = 'image/jpg';
 				options.chunkedMode = false;
-				options.params = {'directory' : 'uploads/img', 'fileName' : filename};
-				
+				options.params = {'directory' : 'uploads/img', 'fileName' : filename, 'userID' : userID};
 				var ft = new FileTransfer();
-				ft.upload(imageURI, encodeURI(urlService.getBaseUrl() + '/imageUserGroups'),
-
-				function(res) {
-					console.log("Code = " + res.responseCode);
-					console.log("Response = " + res.response);
-					console.log("Sent = " + res.bytesSent);
-				}, function(error) {
-					alert("An error has occurred: Code = " + error.code);
-				    console.log("upload error source " + error.source);
-				    console.log("upload error target " + error.target);
-				}, options)
+				ft.upload(imageURI, encodeURI(urlService.getBaseUrl() + '/images'),
+					function(res) {
+						//response filename image from destination uploads/img folder at server.
+						console.log("Code = " + res.responseCode);
+						console.log("Response = " + res.response);
+						console.log("Sent = " + res.bytesSent);
+						$scope.realImageName.push({
+							realNameImg: res.response
+						});
+						if($scope.images.length == $scope.realImageName.length){
+							updateProduct();
+						}
+					}, function(error) {
+						alert("ไม่สามารถทำการอัพโหลดรูปภาพของคุณได้");
+					    console.log("upload error source " + error.source);
+					    console.log("upload error target " + error.target);
+					}, options
+				);
 			};
 
-			takePicture = function (e) {
-	            var options = {
-	                quality: 45,
+	        selectImage = function() {
+	        	var options = {
+	                quality: 50,
+	                destinationType: Camera.DestinationType.FILE_URI,
+	                sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+	                encodingType: Camera.EncodingType.JPEG,
 	                targetWidth: 1000,
 	                targetHeight: 1000,
-	                destinationType: Camera.DestinationType.FILE_URI,
-	                encodingType: Camera.EncodingType.JPEG,
-	                sourceType: Camera.PictureSourceType.CAMERA
+	                saveToPhotoAlbum: false
 	            };
 
-	            navigator.camera.getPicture(
-	                function (imageURI) {
-	                    console.log(imageURI);
-	                    upload(imageURI);
-	                },
-	                function (message) {
-	                    // We typically get here because the use canceled the photo operation. Fail silently.
-	                }, options);
-
-	            return false;
+	            $cordovaCamera.getPicture(options).then(function(imageUri) {
+	            	dowloadImgIntoPackage(imageUri); 
+	            }, function(error) {
+	                console.log(error);
+	            });
 	        };
-		});
 
-		$scope.updateProduct = function(){
-			$http
-			.delete(urlService.getBaseUrl() + '/editProductImageDeletes', {params: {product_id: $scope.products.primaryProduct}})
-			.success(function(response) {
-				var forImageData = {};
+	        dowloadImgIntoPackage = function(imageUriSource) {
+	        	console.log('imageUri: ' + imageUriSource);
+	        	//substring for choosed image in gallary after file name is xxxx(.jpg)
+	        	var filename = imageUriSource.substring(imageUriSource.lastIndexOf('/') + 1, imageUriSource.lastIndexOf('.'));
+	        	//$scope.images.filename = filename;
+	        	//console.log('Filename: ' + $scope.images.filename);
+	        	//dowload image from device to app package because URI of image in device not working in preview.
+	            $cordovaFileTransfer.download(imageUriSource, cordova.file.dataDirectory + filename, {}, true)
+	                .then(function(fileEntry) {
+	            		//get nativeURL into $scope.images.imageUri after dowload image from device to application package.
+	            		$scope.images.push({
+							imageUri: fileEntry.nativeURL,
+							filename: filename
+						});
+						console.log($scope.images);
+						$scope.imgLength = $scope.images.length;
+	                    // $scope.images.imageUri = fileEntry.nativeURL;
+	                    // console.log('THEN: ' + $scope.images.imageUri);
+	                }, function (error) {
+	                    console.log(error);
+	                }
+	            );
+	        };
+
+			$scope.deletePicture = function(image){
+				var hideSheet = $ionicActionSheet.show({
+					titleText: 'Picture',
+				    destructiveText: 'Delete',
+				    cancelText: 'Cancel',
+				    destructiveButtonClicked: function() {
+						var index = $scope.images.indexOf(image);
+						$scope.images.splice(index, 1);
+						$scope.imgLength = $scope.images.length;
+						return true;
+				    }
+				});
+			};
+
+			updateProduct = function(){
+				$scope.products.idProfile = profileUser.profileID;
+				console.log($scope.realImageName);
 				$http
+				.delete(urlService.getBaseUrl() + '/editProductImageDeletes', {params: {pId: $scope.products.primaryProduct}})
+				.success(function(response) {
+					var forImageData = {};
+					$http
 					.put(urlService.getBaseUrl() + '/updateProducts', $scope.products)
 					.success(function(response) {
-						if($scope.images.imageUri != null){
-							for(var i=0; i<$scope.images.imageUri.length; i++){
+						if($scope.images.length > 0){
+							for(var i=0; i<$scope.images.length; i++){
 								forImageData = {
 									product_id: $scope.products.primaryProduct,
-									image: userID + '-' + $scope.images.imageUri[i].fileName + '-' + Date.now()
+									image: $scope.realImageName[i].realNameImg
 								}
 								$http
 									.post(urlService.getBaseUrl() + '/insertImageProducts', forImageData)
 									.success(function(response) {
-
+										$state.go('app.showProducts', {}, {reload:true});
 									})
 							}
+						}else{
+							$state.go('app.showProducts', {}, {reload:true});
 						}
-						$state.go('app.showProducts', {}, {reload:true});
 					})
-				//upload($scope.images.imageUri[i].path, $scope.images.imageUri[i].fileName);
-			})
-		};
+				})
+			};
+		});
 	})

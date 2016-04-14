@@ -141,6 +141,7 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
 
   .state('app.editUserGroup', {
     url: '/editUserGroup/:groupId',
+    cache: false,
     views: {
       'menuContent': {
         templateUrl: 'templates/editUserGroup.html',
@@ -151,16 +152,42 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
 
   .state('app.showProducts', {
     url: '/showProducts',
+    cache: false,
     views: {
       'menuContent': {
         templateUrl: 'templates/showProducts.html',
-        controller: 'showProductCtrl'
+        controller: 'showProductCtrl',
+        resolve:{
+          "check": 
+            function(Users, $location, $ionicPopup, $ionicHistory){
+              var profileUser = Users.getUserData();
+              if(profileUser == null || profileUser == undefined){
+                var confirmPopup = $ionicPopup.confirm({
+                  title: 'ไม่มีสิทธิการเข้าถึง',
+                  template: 'คุณต้องลงทะเบียนข้อมูลส่วนตัวก่อนเพื่อเข้าถึง',
+                  buttons: [
+                    {
+                      text: 'ตกลง',
+                      type: 'button-balanced',
+                      onTap: function(e){
+                        $ionicHistory.nextViewOptions({
+                          disableBack: true
+                        });
+                        $location.path('/app/profile');
+                      }
+                    }
+                  ]
+                });
+              }
+            }
+        }
       }
     }
   })
 
   .state('app.addProducts', {
     url: '/addProducts',
+    cache: false,
     views: {
       'menuContent': {
         templateUrl: 'templates/addProducts.html',
@@ -171,6 +198,7 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
 
   .state('app.editProducts', {
     url: '/editProducts/:productId',
+    cache: false,
     views: {
       'menuContent': {
         templateUrl: 'templates/editProducts.html',
