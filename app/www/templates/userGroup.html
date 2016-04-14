@@ -1,6 +1,6 @@
 <ion-view view-title="เครือข่าย">
 	<ion-content>
-		<li class="item" ng-if="!userGroupData" style="text-align:center;">ไม่มีเครือข่าย</li>
+		<li class="item" ng-if="userGroupData == ''" style="text-align:center;">ไม่มีเครือข่าย</li>
 			<a class="forAreaUserGroup" href="#/app/editUserGroup/{{userGroup.group_id}}" collection-repeat="userGroup in userGroupData" item-width="33%" item-height="140px">
 				<div class="bodyCardCustom">
 					<img class="image-view-userGroup" src="{{userGroup.image}}">

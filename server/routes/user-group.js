@@ -24,7 +24,6 @@ exports.getUserGroupForProduct = function(req, res) {
 };
 
 exports.getUserGroup = function(req, res) {
-	console.log(req.query.pId);
 	strQuery = "SELECT user_group.group_id, user_group.profile_id, user_group.group_name, user_group_image.image FROM user_group LEFT JOIN user_group_image ON user_group.group_id = user_group_image.group_id WHERE user_group.profile_id=? GROUP BY user_group.group_id";
 	connection.query(strQuery, [req.query.pId], function(err, rows){
 		if(err) {
@@ -38,7 +37,7 @@ exports.getUserGroup = function(req, res) {
 
 exports.insertUserGroup = function(req, res) {
 	var userGroupData = {
-		profile_id : '1',
+		profile_id : req.body.idProfile,
 		group_name : req.body.nameGroup,
 		address_location : req.body.placeGroup,
 		tel_no : req.body.telephone
@@ -108,7 +107,7 @@ exports.editAllDeleteImage = function(req, res) {
 
 exports.updateUserGroup = function(req, res) {
 	var updateUserGroupData = {
-		profile_id : '1',
+		profile_id : req.body.idProfile,
 		group_name : req.body.nameGroup,
 		address_location : req.body.placeGroup,
 		tel_no : req.body.telephone

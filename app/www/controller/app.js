@@ -95,6 +95,7 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
 
   .state('app.userGroup', {
     url: '/userGroup',
+    cache: false,
     views: {
       'menuContent': {
         templateUrl: 'templates/userGroup.html',

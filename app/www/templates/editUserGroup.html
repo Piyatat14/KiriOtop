@@ -4,8 +4,8 @@
 			<ion-list>
 				<ion-scroll direction="x" overflow-scroll="false" style="overflow:hidden;">
 					<div class="row">
-						<a class="onePicture" ng-repeat="image in images.imageUri">
-							<img class="imageUserGroup" ng-src="{{image.fileName}}" on-release="deletePicture(image)"/>
+						<a class="onePicture" ng-repeat="image in images">
+							<img class="imageUserGroup" ng-src="{{image.imageUri}}" on-release="deletePicture(image)"/>
 						</a>
 						<a class="forAroundPlus" ng-click="addMedia()" ng-if="imgLength != 6">
 							<i class="icon ion-plus-round forIconPlus"></i>
@@ -29,7 +29,7 @@
 				</label>
 
 				<div class="content padding has-header">
-					<button class="button button-block button-positive button-assertive" ng-click="updateUserGroup()" ng-disabled="userGroupForm.$invalid || userGroupForm.$pristine">ยืนยัน</button>
+					<button class="button button-block button-positive button-assertive" ng-click="preUpdateUserGroup()" ng-disabled="userGroupForm.$invalid || userGroupForm.$pristine">ยืนยัน</button>
 				</div>
 			</ion-list>
 		</form>
