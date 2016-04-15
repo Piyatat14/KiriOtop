@@ -2,7 +2,7 @@
 	<ion-content>
 		<ion-list>
 			<a class="item item-thumbnail-left" href="#" ng-repeat="product in productData">
-				<img src="img/ionic.png">
+				<img src="{{product.image}}">
 				<h2>{{product.product_name}}</h2>
 				<p>
 					{{product.product_rating | currency : '' : 0}}<i class="icon ion-ios-star" style="color:yellow; padding-right:7px;"></i>

@@ -3,22 +3,19 @@
 		<ion-list>
 			<li class="item">
 				<div class="row">
-					<div class="col col-50">
-						<a href="#"><img src="img/ionic.png" class="forFirstDetailProduct"></a>
-						<div>
-							<img ng-repeat="test in testImg" ng-src="{{test.src}}" class="forNextDetailProduct" ng-click="showImages($index)">
-						</div>
+					<div class="col col-50 forImageDetailProduct">
+							<img ng-repeat="image in forImageDetail" ng-src="{{image.image}}" ng-click="showImages($index)">
 					</div>
 					<div class="col">
-						<p>ชื่อสินค้า : {{nameProduct}}</p>
-						<p>ชื่อผู้ผลิต : {{nameOwned}}</p>
-						<p>สถานที่ตั้ง : {{address}}</p>
+						<p>ชื่อสินค้า : {{productdata.nameProduct}}</p>
+						<p>ชื่อผู้ผลิต : {{productdata.nameOwned}}</p>
+						<p>สถานที่ตั้ง : {{productdata.address}}</p>
 						<p style="text-align:center;"><i class="icon ion-ios-location forIconDetailProduct"></i><i class="icon ion-navigate forIconDetailProduct"></i></p>
 					</div>
 				</div>
 			</li>
 			<li class="item item-text-wrap">
-				<p>รายละเอียด : {{detailProduct}}</p>
+				<p>รายละเอียด : {{productdata.detailProduct}}</p>
 			</li>
 			<li class="item">
 				<div>
@@ -27,10 +24,10 @@
 					<i class="icon ion-ios-star" style="font-size:26px; color:yellow;"></i>
 					<i class="icon ion-ios-star" style="font-size:26px; color:yellow;"></i>
 					<i class="icon ion-ios-star-half" style="font-size:26px; color:yellow;"></i>
-					<span style="padding-left:3px;">{{ratingProduct}} จาก 10,000 <i class="icon ion-person" style="font-size:20px; padding-left:3px;"></i></span>
+					<span style="padding-left:3px;">{{productdata.ratingProduct}} จาก 10,000 <i class="icon ion-person" style="font-size:20px; padding-left:3px;"></i></span>
 				</div>
 				<div style="padding-top:7px;">
-					<span>{{viewProduct}}<i class="icon ion-eye" style="padding-left:3px; font-size:20px; padding-right:30%;"></i></span>
+					<span>{{productdata.viewProduct}}<i class="icon ion-eye" style="padding-left:3px; font-size:20px; padding-right:30%;"></i></span>
 					<button class="button button-small button-assertive" ng-click="buyProduct()"><i class="icon ion-ios-cart-outline" style="padding-right:10px;"></i>ซื้อ</button>
 				</div>
 			</li>

@@ -8,16 +8,37 @@ angular.module('starter.productCtrl', [])
 			.get(urlService.getBaseUrl() + '/recommendProducts')
 			.success(function(response) {
 				$scope.recommendData = response;
+				for(var i=0; i<response.length; i++){
+					if(response[i].image == null){
+						$scope.recommendData[i].image = urlService.getBaseUrl() + /img/ + 'nullProduct.jpg';
+					}else{
+						$scope.recommendData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
+					}
+				}
 			})
 		$http
 			.get(urlService.getBaseUrl() + '/salableProducts')
 			.success(function(response) {
 				$scope.salableData = response;
+				for(var i=0; i<response.length; i++){
+					if(response[i].image == null){
+						$scope.salableData[i].image = urlService.getBaseUrl() + /img/ + 'nullProduct.jpg';
+					}else{
+						$scope.salableData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
+					}
+				}
 			})
 		$http
 			.get(urlService.getBaseUrl() + '/newProducts')
 			.success(function(response) {
 				$scope.newsData = response;
+				for(var i=0; i<response.length; i++){
+					if(response[i].image == null){
+						$scope.newsData[i].image = urlService.getBaseUrl() + /img/ + 'nullProduct.jpg';
+					}else{
+						$scope.newsData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
+					}
+				}
 			})
 	})
 
@@ -44,37 +65,52 @@ angular.module('starter.productCtrl', [])
 			.get(urlService.getBaseUrl() + '/' + textPath)
 			.success(function(response) {
 				$scope.productData = response;
+				for(var i=0; i<response.length; i++){
+					if(response[i].image == null){
+						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + 'nullProduct.jpg';
+					}else{
+						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
+					}
+				}
 			})
 	})
 
 	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, $filter, $ionicModal) {
 		$scope.forReportData = {};
 		$scope.forOrderBuyer = {};
+		$scope.forImageDetail = [];
+		$scope.productdata = {};
 		if(angular.isUndefined(Authen.getUser())){
 			$scope.forReportData.userID = null;
 		}else{
 			$scope.forReportData.userID = Authen.getUser().userID;
 		}
-		$scope.testImg = [
-			{'src' : 'img/ionic.png'}, 
-			{'src' : 'img/ionic.png'},
-			{'src' : 'img/ionic.png'},
-			{'src' : 'img/ionic.png'}, 
-			{'src' : 'img/ionic.png'}
-		];
+
 		$http
 			.get(urlService.getBaseUrl() + '/getDetailProducts', {params: {pId : $stateParams.idProduct}})
 			.success(function(response) {
-				$scope.idProfile = response[0].profile_id;
-				$scope.idGroup = response[0].group_id;
-				$scope.idProduct = response[0].product_id;
-				$scope.nameProduct = response[0].product_name;
-				$scope.nameOwned = response[0].first_name;
-				$scope.address = response[0].address_location;
-				$scope.detailProduct = response[0].product_detail;
-				$scope.viewProduct = response[0].product_view;
-				$scope.ratingProduct = response[0].product_rating;
-				$scope.telNo = response[0].tel_no;
+				$scope.productdata.idProfile = response[0].profile_id;
+				$scope.productdata.idGroup = response[0].group_id;
+				$scope.productdata.idProduct = response[0].product_id;
+				$scope.productdata.nameProduct = response[0].product_name;
+				$scope.productdata.nameOwned = response[0].first_name;
+				$scope.productdata.address = response[0].address_location;
+				$scope.productdata.detailProduct = response[0].product_detail;
+				$scope.productdata.viewProduct = response[0].product_view;
+				$scope.productdata.ratingProduct = response[0].product_rating;
+				$scope.productdata.telNo = response[0].tel_no;
+				$scope.imgLength = response.length;
+				for(var i=0; i<$scope.imgLength; i++){
+					if(response[i].image == null){
+						$scope.forImageDetail.push({
+							image : urlService.getBaseUrl() + /img/ + 'nullProduct.jpg'
+						});
+					}else{
+						$scope.forImageDetail.push({
+							image : urlService.getBaseUrl() + /img/ + response[i].image
+						});
+					}
+				}
 			})
 		$scope.reportProduct = function() {
 			var myPopup = $ionicPopup.show({

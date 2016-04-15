@@ -182,7 +182,8 @@
 }
  
 .transparent {
-    background: transparent !important;
+    background: transparent;
+    background-color: rgba(142, 142, 142, 0.4);
 }
  
 .fullscreen-image {
@@ -202,15 +203,18 @@
     height: 100%;
 }
 
-.forFirstDetailProduct{
+.forImageDetailProduct > img:first-child{
 	width: 100%;
 	text-decoration: none;
+	cursor: pointer;
 }
 
-.forNextDetailProduct{
+.forImageDetailProduct > img:not(:first-child){
+	display: block;
 	padding-right: 4px;
 	width: 20%;
 	text-decoration: none;
+	cursor: pointer;
 }
 
 .forTextDetailProduct{

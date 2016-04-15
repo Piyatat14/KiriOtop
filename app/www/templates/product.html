@@ -10,7 +10,7 @@
 					<div class="item item-text-wrap row">
 						<a class="cardCustom" href="#/app/detailProduct/{{recData.product_id}}" ng-repeat="recData in recommendData">
 							<div class="bodyCardCustom">
-								<img class="image-view-product" src="img/ionic.png">
+								<img class="image-view-product" src="{{recData.image}}">
 							</div>
 							<div class="textCardCustom">
 								<p class="row">
@@ -37,7 +37,7 @@
 					<div class="item item-text-wrap row">
 						<a class="cardCustom" href="#/app/detailProduct/{{saleData.product_id}}" ng-repeat="saleData in salableData">
 							<div class="bodyCardCustom">
-								<img class="image-view-product" src="img/ionic.png">
+								<img class="image-view-product" src="{{saleData.image}}">
 							</div>
 							<div class="textCardCustom">
 								<p class="row">
@@ -64,7 +64,7 @@
 					<div class="item item-text-wrap row">
 						<a class="cardCustom" href="#/app/detailProduct/{{newData.product_id}}" ng-repeat="newData in newsData">
 							<div class="bodyCardCustom">
-								<img class="image-view-product" src="img/ionic.png">
+								<img class="image-view-product" src="{{newData.image}}">
 							</div>
 							<div class="textCardCustom">
 								<p class="row">
