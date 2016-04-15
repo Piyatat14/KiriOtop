@@ -2,7 +2,7 @@ angular.module('starter.services', ['ngCookies'])
 
 .service('urlService', function() {
 	this.getBaseUrl = function() {
-		return "http://192.168.1.45:3000";
+		return "http://192.168.1.15:3000";
 	};
 })
 
@@ -30,7 +30,7 @@ angular.module('starter.services', ['ngCookies'])
 
 //get needed user data.
 .factory('Users', function($cookieStore) {
-	//key in users: profileID, firstname, lastname, address, tell, image, sell
+	//key in users: profileID
 	var users = $cookieStore.get('user');
 
 	return {

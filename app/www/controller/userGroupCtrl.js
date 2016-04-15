@@ -214,9 +214,11 @@ angular.module('starter.userGroupCtrl', [])
 					if($scope.images[i].group_image_id == undefined){
 						upload($scope.images[i].imageUri, $scope.images[i].filename);
 					}else{
+						//Images is same into database.
 						$scope.realImageName.push({
 							realNameImg: $scope.images[i].filename
 						});
+						//If user not change image.
 						if($scope.images.length == $scope.realImageName.length){
 							updateUserGroup();
 						}

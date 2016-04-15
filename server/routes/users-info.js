@@ -91,6 +91,7 @@ exports.addImage = function(req, res) {
 			cb(null, './uploads/img');
 		},
 		filename: function (req, file, cb) {
+			console.log("Filename in server : " + file.originalname);
 			cb(null, req.body.userID + '-' + file.originalname + '-' + Date.now() + '.jpg'); //Appending mimeType.
 		}
 	});

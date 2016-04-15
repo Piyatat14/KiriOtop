@@ -61,13 +61,7 @@ angular.module('starter.userCtrl', [])
 						if(res !== 'ERROR' && Users.getUserData() === undefined) {
 							//set cookie for user about profile data.
 							Users.setUserData({
-								profileID: res[0].profile_id,
-								firstname: res[0].first_name,
-								lastname: res[0].last_name,
-								address: res[0].address,
-								tel: res[0].tel_no,
-								image: res[0].user_image,
-								sell: res[0].can_sell
+								profileID: res[0].profile_id
 							});
 						}
 					}
@@ -124,9 +118,11 @@ angular.module('starter.userCtrl', [])
 	};
 })
 
-.controller('ProfileCtrl', function($scope, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory) {
+.controller('ProfileCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory) {
 	//this controller must login.
 	$ionicPlatform.ready(function() {
+
+		console.log('RELOAD');
 
 		//object for Authen.
 		var userDetail = Authen.getUser();
@@ -137,36 +133,45 @@ angular.module('starter.userCtrl', [])
 		//object for image.
 		$scope.images = { 
 			imageUri: '', 
-			filename: ''
+			filename: ''							//This key is user must change image profile only.
 		};
 
 		//object for data user profile.
 		$scope.profileData = {
 			sell: 0,
 			firstname: '',
-			imageName: '',
+			imageName: '',							//This key is image name send from after upload success.
 			userID: ''
 		};
 
-
 		//if profileUser is have in database. get data show on profile view.
 		if(profileUser !== undefined) {
-			console.log("OK JA");
-			console.log(profileUser);
-			$scope.profileData.firstname = profileUser.firstname;
-			$scope.profileData.lastname = profileUser.lastname;
-			$scope.profileData.address = profileUser.address;
-			$scope.profileData.tel = profileUser.tel;
-			$scope.profileData.sell = profileUser.sell;
-			console.log($scope.profileData.firstname);
-			$scope.images.imageUri = urlService.getBaseUrl() + /img/ + profileUser.image;
-			$scope.images.filename = profileUser.image;
+			//get profile_id each user.
+			$http.post(urlService.getBaseUrl() + '/findProfileUsers', userDetail)
+				.success(function(res) {
+					//if profile_id for user is have.But not have Users.getUserData equal undefined.
+					if(res !== 'ERROR') {
+						$scope.profileData.firstname = res[0].first_name;
+						$scope.profileData.lastname = res[0].last_name;
+						$scope.profileData.address = res[0].address;
+						$scope.profileData.tel = res[0].tel_no;
+						$scope.profileData.sell = res[0].can_sell;
+						$scope.images.imageUri = urlService.getBaseUrl() + /img/ + res[0].user_image;
+						//get image from database for check If user is change image.
+						$scope.images.filename = res[0].user_image;
+						$scope.profileData.imageName = res[0].user_image;
+					}
+				}
+			);
 		}
 
 		$scope.preAddDataProfile = function() {
-			//if image ready to uploads server.
-			if($scope.images.imageUri != '') {
+			console.log('In PreAddData : ' + $scope.profileData.imageName);
+			//if image ready to uploads server and images is change by user.
+			if($scope.images.imageUri != '' && $scope.profileData.imageName != $scope.images.filename) {
 				upload($scope.images.imageUri, $scope.images.filename);
+				console.log("URI In preAddDataProfile : " + $scope.images.imageUri);
+				console.log("Filename In preAddDataProfile : " + $scope.images.filename);
 			}else {
 				addDataProfile();
 			}
@@ -299,6 +304,7 @@ angular.module('starter.userCtrl', [])
         		.success(function(response) {
         			alert("อัพเดทข้อมูลสำเร็จ");
         			console.log("response database : " + response);
+        			$state.go('app.profile', {}, {reload: true});
         		}).error(function(err) {
         			console.log(err);
         			alert("[ผิดพลาด] ไม่สามารถอัพเดทข้อมูลได้");
@@ -312,9 +318,9 @@ angular.module('starter.userCtrl', [])
 	        		Users.setUserData({
 	        			profileID: response.profileID
 	        		});
-
 	        		alert("บันทึกข้อมูลสำเร็จ");
 	        		console.log("response database : " + response);
+	        		$state.go('app.profile', {}, {reload: true});
 	        	}).error(function(err) {
 	        		console.log(err);
 	        		alert("[ผิดพลาด] ไม่สามารถบันทึกข้อมูลได้");
