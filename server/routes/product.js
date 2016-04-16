@@ -113,6 +113,7 @@ exports.insertProduct = function(req, res, next) {
 		group_id : req.body.idGroup,
 		product_user_id : req.body.productId,
 		product_name : req.body.productName,
+		product_detail : req.body.productStock,
 		product_category : req.body.categoryText,
 		product_price : req.body.productPrice,
 		product_rating : '0',
@@ -149,7 +150,7 @@ exports.insertImageProduct = function(req, res) {
 };
 
 exports.editProduct = function(req, res) {
-	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_price, product.product_category, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.profile_id=? AND product.product_id=?";
+	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_detail, product.product_price, product.product_category, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.profile_id=? AND product.product_id=?";
 	connection.query(strQuery, [req.query.pId, req.query.productId], function(err, rows){
 		if(err) {
 			console.log(err);

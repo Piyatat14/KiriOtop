@@ -12,24 +12,27 @@
 						</a>
 					</div>
 				</ion-scroll>
-				<label class="item item-input item-stacked-label">
+				<label class="item item-input item-stacked-label item-icon-right">
 					<span class="input-label">รหัสสินค้า</span>
-					<input type="text" placeholder="รหัสสินค้า (ถ้ามี)" ng-model="products.productId" name="productId" />
+					<input type="text" placeholder="รหัสสินค้า (ถ้ามี)" ng-model="products.productId" name="productId" required/>
 					<i ng-show="productForm.productId.$error.required && !productForm.productId.$pristine" class="icon ion-close-circled" style="color:red;"></i>
 				</label>
-				<label class="item item-input item-stacked-label">
+				<label class="item item-input item-stacked-label item-icon-right">
 					<span class="input-label">ชื่อสินค้า</span>
-					<input type="text" placeholder="ชื่อสินค้า" ng-model="products.productName" name="productName" />
+					<input type="text" placeholder="ชื่อสินค้า" ng-model="products.productName" name="productName" required/>
 					<i ng-show="productForm.productName.$error.required && !productForm.productName.$pristine" class="icon ion-close-circled" style="color:red;"></i>
 				</label>
-				<label class="item item-input item-stacked-label">
+				<label class="item item-input item-stacked-label item-icon-right">
 					<span class="input-label">ราคาสินค้า</span>
-					<input type="number" placeholder="ราคาสินค้า" min="1" ng-model="products.productPrice" name="productPrice" />
+					<input type="number" placeholder="ราคาสินค้า" min="1" ng-model="products.productPrice" name="productPrice" required/>
 					<i ng-show="productForm.productPrice.$error.required && !productForm.productPrice.$pristine" class="icon ion-close-circled" style="color:red;"></i>
 				</label>
-				<label class="item item-input item-stacked-label">
+				<ion-toggle toggle-class="toggle-assertive" ng-model="products.productStock" ng-true-value="'สต็อกสินค้า'" ng-false-value="'ไม่สต็อกสินค้า'">
+					มีการสต็อกสินค้า
+				</ion-toggle>
+				<label class="item item-input item-stacked-label item-icon-right" ng-if="products.productStock == 'สต็อกสินค้า'">
 					<span class="input-label">จำนวนสินค้า</span>
-					<input type="number" placeholder="ราคาสจำนวนสินค้าินค้า" min="1" ng-model="products.productAmount" name="productAmount" />
+					<input type="number" placeholder="ราคาสจำนวนสินค้าินค้า" min="1" ng-model="products.productAmount" name="productAmount" required/>
 					<i ng-show="productForm.productAmount.$error.required && !productForm.productAmount.$pristine" class="icon ion-close-circled" style="color:red;"></i>
 				</label>
 				<label class="item item-input item-select">
@@ -51,7 +54,6 @@
 					</div>
 					<select name="idGroup" ng-model="products.idGroup" ng-options="userGroup.group_id as userGroup.group_name for userGroup in userGroupData" required>
 						<option value="">เลือกเครือข่าย</option>
-						<!--<option ng-selected="{{products.idGroup == userGroup.group_id}}" ng-repeat="userGroup in userGroupData" value="{{userGroup.group_id}}">{{userGroup.group_name}}</option>-->
 					</select>
 				</label>
 				<div class="content padding has-header">

@@ -27,7 +27,10 @@
 					<input type="number" placeholder="ราคาสินค้า" min="1" ng-model="products.productPrice" name="productPrice" required/>
 					<i ng-show="productForm.productPrice.$error.required && !productForm.productPrice.$pristine" class="icon ion-close-circled" style="color:red;"></i>
 				</label>
-				<label class="item item-input item-stacked-label item-icon-right">
+				<ion-toggle toggle-class="toggle-assertive" ng-model="products.productStock" ng-true-value="'สต็อกสินค้า'" ng-false-value="'ไม่สต็อกสินค้า'">
+					มีการสต็อกสินค้า
+				</ion-toggle>
+				<label class="item item-input item-stacked-label item-icon-right" ng-if="products.productStock == 'สต็อกสินค้า'">
 					<span class="input-label">จำนวนสินค้า</span>
 					<input type="number" placeholder="ราคาสจำนวนสินค้าินค้า" min="1" ng-model="products.productAmount" name="productAmount" required/>
 					<i ng-show="productForm.productAmount.$error.required && !productForm.productAmount.$pristine" class="icon ion-close-circled" style="color:red;"></i>
@@ -49,9 +52,8 @@
 					<div class="input-label">
 						เครือข่าย
 					</div>
-					<select name="idGroup" ng-model="products.idGroup" ng-options="userGroup.group_id as userGroup.group_name for userGroup in userGroupData"  required>
+					<select name="idGroup" ng-model="products.idGroup" ng-options="userGroup.group_id as userGroup.group_name for userGroup in userGroupData" required>
 						<option value="" selected>เลือกเครือข่าย</option>
-						<!--<option ng-repeat="userGroup in userGroupData" value="{{userGroup.group_id}}">{{userGroup.group_name}}</option>-->
 					</select>
 				</label>
 				<div class="content padding has-header">
