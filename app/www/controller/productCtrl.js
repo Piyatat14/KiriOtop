@@ -249,6 +249,7 @@ angular.module('starter.productCtrl', [])
 
 		$scope.products = {};
 		$scope.products.categoryText = 'อาหาร';
+		$scope.products.productStock = 'สต็อกสินค้า';
 
 		$ionicPlatform.ready(function() {
 			$scope.images = [];
@@ -373,6 +374,9 @@ angular.module('starter.productCtrl', [])
 			};
 
 			insertProducts = function(){
+				if($scope.products.productStock == 'ไม่สต็อกสินค้า'){
+					$scope.products.productAmount = '0';
+				}
 				$scope.products.dateRelease = $filter('date')(new Date(), 'yyyy-MM-dd');
 				$scope.products.idProfile = profileUser.profileID;
 				$http
@@ -423,6 +427,7 @@ angular.module('starter.productCtrl', [])
 					$scope.products.primaryProduct = response[0].product_id;
 					$scope.products.productId = response[0].product_user_id;
 					$scope.products.productName = response[0].product_name;
+					$scope.products.productStock = response[0].product_detail;
 					$scope.products.productPrice = response[0].product_price;
 					$scope.products.productAmount = response[0].product_amount;
 					$scope.products.categoryText = response[0].product_category;
@@ -561,8 +566,10 @@ angular.module('starter.productCtrl', [])
 			};
 
 			updateProduct = function(){
+				if($scope.products.productStock == 'ไม่สต็อกสินค้า'){
+					$scope.products.productAmount = '0';
+				}
 				$scope.products.idProfile = profileUser.profileID;
-				console.log($scope.realImageName);
 				$http
 				.delete(urlService.getBaseUrl() + '/editProductImageDeletes', {params: {pId: $scope.products.primaryProduct}})
 				.success(function(response) {
