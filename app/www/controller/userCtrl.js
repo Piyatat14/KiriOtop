@@ -325,11 +325,20 @@ angular.module('starter.userCtrl', [])
 	        		console.log(err);
 	        		alert("[ผิดพลาด] ไม่สามารถบันทึกข้อมูลได้");
 	        	});
-        	}
-
-        	
-
+        	}	
         }
-
-	});
+	})
 })
+
+.controller('PasswordCtrl', function($scope, $ionicModal, $cordovaToast) {
+	$scope.test = 10;
+	$scope.sendPassword = function(email) {
+		//If email is valid.
+		if(email !== undefined && email !== "") {
+			$scope.test = 20;
+			alert("OK");
+		}else {
+
+		}
+	}
+});

@@ -1,6 +1,6 @@
 <ion-modal-view>
   <ion-content>
-    <form>
+    <form name="loginForm">
       <ion-list>
         <ion-item class="item-image">
           <button class="button top-right" ng-click="closeLogin()" style="position:absolute; top:10px; right:10px;">ปิด</button>
@@ -8,7 +8,10 @@
         </ion-item>
         <label class="item item-input item-floating-label">
           <span class="input-label">อีเมล</span>
-          <input type="text" ng-model="loginData.username" placeholder="อีเมล">
+          <div class="row" ng-controller="PasswordCtrl">
+            {{test}}
+          </div>
+          <input type="email" ng-model="loginData.username" name="email" placeholder="อีเมล">
         </label>
         <label class="item item-input item-floating-label">
           <span class="input-label">รหัสผ่าน</span>
@@ -18,6 +21,20 @@
           <button class="button button-block button-positive" type="submit" ng-click="doLogin()">เข้าสู่ระบบ</button>
         </label>
       </ion-list>
+
+      <br /><br />
+
+      <div class="row" ng-controller="PasswordCtrl">
+{{test}}
+        <div class="col"></div>
+        <a class="col col-50" style="text-align: center; border-width: 0px;" ng-click="sendPassword(loginData.username)">
+          <i class="icon ion-key" style="font-size: 20px;">
+            <span style="font-size: 15px;"><u>ลืมรหัสผ่าน</u></span>
+          </i>
+        </a>
+        <div class="col"></div>
+      </div>
+
     </form>
   </ion-content>
 </ion-modal-view>
