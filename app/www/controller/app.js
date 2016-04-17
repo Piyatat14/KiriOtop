@@ -209,11 +209,20 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
 
   .state('app.orderBuyer', {
     url: '/orderBuyer',
-    cache: false,
     views: {
       'menuContent': {
         templateUrl: 'templates/orderBuyer.html',
         controller: 'orderBuyerCtrl'
+      }
+    }
+  })
+
+  .state('app.orderDetail', {
+    url: '/orderDetail/:orderId',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/orderDetail.html',
+        controller: 'orderDetailCtrl'
       }
     }
   })

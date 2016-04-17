@@ -75,7 +75,7 @@ angular.module('starter.productCtrl', [])
 			})
 	})
 
-	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, $filter, $ionicModal) {
+	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, Users, $filter, $ionicModal) {
 		$scope.forReportData = {};
 		$scope.forOrderBuyer = {};
 		$scope.forImageDetail = [];
@@ -85,6 +85,8 @@ angular.module('starter.productCtrl', [])
 		}else{
 			$scope.forReportData.userID = Authen.getUser().userID;
 		}
+
+		var profileUser = Users.getUserData();
 
 		$http
 			.get(urlService.getBaseUrl() + '/getDetailProducts', {params: {pId : $stateParams.idProduct}})
@@ -98,6 +100,7 @@ angular.module('starter.productCtrl', [])
 				$scope.productdata.detailProduct = response[0].product_detail;
 				$scope.productdata.viewProduct = response[0].product_view;
 				$scope.productdata.ratingProduct = response[0].product_rating;
+				$scope.productdata.amountProduct = response[0].product_amount;
 				$scope.productdata.telNo = response[0].tel_no;
 				$scope.imgLength = response.length;
 				for(var i=0; i<$scope.imgLength; i++){
@@ -124,7 +127,7 @@ angular.module('starter.productCtrl', [])
 				        text: '<b>ส่งรายงาน</b>',
 				        type: 'button-assertive',
 				        onTap: function(e) {
-				        	$scope.forReportData.productId = $scope.idProduct;
+				        	$scope.forReportData.productId = $scope.productdata.idProduct;
 				        	$scope.forReportData.logDate = $filter('date')(new Date(), 'yyyy-MM-dd');
 				        	$http
 							.post(urlService.getBaseUrl() + '/insertReportProducts', $scope.forReportData)
@@ -150,7 +153,7 @@ angular.module('starter.productCtrl', [])
 							text: '<b>ติดต่อ</b>',
 				        	type: 'button-balanced',
 				        	onTap: function(e){
-				        		document.location.href = "tel:" + $scope.telNo;
+				        		document.location.href = "tel:" + $scope.productdata.telNo;
 				        	}
 						}
 					]
@@ -158,20 +161,65 @@ angular.module('starter.productCtrl', [])
 		};
 
 		$scope.buyProduct = function() {
-			$scope.forOrderBuyer.productId = $scope.idProduct;
-			$scope.forOrderBuyer.groupId = $scope.idGroup;
+			$scope.forOrderBuyer.productId = $scope.productdata.idProduct;
+			$scope.forOrderBuyer.groupId = $scope.productdata.idGroup;
 			$scope.forOrderBuyer.orderDate = $filter('date')(new Date(), 'yyyy-MM-dd');
-			var buyPopup = $ionicPopup.confirm({
-				title: 'สั่งซื้อสินค้านี้',
-				template: 'คุณต้องสั่งซื้อสินค้าชิ้นนี้ ?',
-				buttons: [
+			$scope.forOrderBuyer.idProfile = profileUser.profileID;
+			if($scope.productdata.detailProduct == 'สต็อกสินค้า'){
+				$scope.forOrderBuyer.dateWithIn = '0000-00-00'
+				var buyPopup = $ionicPopup.show({
+					template: 'จำนวนที่คุณต้องการ<input type="number" ng-model="forOrderBuyer.orderAmount" max="{{productdata.amountProduct}}">',
+				    title: 'สั่งซื้อสินค้านี้',
+				    subTitle: 'สินค้ามีจำนวน :' + $scope.productdata.amountProduct,
+				    scope: $scope,
+					buttons: [
 						{text: 'ยกเลิก'},
 						{
 							text: '<b>สั่งซื้อ</b>',
 				        	type: 'button-positive',
 				        	onTap: function(e){
 				        		$http
-								.get(urlService.getBaseUrl() + '/buildOrderIds', {params: {prodId : $scope.forOrderBuyer.productId, profId : '1', gId : $scope.idGroup}})
+								.get(urlService.getBaseUrl() + '/buildOrderIds', {params: {prodId : $scope.forOrderBuyer.productId, profId : profileUser.profileID, gId : $scope.productdata.idGroup}})
+								.success(function(response) {
+									var runOrder;
+									if(response == ''){
+										runOrder = '1001';
+									}else{
+										response[0].order_id++;
+										runOrder = response[0].order_id;
+									}
+									$scope.forOrderBuyer.orderId = runOrder;
+									$http
+									.post(urlService.getBaseUrl() + '/insertOrderBuyers', $scope.forOrderBuyer)
+									.success(function(response) {
+										var idOrderSeller = response.insertId;
+										$http
+										.post(urlService.getBaseUrl() + '/insertOrderSellers', {sId : idOrderSeller})
+										.success(function(response) {
+											$ionicPopup.alert({
+												title: 'ทำการสั่งซื้อเสร็จเรียบร้อย',
+												template: 'ตรวจสอบสถานะสินค้าได้ที่ประวัติการซื้อ'
+											});
+										})
+									})
+								})
+				        	}
+						}
+					]
+				});
+			}else{
+				var buyPopup = $ionicPopup.show({
+					template: 'จำนวนที่คุณต้องการ<input type="text" ng-model="forOrderBuyer.orderAmount" max="{{productdata.amountProduct}}"><br/> ภายในวันที่<sub style="color:red;">*ไม่รวมระยะเวลาขนส่งสินค้า</sub><input type="date" ng-model="forOrderBuyer.dateWithIn">',
+				    title: 'สั่งซื้อสินค้านี้',
+				    scope: $scope,
+					buttons: [
+						{text: 'ยกเลิก'},
+						{
+							text: '<b>สั่งซื้อ</b>',
+				        	type: 'button-positive',
+				        	onTap: function(e){
+				        		$http
+								.get(urlService.getBaseUrl() + '/buildOrderIds', {params: {prodId : $scope.forOrderBuyer.productId, profId : profileUser.profileID, gId : $scope.productdata.idGroup}})
 								.success(function(response) {
 									var runOrder;
 									if(response == ''){
@@ -181,17 +229,17 @@ angular.module('starter.productCtrl', [])
 										runOrder = response[0].order_id;
 									}
 									$scope.forOrderBuyer.orderId = runOrder;
-									//$scope.idProduct + $scope.forOrderBuyer.groupId + '1' + runOrder
 								})
 				        		$http
-								.post(urlService.getBaseUrl() + '/insertOrderBuyers', $scope.forReportData)
+								.post(urlService.getBaseUrl() + '/insertOrderBuyers', $scope.forOrderBuyer)
 								.success(function(response) {
 									
 								})
 				        	}
 						}
 					]
-			});
+				});
+			}
 		};
 
 		$scope.showImages = function(index) {
