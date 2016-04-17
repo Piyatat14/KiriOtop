@@ -36,6 +36,9 @@ angular.module('starter.userCtrl', [])
 		$scope.modal.show();
 	};
 
+	//check email is valid for show error in view page.
+	$scope.checkEmail = true;
+
 	// Perform the login action when the user submits the login form
 	$scope.doLogin = function() {
 		$http
@@ -81,6 +84,22 @@ angular.module('starter.userCtrl', [])
 		$state.go('app.product', {}, {reload:true});
 		$scope.dataUser = Authen.getUser();
 		console.log(Authen.getUser());
+	};
+
+	$scope.sendPassword = function(email) {
+		//If email is valid.
+		if(email !== undefined && email !== "") {
+			$scope.checkEmail = true;
+			$http.post(urlService.getBaseUrl() + '/sendPassword', {'email' : email}).success(function(response) {
+				if(response == "SUCCESS") {
+					alert("[ส่งรหัสผ่านเรียบร้อยแล้ว] กรุณารอรับอีเมล์จากระบบ");
+				}
+			}).error(function(err) {
+				console.log(err);
+			})
+		}else {
+			$scope.checkEmail = false;
+		}
 	};
 
 })
@@ -328,17 +347,4 @@ angular.module('starter.userCtrl', [])
         	}	
         }
 	})
-})
-
-.controller('PasswordCtrl', function($scope, $ionicModal, $cordovaToast) {
-	$scope.test = 10;
-	$scope.sendPassword = function(email) {
-		//If email is valid.
-		if(email !== undefined && email !== "") {
-			$scope.test = 20;
-			alert("OK");
-		}else {
-
-		}
-	}
 });

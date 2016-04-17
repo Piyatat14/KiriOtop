@@ -54,6 +54,8 @@ router.post('/images', users.addImage);
 router.post('/insertProfileUsers', users.insertProfileUser);
 //Update user profile data.
 router.post('/updateProfileUsers', users.updateProfileUser);
+//Send password to user email.
+router.post('/sendPassword', users.sendPassword);
 
 //Get Banks
 router.get('/getBanks', bank.getBank);

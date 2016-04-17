@@ -8,9 +8,7 @@
         </ion-item>
         <label class="item item-input item-floating-label">
           <span class="input-label">อีเมล</span>
-          <div class="row" ng-controller="PasswordCtrl">
-            {{test}}
-          </div>
+          <i ng-show="!checkEmail" class="icon ion-close-circled" style="color: red; font-size: 15px;">&nbsp;&nbsp;กรุณากรอกอีเมลให้ถูกต้อง</i>
           <input type="email" ng-model="loginData.username" name="email" placeholder="อีเมล">
         </label>
         <label class="item item-input item-floating-label">
@@ -24,8 +22,7 @@
 
       <br /><br />
 
-      <div class="row" ng-controller="PasswordCtrl">
-{{test}}
+      <div class="row">
         <div class="col"></div>
         <a class="col col-50" style="text-align: center; border-width: 0px;" ng-click="sendPassword(loginData.username)">
           <i class="icon ion-key" style="font-size: 20px;">

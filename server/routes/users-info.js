@@ -10,6 +10,8 @@ var mysql = require('mysql'),
 connection.connect();
 
 var multer = require('multer');
+var crypto = require('crypto');
+var nodemailer = require('nodemailer');
 	
 exports.findUser = function(req, res) {
 	var emailUser = req.body.username;
@@ -157,6 +159,61 @@ exports.updateProfileUser = function(req, res) {
 		}
 	});
 };
+
+exports.sendPassword = function(req, res) {
+	generateCryp(function(err, data) {
+		if(err) {
+			throw err;
+		}
+		strQuery = "UPDATE user_info SET password = ? WHERE email = ?";
+		connection.query(strQuery, [data, req.body.email], function(err, rows) {
+			if(err) {
+				console.log(err);
+				throw err;
+			}else {
+				//If update password user succes.
+				//If have data. Server send generate password to email user.
+				var transporter = nodemailer.createTransport({
+					service: 'Gmail',
+					auth: {
+						user: 'kiriotop.server@gmail.com',
+						pass: 'p@ss@dmin9999'
+					}
+				});
+
+				var mailOption = {
+					from: 'สมาชิก KiriOtop App <kiriotop@server.com>',
+					to: req.body.email,
+					subject: 'รหัสผ่านนี้เป็นเพียงรหัสผ่านชั่วคราวเท่านั้น',
+					text: 'สวัสดีสมาชิก : ' + req.body.email + ' คุณได้ดำเนินการร้องขอเปลี่ยนรหัสผ่าน  อีเมล์ของคุณคือ : ' + req.body.email + ' รหัสผ่านของคุณคือ : ' + data + ' หลังจากเข้าสู่ระบบเรียบร้อยแล้ว กรุณาทำการเปลี่ยนรหัสผ่านโดยทันที ขอขอบคุณที่ไว้วางใจในการแก้ปัญหาของเรา ผู้ดูแล Kiri-Otop หากมีข้อสงสัยหรือสอบถามข้อมูลเพิ่มเติม กรุณาติดต่อ : kiriotop.server@gmail.com',
+					html: '<p>สวัสดีสมาชิก : ' + req.body.email +'</p><p>คุณได้ดำเนินการร้องขอเปลี่ยนรหัสผ่าน</p><ul><li>อีเมล์ของคุณคือ : ' + req.body.email + '</li><li>รหัสผ่านของคุณคือ : ' + data + '</li></ul><p>หลังจากเข้าสู่ระบบเรียบร้อยแล้ว กรุณาเปลี่ยนรหัสผ่านโดยทันที</p><br /><br /><br /><p>ขอขอบคุณที่ไว้วางใจในการแก้ปัญหาของเรา</p><p>&nbsp;&nbsp;ผู้ดูแล Kiri-Otop</p><center><p>หากมีข้อสงสัยหรือสอบถามข้อมูลเพิ่มเติม กรุณาติดต่อ : kiriotop.server@gmail.com</p></center>'
+				}
+
+				transporter.sendMail(mailOption, function(error, info) {
+					if(error) {
+						console.log(error);
+						throw error;
+					}else {
+						console.log("save password in database and send e-mail success.");
+						res.send("SUCCESS");
+					}
+				});
+			}
+		});
+	});
+};
+
+//function generate data 8 digits.
+function generateCryp(callback) {								//call back function.
+	//Random Password for send temp password to user in case recovery.
+	crypto.randomBytes(4, function(err, buffer) {				//1 byte = 2 digits, 4 byte = 8 digits.
+		if(err) {
+			throw err;
+		}
+		console.log("In generate : " + buffer.toString('hex'));
+		callback(null, buffer.toString('hex'));
+	})
+}
 
 
 
