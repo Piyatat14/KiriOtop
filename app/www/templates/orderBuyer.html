@@ -1,8 +1,37 @@
 <ion-view view-title="ประวัติการซื้อ">
 	<ion-content>
 		<ion-list>
-			{{test}}
-			<button ng-click="funcTest()">เพิ่ม 2 ต่อท้ายจ้า</button>
+			<li class="item" ng-if="orderBuyerData = ''" style="text-align:center;">ไม่มีออเดอร์สินค้า</li>
+			<a class="item item-thumbnail-left" href="#/app/orderDetail/{{order.order_buyer_id}}" ng-repeat="order in orderBuyerData | orderBy : 'order_date'">
+				<img src="{{order.image}}">
+				<h2>
+					{{order.product_name}}
+					<div style="float:right;">{{order.first_name}}</div>
+				</h2>
+				<p>ราคา : {{order.product_price*order.order_amount}} | จำนวน : {{order.order_amount}}</p>
+				<p>
+					สถานะ : {{order.buyer_status_name}}
+					<span style="float:right; padding:5px 5px 5px 5px;" ng-click="popoverStatus($event, order.buyer_status_name, order.order_buyer_id)"><i class="icon ion-android-more-vertical" style="font-size:26px;"></i></span>
+				</p>
+			</a>
 		</ion-list>
 	</ion-content>
 </ion-view>
+
+<script id="templates/orderBuyer.html" type="text/ng-template">
+	<ion-popover-view class="fit">
+		<ion-content scroll="false">
+			<div class="list">
+				<a class="item" href="#" style="color:green;" ng-show="comfirmStatus" ng-click="updateComfirm()">
+					ยืนยันการชำระเงิน
+				</a>
+				<a class="item" href="#" style="color:green;" ng-show="gotStatus" ng-click="updateGot()">
+					ได้รับสินค้าเรียบร้อย
+				</a>
+				<a class="item" href="#" style="color:red;" ng-show="cancelStatus" ng-click="updateCancel()">
+					ยกเลิกรายการ
+				</a>
+			</div>
+		</ion-content>
+	</ion-popover-view>
+</script>

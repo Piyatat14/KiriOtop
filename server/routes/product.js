@@ -225,17 +225,34 @@ exports.buildOrderId = function(req, res) {
 exports.insertOrderBuyer = function(req, res) {
 	var orderData = {
 		product_id : req.body.productId,
-		profile_id : '1',
+		profile_id : req.body.idProfile,
 		group_id : req.body.groupId,
 		order_id : req.body.orderId,
-		oder_amount : '1',
-		date_of_within : '1',
+		order_amount : req.body.orderAmount,
+		date_of_within : req.body.dateWithIn,
 		buyer_status_name : 'รอการยืนยัน',
 		product_order_price : '1',
 		order_date : req.body.orderDate
 		
 	}
 	strQuery = "INSERT INTO order_buyer SET ?";
+	connection.query(strQuery, orderData, function(err, rows){
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
+		}
+	});
+};
+
+exports.insertOrderSeller = function(req, res) {
+	var orderData = {
+		order_buyer_id : req.body.sId,
+		seller_status_name : 'รอการยืนยัน'
+	}
+	console.log(req.query.sId);
+	strQuery = "INSERT INTO order_seller SET ?";
 	connection.query(strQuery, orderData, function(err, rows){
 		if(err) {
 			console.log(err);

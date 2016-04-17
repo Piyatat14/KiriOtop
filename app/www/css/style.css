@@ -229,6 +229,23 @@
 	color: #0080ff;
 }
 
+ion-popover-view.fit {
+  height: auto;
+}
+
+ion-popover-view.fit ion-content {
+  position: relative;
+}
+
+.platform-android ion-popover-view.fit {
+  margin-top: 10px;
+}
+
+.platform-ios ion-popover-view.fit {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 /* css use ionicActionSheet for android design same ios */
 .platform-android .action-sheet-backdrop.active {
 	background-color: rgba(0, 0, 0, 0.1);

@@ -1,7 +1,7 @@
 <ion-view view-title="{{setTitle}}">
 	<ion-content>
 		<ion-list>
-			<a class="item item-thumbnail-left" href="#" ng-repeat="product in productData">
+			<a class="item item-thumbnail-left" href="#/app/detailProduct/{{product.product_id}}" ng-repeat="product in productData">
 				<img src="{{product.image}}">
 				<h2>{{product.product_name}}</h2>
 				<p>

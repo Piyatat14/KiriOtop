@@ -4,8 +4,10 @@ var products = require('./product');
 var users = require('./users-info');
 var bank = require('./banks');
 var userGroup = require('./user-group');
+var order = require('./order');
 var report = require('./report');
 
+//PRODUCT
 //Get Products For Show Public RecommendProduct
 router.get('/recommendProducts', products.recommendProduct);
 //Get Products For Show Public SalableProduct
@@ -38,8 +40,10 @@ router.post('/insertImageProducts', products.insertImageProduct);
 router.get('/buildOrderIds', products.buildOrderId);
 //Insert Order For Buyer
 router.post('/insertOrderBuyers', products.insertOrderBuyer);
+//Insert Order For Seller
+router.post('/insertOrderSellers', products.insertOrderSeller);
 
-
+//USERS
 //Get User
 router.post('/findUsers', users.findUser);
 //Get Profile User with data json.
@@ -57,6 +61,7 @@ router.post('/updateProfileUsers', users.updateProfileUser);
 //Send password to user email.
 router.post('/sendPassword', users.sendPassword);
 
+//BANKS
 //Get Banks
 router.get('/getBanks', bank.getBank);
 //Insert Bank Account Data
@@ -64,6 +69,7 @@ router.post('/insertBankAccounts', bank.insertBankAccount);
 //Update Bank Account Data
 router.put('/updateBankAccounts', bank.updateBankAccount);
 
+//USERGROUPS
 //Get User Group For Product
 router.get('/getUserGroupForProducts', userGroup.getUserGroupForProduct);
 //get User Group
@@ -83,6 +89,19 @@ router.delete('/editAllDeleteImages', userGroup.editAllDeleteImage);
 //Update User Group Data
 router.put('/updateUserGroups', userGroup.updateUserGroup);
 
+//ORDERS
+//Get Order Buyer
+router.get('/getOrderBuyers', order.getOrderBuyer);
+//Update Status Confirm
+router.put('/updateStatusConfirms', order.updateStatusConfirm);
+//Update Status Got Product
+router.put('/updateStatusGots', order.updateStatusGot);
+//Update Status Cancel
+router.put('/updateStatusCancels', order.updateStatusCancel);
+//Insert Log Detail
+router.put('/insertOrderDetails', order.insertOrderDetail);
+
+//REPORTS
 //Insert Report Product
 router.post('/insertReportProducts', report.insertReportProduct);
 

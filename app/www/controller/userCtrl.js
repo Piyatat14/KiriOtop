@@ -92,7 +92,13 @@ angular.module('starter.userCtrl', [])
 			$scope.checkEmail = true;
 			$http.post(urlService.getBaseUrl() + '/sendPassword', {'email' : email}).success(function(response) {
 				if(response == "SUCCESS") {
-					alert("[ส่งรหัสผ่านเรียบร้อยแล้ว] กรุณารอรับอีเมล์จากระบบ");
+					$ionicPopup.alert({
+						'title' : 'ส่งรหัสผ่านเรียบร้อยแล้ว',
+						'template' : 'กรุณารอรับอีเมล์จากระบบ',
+						'okText' : 'ตกลง'
+					}).then(function(res) {
+						console.log('Send E-mail complete.');
+					});
 				}
 			}).error(function(err) {
 				console.log(err);

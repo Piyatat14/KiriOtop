@@ -182,7 +182,7 @@ exports.sendPassword = function(req, res) {
 				});
 
 				var mailOption = {
-					from: 'สมาชิก KiriOtop App <kiriotop@server.com>',
+					from: 'สมาชิก KiriOtop App <kiriotop.server@gmail.com>',
 					to: req.body.email,
 					subject: 'รหัสผ่านนี้เป็นเพียงรหัสผ่านชั่วคราวเท่านั้น',
 					text: 'สวัสดีสมาชิก : ' + req.body.email + ' คุณได้ดำเนินการร้องขอเปลี่ยนรหัสผ่าน  อีเมล์ของคุณคือ : ' + req.body.email + ' รหัสผ่านของคุณคือ : ' + data + ' หลังจากเข้าสู่ระบบเรียบร้อยแล้ว กรุณาทำการเปลี่ยนรหัสผ่านโดยทันที ขอขอบคุณที่ไว้วางใจในการแก้ปัญหาของเรา ผู้ดูแล Kiri-Otop หากมีข้อสงสัยหรือสอบถามข้อมูลเพิ่มเติม กรุณาติดต่อ : kiriotop.server@gmail.com',
