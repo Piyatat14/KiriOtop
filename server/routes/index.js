@@ -93,13 +93,15 @@ router.put('/updateUserGroups', userGroup.updateUserGroup);
 //Get Order Buyer
 router.get('/getOrderBuyers', order.getOrderBuyer);
 //Update Status Confirm
-router.put('/updateStatusConfirms', order.updateStatusConfirm);
-//Update Status Got Product
-router.put('/updateStatusGots', order.updateStatusGot);
-//Update Status Cancel
-router.put('/updateStatusCancels', order.updateStatusCancel);
+router.put('/updateStatusAlls', order.updateStatusAll);
 //Insert Log Detail
-router.put('/insertOrderDetails', order.insertOrderDetail);
+router.post('/insertOrderDetails', order.insertOrderDetail);
+//Get Order Log
+router.get('/getOrderLogs', order.getOrderLog);
+//Get Order Buyer
+router.get('/getOrderSellers', order.getOrderSeller);
+//Get Bank Account In Order 
+router.get('/getBankInOrders', order.getBankInOrder);
 
 //REPORTS
 //Insert Report Product

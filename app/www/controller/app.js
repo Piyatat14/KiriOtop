@@ -217,6 +217,16 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     }
   })
 
+  .state('app.orderSeller', {
+    url: '/orderSeller',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/orderSeller.html',
+        controller: 'orderSellerCtrl'
+      }
+    }
+  })
+
   .state('app.orderDetail', {
     url: '/orderDetail/:orderId',
     views: {
