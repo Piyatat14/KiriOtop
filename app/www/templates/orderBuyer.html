@@ -1,8 +1,8 @@
 <ion-view view-title="ประวัติการซื้อ">
 	<ion-content>
 		<ion-list>
-			<li class="item" ng-if="orderBuyerData = ''" style="text-align:center;">ไม่มีออเดอร์สินค้า</li>
-			<a class="item item-thumbnail-left" href="#/app/orderDetail/{{order.order_buyer_id}}" ng-repeat="order in orderBuyerData | orderBy : 'order_date'">
+			<li class="item" ng-if="orderBuyerData == ''" style="text-align:center;">ไม่มีออเดอร์สินค้า</li>
+			<a class="item item-thumbnail-left" href="#/app/orderDetail/{{order.order_buyer_id}}" ng-repeat="order in orderBuyerData | orderBy : '-order_date'">
 				<img src="{{order.image}}">
 				<h2>
 					{{order.product_name}}
@@ -11,9 +11,12 @@
 				<p>ราคา : {{order.product_price*order.order_amount}} | จำนวน : {{order.order_amount}}</p>
 				<p>
 					สถานะ : {{order.buyer_status_name}}
-					<span style="float:right; padding:5px 5px 5px 5px;" ng-click="popoverStatus($event, order.buyer_status_name, order.order_buyer_id)"><i class="icon ion-android-more-vertical" style="font-size:26px;"></i></span>
+					<span style="color:orange; float:right; padding:5px 5px 5px 5px;" ng-click="popoverStatus($event, order.buyer_status_name, order.order_buyer_id)"><i class="icon ion-android-more-vertical" style="font-size:26px;"></i></span>
 				</p>
 			</a>
+			<li class="item">
+				<rating ng-model="rating.rate" max="rating.max"></rating>
+			</li>
 		</ion-list>
 	</ion-content>
 </ion-view>
@@ -34,4 +37,8 @@
 			</div>
 		</ion-content>
 	</ion-popover-view>
+</script>
+
+<script id="templates/ratingComment.html" type="text/ng-template">
+	<rating ng-model="rating.rate" max="rating.max"></rating>
 </script>

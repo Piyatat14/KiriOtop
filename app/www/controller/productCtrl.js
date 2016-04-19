@@ -118,7 +118,7 @@ angular.module('starter.productCtrl', [])
 		$scope.reportProduct = function() {
 			var myPopup = $ionicPopup.show({
 			    template: '<input type="text" ng-model="forReportData.reportProduct">',
-			    title: 'รายงานสิค้า',
+			    title: 'รายงานสินค้า',
 			    subTitle: 'กรุณาใส่หมายเหตุที่รายงานสินค้านี้',
 			    scope: $scope,
 			    buttons: [
