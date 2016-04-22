@@ -24,17 +24,6 @@
 
 }
 
-ul.rating li {
-	display: inline;
-	border: 0px;
-	background: none;
-	padding: 5px 10px;
-}
-
-ul.rating li i {
-	font-size: 30px;
-}
-
 .bodyCardCustom{
 	clear:both;
 	padding-top: 1px;
@@ -255,6 +244,51 @@ ion-popover-view.fit ion-content {
 .platform-ios ion-popover-view.fit {
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+ul.rating li {
+	display: inline;
+	border: 0px;
+	background: none;
+}
+
+ul.rating li i {
+	font-size: 30px;
+	padding-right: 10px;
+	color: yellow;
+}
+
+.fixedRating ul.rating li i{
+	text-align: center;
+	font-size: 20px;
+	padding-right: 5px;
+	color: #FFF520;
+}
+
+.controls {
+    margin-top: 10px;
+    border: 1px solid transparent;
+    border-radius: 2px 0 0 2px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    height: 32px;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#pac-input {
+    background-color: #fff;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 12px;
+    padding: 0 11px 0 13px;
+    text-overflow: ellipsis;
+    width: 50%;
+}
+
+#pac-input:focus {
+    border-color: #4d90fe;
 }
 
 /* css use ionicActionSheet for android design same ios */

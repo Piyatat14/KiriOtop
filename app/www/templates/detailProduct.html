@@ -18,78 +18,57 @@
 			<li class="item item-text-wrap">
 				<p>รายละเอียด : {{productdata.detailProduct}}</p>
 			</li>
-			<li class="item">
-				<div>
-					<i class="icon ion-ios-star" style="font-size:26px; color:yellow;"></i>
-					<i class="icon ion-ios-star" style="font-size:26px; color:yellow;"></i>
-					<i class="icon ion-ios-star" style="font-size:26px; color:yellow;"></i>
-					<i class="icon ion-ios-star" style="font-size:26px; color:yellow;"></i>
-					<i class="icon ion-ios-star-half" style="font-size:26px; color:yellow;"></i>
-					<span style="padding-left:3px;">{{productdata.ratingProduct}} จาก 10,000 <i class="icon ion-person" style="font-size:20px; padding-left:3px;"></i></span>
+			<li class="item row" style="text-align:center;">
+				<div class="fixedRating col col-50">
+					<rating ng-model="productdata.ratingProduct" max="5" readonly="true"></rating>
+					<span style="display:block;">({{productdata.ratingProduct}} จาก 10,000)<i class="icon ion-person" style="font-size:20px; padding-left:3px;"></i></span>
+					<span style="text-align:center;">100,00{{productdata.viewProduct}}<i class="icon ion-eye" style="font-size:20px;"></i></span>
 				</div>
-				<div style="padding-top:7px;">
-					<span>{{productdata.viewProduct}}<i class="icon ion-eye" style="padding-left:3px; font-size:20px; padding-right:30%;"></i></span>
-					<button class="button button-small button-assertive" ng-click="buyProduct()"><i class="icon ion-ios-cart-outline" style="padding-right:10px;"></i>ซื้อ</button>
+				<div class="col">
+					<button class="button button-small button-positive" ng-click="buyProduct()" style="width:80%;"><i class="icon ion-ios-cart-outline" style="padding-right: 10px;"></i>ซื้อ</button>
 				</div>
 			</li>
-			<li class="item">
+			<li class="item" ng-if="ratingComment == ''" style="text-align:center;">ไม่มีความคิดเห็น</li>
+			</li>
+			<li class="item" ng-repeat="ratComData in ratingComment | orderBy : '-comment_date'">
 				<div><p>ความคิดเห็น</p></div>
 				<div class="row">
 					<div class="col col-33">
-						<a><img src="img/ionic.png" style="width:80px;"></a>
+						<a><img src="{{ratComData.user_image}}" style="width:80px; height:80px;"></a>
 					</div>
 					<div class="col">
-						<p>Name Jar </p>
 						<p>
-							<i class="icon ion-ios-star" style="font-size:20px; color:yellow;"></i>
-							<i class="icon ion-ios-star" style="font-size:20px; color:yellow;"></i>
-							<i class="icon ion-ios-star" style="font-size:20px; color:yellow;"></i>
-							<i class="icon ion-ios-star" style="font-size:20px; color:yellow;"></i>
-							<i class="icon ion-ios-star" style="font-size:20px; color:yellow;"></i>
-							<span style="padding-left:5px;">(25/9/2556)</span>
+							{{ratComData.first_name}} {{ratComData.last_name}}
+							<span style="padding-left:5px; float:right;">({{ratComData.comment_date | date: "dd/MM/yyyy"}})</span>
+						</p>
+						<p class="fixedRating">
+							<rating ng-model="ratComData.rating" max="5" readonly="true"></rating>
 						</p>
 						<p>
-							สมุนไพรคัวนี้ดีมากคร้าบบบบบบบบบบบบบบบบบบบบบบบบบ
+							{{ratComData.comment}}
 						</p>
 					</div>
 				</div>
 			</li>
-			<li class="item">
-				<div><p>ความคิดเห็น</p></div>
-				<div class="row">
-					<div class="col col-33">
-						<a href="#"><img src="img/ionic.png" style="width:80px;"></a>
-					</div>
-					<div class="col">
-						<p>Name Jar </p>
-						<p>
-							<i class="icon ion-ios-star" style="font-size:20px; color:yellow;"></i>
-							<i class="icon ion-ios-star" style="font-size:20px; color:yellow;"></i>
-							<i class="icon ion-ios-star" style="font-size:20px; color:yellow;"></i>
-							<i class="icon ion-ios-star" style="font-size:20px; color:yellow;"></i>
-							<i class="icon ion-ios-star" style="font-size:20px; color:yellow;"></i>
-							<span style="padding-left:5px;">(25/9/2556)</span>
-						</p>
-						<p>
-							สมุนไพรคัวนี้ดีมากคร้าบบบบบบบบบบบบบบบบบบบบบบบบบ
-						</p>
-					</div>
-				</div>
+			<li class="item" ng-if="ratComLength > 4" style="text-align:center;">
+				<a href="#">ความคิดเห็นทั้งหมด</a>
 			</li>
 		</ion-list><br/><br/>
 	</ion-content>
 </ion-view>
-<ion-tabs class="tabs-assertive tabs-icon-top">
-	<a class="tab-item">
-		<i class="icon ion-person-stalker"></i>
-		พูดคุย
-	</a>
-	<a class="tab-item" ng-click="callToOwned()">
-		<i class="icon ion-ios-telephone"></i>
-		ติดต่อ
-	</a>
-	<a class="tab-item" ng-click="reportProduct()">
-		<i class="icon ion-android-alert"></i>
-		รายงาน
-	</a>
-</ion-tabs>
+<div class="tabs-assertive tabs-icon-top tabs-top tabs-striped">
+	<div class="tab-nav tabs">
+		<a class="tab-item">
+			<i class="icon ion-person-stalker"></i>
+			พูดคุย
+		</a>
+		<a class="tab-item" ng-click="callToOwned()">
+			<i class="icon ion-ios-telephone"></i>
+			ติดต่อ
+		</a>
+		<a class="tab-item" ng-click="reportProduct()">
+			<i class="icon ion-android-alert"></i>
+			รายงาน
+		</a>
+	</div>
+</div>

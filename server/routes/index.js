@@ -42,6 +42,8 @@ router.get('/buildOrderIds', products.buildOrderId);
 router.post('/insertOrderBuyers', products.insertOrderBuyer);
 //Insert Order For Seller
 router.post('/insertOrderSellers', products.insertOrderSeller);
+//Get Rating Products
+router.get('/getRatingProducts', products.getRatingProduct);
 
 //USERS
 //Get User
@@ -102,6 +104,8 @@ router.get('/getOrderLogs', order.getOrderLog);
 router.get('/getOrderSellers', order.getOrderSeller);
 //Get Bank Account In Order 
 router.get('/getBankInOrders', order.getBankInOrder);
+//Insert Rating And Comment
+router.post('/insertRatingComments', order.insertRatingComment);
 
 //REPORTS
 //Insert Report Product
