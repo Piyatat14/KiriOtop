@@ -59,7 +59,11 @@ router.post('/insertProfileUsers', users.insertProfileUser);
 //Update user profile data.
 router.post('/updateProfileUsers', users.updateProfileUser);
 //Send password to user email.
-router.post('/sendPassword', users.sendPassword);
+router.post('/sendPasswords', users.sendPassword);
+//Change password for user.
+router.post('/editPasswords', users.editPassword);
+//Check password for user change password.
+router.get('/checkPasswords', users.checkPassword);
 
 //BANKS
 //Get Banks

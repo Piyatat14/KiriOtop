@@ -10,6 +10,7 @@
   <content src="index.html"/>
   <access origin="*"/>
   <allow-navigation href="*"/>
+  <allow-navigation href="*"/>
   <allow-navigation href="file://*/*"/>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>

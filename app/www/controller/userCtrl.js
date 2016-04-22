@@ -1,7 +1,7 @@
 angular.module('starter.userCtrl', [])
 
 
-.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, $timeout, Authen, Users, urlService, $state, $ionicHistory) {
+.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, $timeout, Authen, Users, urlService, $state, $ionicHistory, $crypto) {
 
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
@@ -41,37 +41,58 @@ angular.module('starter.userCtrl', [])
 
 	// Perform the login action when the user submits the login form
 	$scope.doLogin = function() {
+		//$scope.loginData.encrypted = $crypto.encrypt($scope.loginData.password);
 		$http
 		.post(urlService.getBaseUrl() + '/findUsers', $scope.loginData)
 		.success(function(response) {
-			if(response == "ชื่อผู้ใช้หรือรหัสผ่านผิด..กรุณากรอกใหม่" || response == "ไม่พบชื่อผู้ใช้และรหัสผ่าน..กรุณากรอกใหม่"){
+			if(response == "ERROR") {
 				$ionicPopup.alert({
 					title: 'การเข้าสู่ระบบผิดพลาด',
-					template: response
+					template: "ไม่พบชื่อผู้ใช้ กรุณาตรวจสอบอีกครั้ง",
+					okText: 'ตกลง',
+					okType: 'button-assertive'
 				});
-			}else{
-				//login success Authen set user detail.
-				Authen.setUser({
-					userID : response[0].user_id,
-					email : response[0].email
-				});
-				$scope.dataUser = Authen.getUser();
+			}else {
+				var loginPass = null;
+				//If password in database not server assign.
+				if(response[0].password.length > 8) {
+					//Decryption password for check valid.
+					loginPass = $crypto.decrypt(response[0].password);
+				}else {										//Password is server generate in case forget password.
+					loginPass = response[0].password;
+;				}
 
-				//get profile_id each user.
-				$http.post(urlService.getBaseUrl() + '/findProfileUsers', $scope.dataUser)
-					.success(function(res) {
-						//if profile_id for user is have.But not have Users.getUserData equal undefined
-						if(res !== 'ERROR' && Users.getUserData() === undefined) {
-							//set cookie for user about profile data.
-							Users.setUserData({
-								profileID: res[0].profile_id
-							});
+				if(loginPass == $scope.loginData.password) {
+					//login success Authen set user detail.
+					Authen.setUser({
+						userID : response[0].user_id,
+						email : response[0].email
+					});
+					$scope.dataUser = Authen.getUser();
+
+					//get profile_id each user.
+					$http.post(urlService.getBaseUrl() + '/findProfileUsers', $scope.dataUser)
+						.success(function(res) {
+							//if profile_id for user is have.But not have Users.getUserData equal undefined
+							if(res !== 'ERROR' && Users.getUserData() === undefined) {
+								//set cookie for user about profile data.
+								Users.setUserData({
+									profileID: res[0].profile_id
+								});
+							}
 						}
-					}
-				);
+					);
 
-				$scope.closeLogin();
-				$state.go('app.product', {}, {reload:true});
+					$scope.closeLogin();
+					$state.go('app.product', {}, {reload:true});
+				}else {
+					$ionicPopup.alert({
+						title: 'การเข้าสู่ระบบผิดพลาด',
+						template: "รหัสผ่านผิดพลาด กรุณาตรวจสอบอีกครั้ง",
+						okText: 'ตกลง',
+						okType: 'button-assertive'
+					});
+				}
 			}
 		}).error(function(err) {
 			console.log('Error: ' + err);
@@ -90,7 +111,7 @@ angular.module('starter.userCtrl', [])
 		//If email is valid.
 		if(email !== undefined && email !== "") {
 			$scope.checkEmail = true;
-			$http.post(urlService.getBaseUrl() + '/sendPassword', {'email' : email}).success(function(response) {
+			$http.post(urlService.getBaseUrl() + '/sendPasswords', {'email' : email}).success(function(response) {
 				if(response == "SUCCESS") {
 					$ionicPopup.alert({
 						'title' : 'ส่งรหัสผ่านเรียบร้อยแล้ว',
@@ -110,7 +131,7 @@ angular.module('starter.userCtrl', [])
 
 })
 
-.controller('registerCtrl', function($scope, $http, $ionicPopup, urlService, $ionicHistory, $state) {
+.controller('registerCtrl', function($scope, $http, $ionicPopup, urlService, $ionicHistory, $state, $crypto) {
 	$ionicHistory.nextViewOptions({
 		disableBack: true
 	});
@@ -119,9 +140,15 @@ angular.module('starter.userCtrl', [])
 		if($scope.registerData.password != $scope.registerData.rePassword){
 			$ionicPopup.alert({
 				title: 'สมัครสมาชิกผิดพลาด',
-				template: 'รหัสผ่านไม่ตรงกัน..กรุณากรอกใหม่'
+				template: 'รหัสผ่านไม่ตรงกัน..กรุณากรอกใหม่',
+				okText: 'ตกลง',
+				okType: 'button-assertive'
 			});
 		}else{
+			const regisPass = $crypto.encrypt($scope.registerData.password);
+			$scope.registerData.encryptPass = regisPass;
+			console.log('in regis : '+regisPass);
+
 			$http
 			.post(urlService.getBaseUrl() + '/checkRegister', $scope.registerData)
 			.success(function(response) {
@@ -135,7 +162,9 @@ angular.module('starter.userCtrl', [])
 				}else{
 					$ionicPopup.alert({
 						title: 'สมัครสมาชิกผิดพลาด',
-						template: response
+						template: response,
+						okText: 'ตกลง',
+						okType: 'button-assertive'
 					});
 				}
 			})
@@ -146,8 +175,6 @@ angular.module('starter.userCtrl', [])
 .controller('ProfileCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory) {
 	//this controller must login.
 	$ionicPlatform.ready(function() {
-
-		console.log('RELOAD');
 
 		//object for Authen.
 		var userDetail = Authen.getUser();
@@ -353,4 +380,108 @@ angular.module('starter.userCtrl', [])
         	}	
         }
 	})
+})
+
+.controller('editPasswordCtrl', function($scope, $state, $http, Authen, urlService, $ionicPopup, $crypto) {
+	var user = Authen.getUser(); 
+
+	//data for change password.
+	$scope.data = {
+		userID: user.userID
+	};
+
+	$scope.checkPassword = function() {
+		//new password not same.
+		if($scope.data.newPass !== $scope.data.newPassConfirm) {
+			$ionicPopup.alert({
+				title: 'ผิดพลาด',
+				template: 'รหัสผ่านไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง',
+				okText: 'ตกลง',
+				okType: 'button-assertive'
+			});
+		}else {						//password is same.
+			//password less than 6 digits.
+			if($scope.data.newPass.length < 6) {
+				$ionicPopup.alert({
+					title: 'ผิดพลาด',
+					template: 'รหัสผ่านน้อยกว่า 6 ตัวอักษร กรุณาตรวจสอบอีกครั้ง',
+					okText: 'ตกลง',
+					okType: 'button-assertive'
+				});
+			}else {
+				var confirm = $ionicPopup.confirm({
+					title: 'เปลี่ยนรหัสผ่าน',
+					template: 'คุณยืนยันการเปลี่ยนแปลงรหัสผ่าน',
+					cancelText: 'ยกเลิก',
+					okText: 'ตกลง'
+				});
+
+				confirm.then(function(res) {
+					//If confirm is OK.
+					if(res) {
+						var encrypted = $crypto.encrypt($scope.data.newPass);
+
+						if(encrypted !== undefined) {
+							$scope.data.encryptPass = encrypted;
+						}
+
+						$http.get(urlService.getBaseUrl() + '/checkPasswords', {params: {userId: $scope.data.userID}})
+						.success(function(res) {
+							//If get result is have data.
+							if(res.password != "") {
+								var oldPass = null;
+								
+								if(res.password.length > 8) {
+									//Decrypt password from database for check user insert old password.
+									oldPass = $crypto.decrypt(res.password);
+								}else {
+									//In case forget password.
+									oldPass = res.password;
+								}
+
+								//Check password old in database and user insert.
+								if(oldPass == $scope.data.oldPass) {
+									$http.post(urlService.getBaseUrl() + '/editPasswords', $scope.data)
+									.success(function(res) {
+										$ionicPopup.alert({
+											title: 'สำเร็จ',
+											template: 'คุณได้ทำการเปลี่ยนแปลงรหัสผ่านเรียบร้อยแล้ว',
+											okText: 'ตกลง'
+										}).then(function(res) {
+											$state.go('app.editPassword', {}, {reload: true});
+										});
+									}).error(function(err) {
+										console.log(err);
+										$ionicPopup.alert({
+											title: 'ผิดพลาด',
+											template: 'ไม่สามารถทำการเปลี่ยนแปลงรหัสผ่านได้ กรุณาติดต่อผู้ดูแล',
+											okText: 'ตกลง',
+											okType: 'button-assertive'
+										});
+									});
+								}else {
+									$ionicPopup.alert({
+										title: 'ผิดพลาด',
+										template: 'รหัสผ่านเดิมไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง',
+										okText: 'ตกลง',
+										okType: 'button-assertive'
+									});
+								}
+							}
+
+						}).error(function(err) {
+							console.log(err);
+							$ionicPopup.alert({
+								title: 'ผิดพลาด',
+								template: 'เกิดข้อผิดพลาด กรุณาติดต่อผู้ดูแล',
+								okText: 'ตกลง',
+								okType: 'button-assertive'
+							});
+						});
+					}
+				});
+			}
+		}
+	}
+
 });

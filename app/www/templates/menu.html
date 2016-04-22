@@ -100,8 +100,18 @@
           </a>
         </ion-item>
 
-        <ion-item menu-close ng-click="logout()" ng-if="dataUser">
-          <i class="ion-close-circled" style="color:red; padding-right: 15px;"></i>ออกจากระบบ
+        <ion-item menu-close class="item item-complex" ng-if="dataUser">
+          <a class="menuTagA" href="#/app/editPassword">
+            <div class="groupList">
+              <i class="ion-key"></i>
+              เปลี่ยนรหัสผ่าน
+            </div>
+          </a>
+          <a class="menuTagA" href="#">
+            <div class="groupList" ng-click="logout()">
+              <i class="ion-close-circled" style="color:red; padding-right: 15px;"></i>ออกจากระบบ
+            </div>
+          </a>          
         </ion-item>
       </ion-list>
     </ion-content>

@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', 'starter.services', 'starter.bankAccountCtrl', 'starter.userGroupCtrl', 'starter.orderCtrl', 'ngCordova'])
+angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', 'starter.services', 'starter.bankAccountCtrl', 'starter.userGroupCtrl', 'starter.orderCtrl', 'ngCordova', 'mdo-angular-cryptography'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -233,6 +233,17 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
       'menuContent': {
         templateUrl: 'templates/orderDetail.html',
         controller: 'orderDetailCtrl'
+      }
+    }
+  })
+
+  .state('app.editPassword', {
+    cache: false,
+    url: '/editPassword',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/changePassword.html',
+        controller: 'editPasswordCtrl'
       }
     }
   })

@@ -12,25 +12,20 @@ connection.connect();
 var multer = require('multer');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
+var smtpTransport = require('nodemailer-smtp-transport');
 	
 exports.findUser = function(req, res) {
 	var emailUser = req.body.username;
-	var passUser = req.body.password;
-	strQuery = "SELECT user_id, email, password, register_date, user_status FROM user_info WHERE email=? AND password=? LIMIT 1";
-	connection.query(strQuery, [emailUser, passUser], function(err, rows){
+	strQuery = "SELECT user_id, email, password, register_date, user_status FROM user_info WHERE email=? LIMIT 1";
+	connection.query(strQuery, [emailUser], function(err, rows){
 		if(err) {
 			console.log(err);
 			throw err;
 		}else {
-			if(rows != ""){
-				if(emailUser == rows[0].email && passUser == rows[0].password){
-					console.log(rows);
-					res.send(rows);
-				}else{
-					res.send('ชื่อผู้ใช้หรือรหัสผ่านผิด..กรุณากรอกใหม่');
-				}
-			}else{
-				res.send('ไม่พบชื่อผู้ใช้และรหัสผ่าน..กรุณากรอกใหม่');
+			if(rows != "") {
+				res.send(rows);	
+			}else {
+				res.send("ERROR");
 			}
 		}
 	});
@@ -72,7 +67,7 @@ exports.checkRegis = function(req, res) {
 exports.insertRegis = function(req, res) {
 	var regisData = {
 		email : req.body.email,
-		password : req.body.password,
+		password : req.body.encryptPass,
 		register_date : new Date(),
 		user_status : "User"
 	}
@@ -173,13 +168,13 @@ exports.sendPassword = function(req, res) {
 			}else {
 				//If update password user succes.
 				//If have data. Server send generate password to email user.
-				var transporter = nodemailer.createTransport({
-					service: 'Gmail',
+				var transporter = nodemailer.createTransport(smtpTransport({
+					service: 'gmail',
 					auth: {
 						user: 'kiriotop.server@gmail.com',
 						pass: 'p@ss@dmin9999'
 					}
-				});
+				}));
 
 				var mailOption = {
 					from: 'สมาชิก KiriOtop App <kiriotop.server@gmail.com>',
@@ -203,6 +198,31 @@ exports.sendPassword = function(req, res) {
 	});
 };
 
+exports.checkPassword = function(req, res) {
+	strQuery = "SELECT password FROM user_info WHERE user_id = ?";
+	connection.query(strQuery, [req.query.userId], function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows[0]);
+		}
+	})
+};
+
+exports.editPassword = function(req, res) {
+	console.log(req.body.encryptPass);
+	strQuery = "UPDATE user_info SET password = ? WHERE user_id = ?";
+	connection.query(strQuery, [req.body.encryptPass, req.body.userID], function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send("SUCCESS");
+		}
+	});
+};
+
 //function generate data 8 digits.
 function generateCryp(callback) {								//call back function.
 	//Random Password for send temp password to user in case recovery.
@@ -214,7 +234,27 @@ function generateCryp(callback) {								//call back function.
 		callback(null, buffer.toString('hex'));
 	})
 }
+/*
+function encodeDataHex(data) {
+	console.log('data in encode ' + data);
+	const cipher = crypto.createCipher('aes192', '');
+	
+	var encrypted = cipher.update(data, 'utf8', 'hex');
+	encrypted += cipher.final('hex');
+	console.log(encrypted);
+	return encrypted;
+}
 
+function decodeDataHex(data) {
+	console.log('data in decode ' + data);
+	const decipher = crypto.createDecipher('aes192', '');
+
+	var decrypted = decipher.update(data, 'hex', 'utf-8');
+	decrypted += decipher.final('utf-8');
+	console.log(decrypted);
+	return decrypted;
+}
+*/
 
 
 

@@ -2,11 +2,12 @@ angular.module('starter.services', ['ngCookies'])
 
 .service('urlService', function() {
 	this.getBaseUrl = function() {
-		return "http://192.168.1.11:3000";
+		return "http://192.168.43.34:3000";
 	};
 })
 
 .factory('Authen', function($cookieStore) {
+	//key in _user: userID, email
 	var _user = $cookieStore.get('starter.sessionUser');
 	var setUser = function(user) {
 		_user = user;
