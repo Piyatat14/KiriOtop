@@ -5,9 +5,11 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 		var idOderBuyer = '';
 		var statusBuyer = '';
 		var orderStatus = '';
+		var productId = '';
 		$scope.rating = {};
 		$scope.rating.rate = 3;
 		$scope.rating.max = 5;
+		$scope.rating.comment = '';
 
 		var getOrder = function(){
 			$http
@@ -37,8 +39,9 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 			$scope.popover = popover;
 		});
 
-		$scope.popoverStatus = function($event, status, idOrder) {
+		$scope.popoverStatus = function($event, status, idOrder, idProduct) {
 			idOderBuyer = idOrder;
+			productId = idProduct;
 			statusBuyer = status;
 			if(status == 'รอการยืนยัน'){
 				$scope.comfirmStatus = false;
@@ -108,11 +111,16 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 					    buttons: [
 					    	{ text: 'ยกเลิก' },
 					    	{
-						        text: '<b>ส่งเลขบัญชี</b>',
-						        type: 'button-royal',
+						        text: '<b>ยืนยัน</b>',
+						        type: 'button-stable',
 						        onTap: function(e) {
-						        	console.log($scope.banksForSent);
-						        	$scope.popover.hide();
+						        	var ratingDate = new Date();
+						        	console.log($scope.rating.comment);
+						        	$http
+									.post(urlService.getBaseUrl() + '/insertRatingComments', {pId:profileUser.profileID, rating:$scope.rating.rate, tComment:$scope.rating.comment, prodId:productId, rDate:ratingDate})
+									.success(function(response){
+										
+									})
 					        	}
 					      	}
 					    ]

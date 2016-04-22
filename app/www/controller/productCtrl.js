@@ -1,4 +1,4 @@
-angular.module('starter.productCtrl', [])
+angular.module('starter.productCtrl', ['ionic.rating'])
 
 	.controller('ProductCtrl', function($scope, $http, urlService) { //$ionicHistory,
 		// $ionicHistory.nextViewOptions({
@@ -79,6 +79,7 @@ angular.module('starter.productCtrl', [])
 		$scope.forReportData = {};
 		$scope.forOrderBuyer = {};
 		$scope.forImageDetail = [];
+		$scope.ratingComment = {};
 		$scope.productdata = {};
 		if(angular.isUndefined(Authen.getUser())){
 			$scope.forReportData.userID = null;
@@ -115,6 +116,23 @@ angular.module('starter.productCtrl', [])
 					}
 				}
 			})
+		
+		$http
+			.get(urlService.getBaseUrl() + '/getRatingProducts', {params: {pId : $stateParams.idProduct}})
+			.success(function(response) {
+				$scope.ratingComment = response;
+				console.log(response);
+				$scope.ratComLength = $scope.ratingComment.length;
+				for(var i=0; i<$scope.ratComLength; i++){
+					if(response[i].user_image == null){
+						$scope.ratingComment[i].user_image = urlService.getBaseUrl() + /img/ + 'null.png';
+					}else{
+						$scope.ratingComment[i].user_image = urlService.getBaseUrl() + /img/ + response[i].user_image;
+					}
+				}
+				console.log($scope.ratingComment);
+			})
+
 		$scope.reportProduct = function() {
 			var myPopup = $ionicPopup.show({
 			    template: '<input type="text" ng-model="forReportData.reportProduct">',

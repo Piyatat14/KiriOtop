@@ -40,9 +40,7 @@
 </script>
 
 <script id="templates/orderBanks.html" type="text/ng-template">
-	<ion-list>
-		<ion-list ng-repeat="banks in banksData">
-			<ion-checkbox class="checkbox-balanced" ng-checked="selection.indexOf(banks) > -1" ng-click="toggleSelection(banks)" value="{{banks.book_bank_account}}">{{banks.logo_bank_name}}</ion-checkbox>
-		</ion-list>
+	<ion-list ng-repeat="banks in banksData">
+		<ion-checkbox class="checkbox-balanced" ng-checked="selection.indexOf(banks) > -1" ng-click="toggleSelection(banks)" value="{{banks.book_bank_account}}">{{banks.logo_bank_name}}</ion-checkbox>
 	</ion-list>
 </script>

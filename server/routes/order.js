@@ -91,3 +91,22 @@ exports.getBankInOrder = function(req, res, next) {
 		}
 	});
 };
+
+exports.insertRatingComment = function(req, res, next) {
+	var ratingData = {
+		product_id : req.body.prodId,
+		profile_id : req.body.pId,
+		rating : req.body.rating,
+		comment : req.body.tComment,
+		comment_date : req.body.rDate,
+	}
+	strQuery = "INSERT INTO user_product_rating SET ?";
+	connection.query(strQuery, ratingData, function(err, rows){
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send("Success");
+		}
+	});
+};

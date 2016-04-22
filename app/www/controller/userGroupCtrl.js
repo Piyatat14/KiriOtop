@@ -24,7 +24,21 @@ angular.module('starter.userGroupCtrl', [])
 	})
 })
 
-.controller('ImageUserGroupCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory) {
+.controller('ImageUserGroupCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory, googleMaps, $ionicModal) {
+	$ionicModal.fromTemplateUrl('templates/mapGoogle.html', {
+		scope: $scope,
+		animation: 'slide-in-up'
+	}).then(function(modal) {
+		$scope.modal = modal;
+	});
+	$scope.openMaps = function() {
+		googleMaps.loadMaps();
+		googleMaps.setLoaded('1');
+		$scope.modal.show();
+	};
+	$scope.closeMaps = function() {
+		$scope.modal.hide();
+	};
 
 	var userID = Authen.getUser().userID;
 	//object for user data after view call this controller.
@@ -357,5 +371,21 @@ angular.module('starter.userGroupCtrl', [])
 					})
 			})
 	};
+	});
+})
+
+.controller('mapCtrl', function($scope){
+	google.maps.event.addDomListener(window, "load", function(){
+		var myLatlng = new google.maps.LatLng(37.3000, -120.4833);
+
+		var mapOptions = {
+			center : myLatlng,
+			zoom : 16,
+			mapTypeId : google.map.MapTypeId.ROADMAP
+		};
+
+		var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+		$scope.map = map;
 	});
 })

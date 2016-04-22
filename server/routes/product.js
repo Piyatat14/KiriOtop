@@ -251,7 +251,6 @@ exports.insertOrderSeller = function(req, res) {
 		order_buyer_id : req.body.sId,
 		seller_status_name : 'รอการยืนยัน'
 	}
-	console.log(req.query.sId);
 	strQuery = "INSERT INTO order_seller SET ?";
 	connection.query(strQuery, orderData, function(err, rows){
 		if(err) {
@@ -259,6 +258,18 @@ exports.insertOrderSeller = function(req, res) {
 			throw err;
 		}else {
 			res.send("Success");
+		}
+	});
+};
+
+exports.getRatingProduct = function(req, res) {
+	strQuery = "SELECT user_product_rating.profile_id, user_product_rating.rating, user_product_rating.comment, user_product_rating.comment_date, user_profile.first_name, user_profile.last_name, user_profile.user_image FROM user_product_rating JOIN user_profile ON user_product_rating.profile_id = user_profile.profile_id WHERE user_product_rating.product_id=?";
+	connection.query(strQuery, req.query.pId, function(err, rows){
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
 		}
 	});
 };

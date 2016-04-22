@@ -21,8 +21,9 @@
 				</label>
 				<label class="item item-input item-stacked-label item-icon-right">
 					<span class="input-label">สถานที่</span>
-					<input type="text" name="placeGroup" ng-model="userGroupData.placeGroup" placeholder="สถานที่" required/>
-					<i ng-show="userGroupForm.placeGroup.$error.required && !userGroupForm.placeGroup.$pristine" class="icon ion-close-circled" style="color:red;"></i>
+					<i class="icon ion-ios-location" style="color:blue; font-size:20px;" ng-click="openMaps()"></i>
+					<!-- <input type="text" name="placeGroup" ng-model="userGroupData.placeGroup" placeholder="สถานที่" required/> -->
+					<!-- <i ng-show="userGroupForm.placeGroup.$error.required && !userGroupForm.placeGroup.$pristine" class="icon ion-close-circled" style="color:red;"></i> -->
 				</label>
 				<label class="item item-input item-stacked-label item-icon-right">
 					<span class="input-label">เบอร์ติดต่อ</span>
@@ -38,3 +39,15 @@
 	</ion-content>
 </ion-view>
 
+<script id="templates/mapGoogle.html" type="text/ng-template">
+	<ion-modal-view>
+		<ion-header-bar>
+		  	<h1 class="title">สถานที่ตั้งของเครือข่าย</h1>
+		  	<button class="button" ng-click="closeMaps()">ปิด</button>
+		</ion-header-bar>
+		<ion-content scroll="false">
+			<input id="pac-input" class="controls" type="text" placeholder="Search Box">
+		  	<div id="map_canvas" style="height:1000px;"></div>
+		</ion-content>
+	</ion-modal-view>
+</script>

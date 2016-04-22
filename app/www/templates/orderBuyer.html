@@ -11,12 +11,9 @@
 				<p>ราคา : {{order.product_price*order.order_amount}} | จำนวน : {{order.order_amount}}</p>
 				<p>
 					สถานะ : {{order.buyer_status_name}}
-					<span style="color:orange; float:right; padding:5px 5px 5px 5px;" ng-click="popoverStatus($event, order.buyer_status_name, order.order_buyer_id)"><i class="icon ion-android-more-vertical" style="font-size:26px;"></i></span>
+					<span style="color:orange; float:right; padding:5px 5px 5px 5px;" ng-click="popoverStatus($event, order.buyer_status_name, order.order_buyer_id, order.product_id)"><i class="icon ion-android-more-vertical" style="font-size:26px;"></i></span>
 				</p>
 			</a>
-			<li class="item">
-				<rating ng-model="rating.rate" max="rating.max"></rating>
-			</li>
 		</ion-list>
 	</ion-content>
 </ion-view>
@@ -40,5 +37,10 @@
 </script>
 
 <script id="templates/ratingComment.html" type="text/ng-template">
-	<rating ng-model="rating.rate" max="rating.max"></rating>
+	<ion-list>
+		<ion-item style="text-align:center;">
+			<rating ng-model="rating.rate" max="rating.max"></rating><br/>
+			<input type="text" ng-model="rating.comment" placeholder="ความคิดเห็น"/>
+		</ion-item>
+	</ion-list>
 </script>
