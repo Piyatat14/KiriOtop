@@ -19,9 +19,9 @@
 					<input type="text" name="nameGroup" ng-model="userGroupData.nameGroup" placeholder="ชื่อ (กลุ่ม/ร้าน)" required/>
 					<i ng-show="userGroupForm.nameGroup.$error.required && !userGroupForm.nameGroup.$pristine" class="icon ion-close-circled" style="color:red;"></i>
 				</label>
-				<label class="item item-input item-stacked-label item-icon-right">
+				<label class="item item-input item-stacked-label item-icon-right" ng-click="openMaps()">
 					<span class="input-label">สถานที่</span>
-					<i class="icon ion-ios-location" style="color:blue; font-size:20px;" ng-click="openMaps()"></i>
+					<i class="icon ion-ios-location" style="color:blue; font-size:20px;"></i>
 					<!-- <input type="text" name="placeGroup" ng-model="userGroupData.placeGroup" placeholder="สถานที่" required/> -->
 					<!-- <i ng-show="userGroupForm.placeGroup.$error.required && !userGroupForm.placeGroup.$pristine" class="icon ion-close-circled" style="color:red;"></i> -->
 				</label>
