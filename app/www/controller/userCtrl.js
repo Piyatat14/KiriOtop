@@ -108,24 +108,47 @@ angular.module('starter.userCtrl', [])
 	};
 
 	$scope.sendPassword = function(email) {
+		$scope.checkEmail = {};
 		//If email is valid.
 		if(email !== undefined && email !== "") {
-			$scope.checkEmail = true;
-			$http.post(urlService.getBaseUrl() + '/sendPasswords', {'email' : email}).success(function(response) {
-				if(response == "SUCCESS") {
+			$scope.checkEmail.status = true;
+			$scope.checkEmail.username = email;
+			//Check email have in app.
+			$http.post(urlService.getBaseUrl() + '/findUsers', $scope.checkEmail)
+			.success(function(res) {
+				if(res != "ERROR") {
+					$http.post(urlService.getBaseUrl() + '/sendPasswords', {'email' : email}).success(function(response) {
+						if(response == "SUCCESS") {
+							$ionicPopup.alert({
+								'title' : 'ส่งรหัสผ่านเรียบร้อยแล้ว',
+								'template' : 'กรุณารอรับอีเมล์จากระบบ',
+								'okText' : 'ตกลง'
+							}).then(function(res) {
+								console.log('Send E-mail complete.');
+							});
+						}
+					}).error(function(err) {
+						console.log(err);
+					})
+				}else {							//Email not found.
 					$ionicPopup.alert({
-						'title' : 'ส่งรหัสผ่านเรียบร้อยแล้ว',
-						'template' : 'กรุณารอรับอีเมล์จากระบบ',
-						'okText' : 'ตกลง'
-					}).then(function(res) {
-						console.log('Send E-mail complete.');
+						title: 'ผิดพลาด',
+						template: 'ไม่พบอีเมล์ดังกล่าว กรุณาตรวจสอบอีกครั้ง',
+						okText: 'ตกลง',
+						okType: 'button-assertive'
 					});
 				}
 			}).error(function(err) {
 				console.log(err);
-			})
+				$ionicPopup.alert({
+						title: 'ผิดพลาด',
+						template: 'ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง',
+						okText: 'ตกลง',
+						okType: 'button-assertive'
+					});
+			});
 		}else {
-			$scope.checkEmail = false;
+			$scope.checkEmail.status = false;
 		}
 	};
 

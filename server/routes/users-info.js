@@ -16,6 +16,7 @@ var smtpTransport = require('nodemailer-smtp-transport');
 	
 exports.findUser = function(req, res) {
 	var emailUser = req.body.username;
+	console.log(emailUser);
 	strQuery = "SELECT user_id, email, password, register_date, user_status FROM user_info WHERE email=? LIMIT 1";
 	connection.query(strQuery, [emailUser], function(err, rows){
 		if(err) {
