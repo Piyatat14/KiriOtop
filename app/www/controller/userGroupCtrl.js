@@ -24,8 +24,7 @@ angular.module('starter.userGroupCtrl', [])
 	})
 })
 
-.controller('ImageUserGroupCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory, googleMaps, $ionicModal, $q) {
-	$scope.mapsData = {};
+.controller('ImageUserGroupCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory, googleMaps, $ionicModal) {
 	$ionicModal.fromTemplateUrl('templates/mapGoogle.html', {
 		scope: $scope,
 		animation: 'slide-in-up'
@@ -33,21 +32,17 @@ angular.module('starter.userGroupCtrl', [])
 		$scope.modal = modal;
 	});
 	$scope.openMaps = function() {
-		googleMaps.loadScript().then(function(success){
-			console.log(success);
-			googleMaps.useInitMaps().then(function(maps){
-				console.log(maps);
-			})
+		googleMaps.loadMaps().then(function(suc){
+			$scope.showplaceMap = suc;
+			console.log(suc);
 		})
-		// googleMaps.loadMaps();
-		// googleMaps.setLoaded('1');
-		// $scope.modal.show();
-		// $scope.valuee = googleMaps.getMapsValue();
-		// console.log($scope.valuee);
+		googleMaps.setLoaded('1');
+		$scope.modal.show();
 	};
 	$scope.closeMaps = function() {
 		$scope.modal.hide();
 	};
+
 	var userID = Authen.getUser().userID;
 	//object for user data after view call this controller.
 	var profileUser = Users.getUserData();
@@ -194,15 +189,6 @@ angular.module('starter.userGroupCtrl', [])
 			})
 		};
 	});
-
-	// $scope.test = function(tVal){
-	// 	var deferred = $q.defer();
-	// 	deferred.resolve(tVal);
-	// 	return deferred.promise;
-	// }
-	// $scope.test("Fuck U Defer").then(function(suc){
-	// 	console.log("OKAY : " + suc);
-	// })
 })
 
 .controller('editUserGroupCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory, $stateParams) {
