@@ -19,10 +19,10 @@
 				</label>
 				<label class="item item-input item-stacked-label item-icon-right" ng-click="openMaps()">
 					<span class="input-label">สถานที่</span>
-					<i class="icon ion-ios-location" style="color:blue; font-size:20px;"></i>
-					<p>{{showplaceMap.place}}</p>
-					<!-- <input type="text" name="placeGroup" ng-model="userGroupData.placeGroup" placeholder="สถานที่" required/>-->
-					<!-- <i ng-show="userGroupForm.placeGroup.$error.required && !userGroupForm.placeGroup.$pristine" class="icon ion-close-circled" style="color:red;"></i> -->
+					<i class="icon ion-ios-location" style="color:blue; font-size:28px;"></i>
+					<p>{{userGroupData.place}}</p>
+					<input type="hidden" name="place" ng-model="userGroupData.place" required/>
+					<i ng-show="userGroupForm.place.$error.required && !userGroupForm.place.$pristine" class="icon ion-close-circled" style="color:red;"></i>
 				</label>
 				<label class="item item-input item-stacked-label item-icon-right">
 					<span class="input-label">เบอร์ติดต่อ</span>
@@ -46,7 +46,7 @@
 		</ion-header-bar>
 		<ion-content scroll="false">
 			<input id="pac-input" class="controls" type="text" placeholder="Search Box">
-		  	<div id="map_canvas" style="height:1000px;"></div>
+		  	<div id="map_canvas" style="height:100%;"></div>
 		</ion-content>
 	</ion-modal-view>
 </script>

@@ -39,7 +39,9 @@ exports.insertUserGroup = function(req, res) {
 	var userGroupData = {
 		profile_id : req.body.idProfile,
 		group_name : req.body.nameGroup,
-		address_location : req.body.placeGroup,
+		address_location : req.body.place,
+		address_lat : req.body.lat,
+		address_lng : req.body.lng,
 		tel_no : req.body.telephone
 	}
 	strQuery = "INSERT INTO user_group SET ?";
@@ -70,7 +72,7 @@ exports.insertImageUserGroup = function(req, res) {
 };
 
 exports.editUserGroup = function(req, res) {
-	strQuery = "SELECT user_group.group_id, user_group.profile_id, user_group.group_name, user_group.address_location, user_group.tel_no, user_group_image.group_image_id, user_group_image.image FROM user_group LEFT JOIN user_group_image ON user_group.group_id = user_group_image.group_id WHERE user_group.profile_id=? AND user_group.group_id=?";
+	strQuery = "SELECT user_group.group_id, user_group.profile_id, user_group.group_name, user_group.address_location, user_group.address_lat, user_group.address_lng, user_group.tel_no, user_group_image.group_image_id, user_group_image.image FROM user_group LEFT JOIN user_group_image ON user_group.group_id = user_group_image.group_id WHERE user_group.profile_id=? AND user_group.group_id=?";
 	connection.query(strQuery, [req.query.pId, req.query.groupId], function(err, rows){
 		if(err) {
 			console.log(err);
@@ -110,6 +112,8 @@ exports.updateUserGroup = function(req, res) {
 		profile_id : req.body.idProfile,
 		group_name : req.body.nameGroup,
 		address_location : req.body.placeGroup,
+		address_lat : req.body.placeLat,
+		address_lng : req.body.placeLng,
 		tel_no : req.body.telephone
 	}
 	strQuery = "UPDATE user_group SET ? WHERE group_id=?";

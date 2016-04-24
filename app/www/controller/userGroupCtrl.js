@@ -25,6 +25,12 @@ angular.module('starter.userGroupCtrl', [])
 })
 
 .controller('ImageUserGroupCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory, googleMaps, $ionicModal) {
+	var userID = Authen.getUser().userID;
+	//object for user data after view call this controller.
+	var profileUser = Users.getUserData();
+
+	$scope.userGroupData = {};
+
 	$ionicModal.fromTemplateUrl('templates/mapGoogle.html', {
 		scope: $scope,
 		animation: 'slide-in-up'
@@ -32,22 +38,75 @@ angular.module('starter.userGroupCtrl', [])
 		$scope.modal = modal;
 	});
 	$scope.openMaps = function() {
-		googleMaps.loadMaps().then(function(suc){
-			$scope.showplaceMap = suc;
-			console.log(suc);
+		googleMaps.loadMaps().then(function(){
+			var input = document.getElementById('pac-input');
+			var map = new google.maps.Map(document.getElementById('map_canvas'), {
+				center: {lat: 13.7248946, lng: 100.4930264},
+				zoom: 13,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
+
+			// Create the search box and link it to the UI element.
+			
+			var searchBox = new google.maps.places.SearchBox(input);
+			map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+			// Bias the SearchBox results towards current map's viewport.
+			map.addListener('bounds_changed', function() {
+				searchBox.setBounds(map.getBounds());
+			});
+
+			var markers = [];
+			// Listen for the event fired when the user selects a prediction and retrieve
+			// more details for that place.
+			searchBox.addListener('places_changed', function() {
+				var places = searchBox.getPlaces();
+				if (places.length == 0) {
+					return;
+				}
+				// Clear out the old markers.
+				markers.forEach(function(marker) {
+					marker.setMap(null);
+				});
+				markers = [];
+				// For each place, get the icon, name and location.
+				var bounds = new google.maps.LatLngBounds();
+				places.forEach(function(place) {
+					var icon = {
+						url: place.icon,
+						size: new google.maps.Size(71, 71),
+						origin: new google.maps.Point(0, 0),
+						anchor: new google.maps.Point(17, 34),
+						scaledSize: new google.maps.Size(25, 25)
+					};
+
+					// Create a marker for each place.
+					markers.push(new google.maps.Marker({
+						map: map,
+						icon: icon,
+						title: place.name,
+						position: place.geometry.location,
+						positionLat: place.geometry.location.lat(),
+						positionLng: place.geometry.location.lng()
+					}));
+					$scope.userGroupData.place = input.value;
+					$scope.userGroupData.lat = markers[0].positionLat;
+					$scope.userGroupData.lng = markers[0].positionLng;
+					if (place.geometry.viewport) {
+						// Only geocodes have viewport.
+						bounds.union(place.geometry.viewport);
+					} else {
+						bounds.extend(place.geometry.location);
+					}
+				});
+				map.fitBounds(bounds);
+			});
 		})
-		googleMaps.setLoaded('1');
 		$scope.modal.show();
 	};
 	$scope.closeMaps = function() {
 		$scope.modal.hide();
 	};
-
-	var userID = Authen.getUser().userID;
-	//object for user data after view call this controller.
-	var profileUser = Users.getUserData();
-
-	$scope.userGroupData = {};
 
 	$ionicPlatform.ready(function() {
 		$scope.images = [];
@@ -191,13 +250,98 @@ angular.module('starter.userGroupCtrl', [])
 	});
 })
 
-.controller('editUserGroupCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory, $stateParams) {
+.controller('editUserGroupCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, googleMaps, $ionicActionSheet, $ionicHistory, $stateParams, $ionicModal) {
 	
 	var userID = Authen.getUser().userID;
 	//object for user data after view call this controller.
 	var profileUser = Users.getUserData();
 
 	$scope.editGroupData = {};
+
+	$ionicModal.fromTemplateUrl('templates/mapGoogle.html', {
+		scope: $scope,
+		animation: 'slide-in-up'
+	}).then(function(modal) {
+		$scope.modal = modal;
+	});
+	$scope.openMaps = function(placeLat, placeLng, placeName) {
+		googleMaps.loadMaps().then(function(){
+			var input = document.getElementById('pac-input');
+			var map = new google.maps.Map(document.getElementById('map_canvas'), {
+				center: {lat: placeLat, lng: placeLng},
+				zoom: 20,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
+
+			// Create the search box and link it to the UI element.
+			input.value = placeName;
+			var searchBox = new google.maps.places.SearchBox(input);
+			map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+			// Bias the SearchBox results towards current map's viewport.
+			map.addListener('bounds_changed', function() {
+				searchBox.setBounds(map.getBounds());
+			});
+
+			var markers = [];
+			var markFirst = new google.maps.Marker({
+				position: {lat: placeLat, lng: placeLng},
+				map: map
+			});
+			// Listen for the event fired when the user selects a prediction and retrieve
+			// more details for that place.
+			searchBox.addListener('places_changed', function() {
+				var places = searchBox.getPlaces();
+				if (places.length == 0) {
+					return;
+				}
+				// Clear out the old markers.
+				markers.forEach(function(marker) {
+					marker.setMap(null);
+				});
+				markers = [];
+				// For each place, get the icon, name and location.
+				var bounds = new google.maps.LatLngBounds();
+				places.forEach(function(place) {
+					var icon = {
+						url: place.icon,
+						size: new google.maps.Size(71, 71),
+						origin: new google.maps.Point(0, 0),
+						anchor: new google.maps.Point(17, 34),
+						scaledSize: new google.maps.Size(25, 25)
+					};
+
+					// Create a marker for each place.
+					markers.push(new google.maps.Marker({
+						map: map,
+						icon: icon,
+						title: place.name,
+						position: place.geometry.location,
+						positionLat: place.geometry.location.lat(),
+						positionLng: place.geometry.location.lng()
+					}));
+					$scope.editGroupData.placeGroup = input.value;
+					$scope.editGroupData.placeLat = markers[0].positionLat;
+					$scope.editGroupData.placeLng = markers[0].positionLng;
+					if (place.geometry.viewport) {
+						// Only geocodes have viewport.
+						bounds.union(place.geometry.viewport);
+					} else {
+						bounds.extend(place.geometry.location);
+					}
+				});
+				map.fitBounds(bounds);
+			});
+		})
+		$scope.modal.show();
+	};
+	$scope.closeMaps = function() {
+		$scope.modal.hide();
+	};
+
+	$scope.$on('$destroy', function() {
+	    $scope.modal.remove();
+	});
 
 	$ionicPlatform.ready(function() {
 		$scope.images = [];
@@ -206,10 +350,11 @@ angular.module('starter.userGroupCtrl', [])
 		$http
 		.get(urlService.getBaseUrl() + '/editUserGroups', {params: {pId: profileUser.profileID, groupId: $stateParams.groupId}})
 		.success(function(response) {
-			console.log(response);
 			$scope.editGroupData.idGroup = response[0].group_id;
 			$scope.editGroupData.nameGroup = response[0].group_name;
 			$scope.editGroupData.placeGroup = response[0].address_location;
+			$scope.editGroupData.placeLat = response[0].address_lat;
+			$scope.editGroupData.placeLng = response[0].address_lng;
 			$scope.editGroupData.telephone = response[0].tel_no;
 			$scope.imgLength = response.length;
 			for(var i=0; i<$scope.imgLength; i++){
@@ -373,22 +518,6 @@ angular.module('starter.userGroupCtrl', [])
 						}
 					})
 			})
-	};
-	});
-})
-
-.controller('mapCtrl', function($scope){
-	google.maps.event.addDomListener(window, "load", function(){
-		var myLatlng = new google.maps.LatLng(37.3000, -120.4833);
-
-		var mapOptions = {
-			center : myLatlng,
-			zoom : 16,
-			mapTypeId : google.map.MapTypeId.ROADMAP
 		};
-
-		var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
-		$scope.map = map;
 	});
 })
