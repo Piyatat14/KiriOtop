@@ -249,7 +249,7 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
   })
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/userGroup');
+  $urlRouterProvider.otherwise('/app/products');
 
   $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|content|file|assets-library):|data:image\//);
 });
