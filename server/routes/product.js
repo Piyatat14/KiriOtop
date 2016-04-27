@@ -59,7 +59,7 @@ exports.recommendAllProduct = function(req, res, next) {
 };
 
 exports.salableAllProduct = function(req, res, next) {
-	strQuery = "SELECT product.product_id, product.profile_id, product.product_name, product.product_price, product.product_rating, product.product_view, product_image.image, user_profile.first_name FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id GROUP BY product.product_id ORDER BY product.product_rating DESC, product.product_view DESC";
+	strQuery = "SELECT product.product_id, product.profile_id, product.product_name, product.product_price, product.product_rating, product.product_view, product_image.image, user_profile.first_name FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id GROUP BY product.product_id ORDER BY product.product_rating DESC, product.product_view DESC LIMIT "+ req.query.offset+", 10";
 	connection.query(strQuery, function(err, rows){
 		if(err) {
 			console.log(err);
@@ -71,7 +71,7 @@ exports.salableAllProduct = function(req, res, next) {
 };
 
 exports.newAllProduct = function(req, res, next) {
-	strQuery = "SELECT product.product_id, product.profile_id, product.product_name, product.product_price, product.product_rating, product.product_view, product.release_date, product_image.image, user_profile.first_name FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id GROUP BY product.product_id ORDER BY product.release_date ASC";
+	strQuery = "SELECT product.product_id, product.profile_id, product.product_name, product.product_price, product.product_rating, product.product_view, product.release_date, product_image.image, user_profile.first_name FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id GROUP BY product.product_id ORDER BY product.release_date ASC LIMIT "+ req.query.offset+", 10";
 	connection.query(strQuery, function(err, rows){
 		if(err) {
 			console.log(err);
