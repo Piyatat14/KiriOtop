@@ -44,6 +44,9 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 
 	.controller('kindProductCtrl', function($scope, $http, urlService, $stateParams) {
 		var textPath = '';
+		var countOffset = 0;
+		$scope.productData = [];
+		$scope.moreDataCanBeLoaded = true;
 		switch($stateParams.idOfKind){
 			case '1' :
 				$scope.setTitle = "สินค้าแนะนำ";
@@ -61,18 +64,27 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 				$scope.setTitle = "สินค้า";
 				break;
 		}
-		$http
-			.get(urlService.getBaseUrl() + '/' + textPath)
+
+		$scope.loadMore = function(){
+			$http
+			.get(urlService.getBaseUrl() + '/' + textPath, {params: {offset: countOffset}})
 			.success(function(response) {
-				$scope.productData = response;
+				if(response == ''){
+					$scope.moreDataCanBeLoaded = false;
+				}
 				for(var i=0; i<response.length; i++){
+					$scope.productData.push(response[i]);
 					if(response[i].image == null){
 						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + 'nullProduct.jpg';
 					}else{
 						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
 					}
 				}
+				countOffset = countOffset+10;
+				$scope.$broadcast('scroll.infiniteScrollComplete');
 			})
+		}
+		
 	})
 
 	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, Users, $filter, $ionicModal, IonicClosePopupService) {

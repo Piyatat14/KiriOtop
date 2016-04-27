@@ -46,7 +46,8 @@ exports.newProduct = function(req, res, next) {
 };
 
 exports.recommendAllProduct = function(req, res, next) {
-	strQuery = "SELECT product.product_id, product.profile_id, product.product_name, product.product_price, product.product_rating, product.product_view, product_image.image, user_profile.first_name FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id GROUP BY product.product_id";
+	console.log(req.query.offset);
+	strQuery = "SELECT product.product_id, product.profile_id, product.product_name, product.product_price, product.product_rating, product.product_view, product_image.image, user_profile.first_name FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id GROUP BY product.product_id LIMIT "+ req.query.offset+", 10";
 	connection.query(strQuery, function(err, rows){
 		if(err) {
 			console.log(err);
