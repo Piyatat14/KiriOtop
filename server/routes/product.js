@@ -82,7 +82,7 @@ exports.newAllProduct = function(req, res, next) {
 };
 
 exports.getDetailProduct = function(req, res, next) {
-	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_detail, product.product_price, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image, user_profile.profile_id, user_profile.first_name, user_group.group_id, user_group.address_location, user_group.tel_no FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id JOIN user_group ON product.group_id = user_group.group_id WHERE product.product_id=?";
+	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_detail, product.product_price, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image, user_profile.profile_id, user_profile.first_name, user_group.group_id, user_group.group_name, user_group.group_id, user_group.address_location, user_group.tel_no FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id JOIN user_group ON product.group_id = user_group.group_id WHERE product.product_id=?";
 	connection.query(strQuery, [req.query.pId], function(err, rows){
 		if(err) {
 			console.log(err);
@@ -265,6 +265,30 @@ exports.insertOrderSeller = function(req, res) {
 exports.getRatingProduct = function(req, res) {
 	strQuery = "SELECT user_product_rating.profile_id, user_product_rating.rating, user_product_rating.comment, user_product_rating.comment_date, user_profile.first_name, user_profile.last_name, user_profile.user_image FROM user_product_rating JOIN user_profile ON user_product_rating.profile_id = user_profile.profile_id WHERE user_product_rating.product_id=?";
 	connection.query(strQuery, req.query.pId, function(err, rows){
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
+		}
+	});
+};
+
+exports.getViewProfile = function(req, res) {
+	strQuery = "SELECT profile_id, first_name, last_name, address, tel_no, user_image FROM user_profile WHERE profile_id=?";
+	connection.query(strQuery, req.query.profId, function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
+		}
+	});
+};
+
+exports.getViewUserGroup = function(req, res) {
+	strQuery = "SELECT user_group.group_id, user_group.group_name, user_group.address_location, user_group.tel_no FROM user_group LEFT JOIN user_group_image ON user_group.group_id = user_group_image.group_id WHERE user_group.group_id=?";
+	connection.query(strQuery, req.query.gId, function(err, rows) {
 		if(err) {
 			console.log(err);
 			throw err;

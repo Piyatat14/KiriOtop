@@ -1,0 +1,22 @@
+<ion-view view-title="ข้อมูลส่วนตัว">
+	<ion-content>
+		<ion-list>
+			<li class="item">
+				<div class="user-profile">
+					<a class="item image-profile">
+						<img name="profile_image" ng-src="{{profileData[0].user_image}}"/>
+					</a>
+				</div>
+			</li>
+			<li class="item">
+				<span class="input-label">ชื่อ : {{profileData[0].first_name}} {{profileData[0].last_name}}</span>
+			</li>
+			<li class="item">
+				<span class="input-label">ที่อยู่ : {{profileData[0].address}}</span>
+			</li>
+			<li class="item">
+				<span class="input-label">เบอร์ติดต่อ : {{profileData[0].tel_no}}</span>
+			</li>
+		</ion-list>
+	</ion-content>
+</ion-view>

@@ -1,4 +1,4 @@
-angular.module('starter.productCtrl', ['ionic.rating'])
+angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 
 	.controller('ProductCtrl', function($scope, $http, urlService) { //$ionicHistory,
 		// $ionicHistory.nextViewOptions({
@@ -75,12 +75,13 @@ angular.module('starter.productCtrl', ['ionic.rating'])
 			})
 	})
 
-	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, Users, $filter, $ionicModal) {
+	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, Users, $filter, $ionicModal, IonicClosePopupService) {
 		$scope.forReportData = {};
 		$scope.forOrderBuyer = {};
 		$scope.forImageDetail = [];
 		$scope.ratingComment = {};
 		$scope.productdata = {};
+		$scope.profileData = {};
 		if(angular.isUndefined(Authen.getUser())){
 			$scope.forReportData.userID = null;
 		}else{
@@ -102,6 +103,7 @@ angular.module('starter.productCtrl', ['ionic.rating'])
 				$scope.productdata.viewProduct = response[0].product_view;
 				$scope.productdata.ratingProduct = response[0].product_rating;
 				$scope.productdata.amountProduct = response[0].product_amount;
+				$scope.productdata.nameGroup = response[0].group_name;
 				$scope.productdata.telNo = response[0].tel_no;
 				$scope.imgLength = response.length;
 				for(var i=0; i<$scope.imgLength; i++){
@@ -121,7 +123,6 @@ angular.module('starter.productCtrl', ['ionic.rating'])
 			.get(urlService.getBaseUrl() + '/getRatingProducts', {params: {pId : $stateParams.idProduct}})
 			.success(function(response) {
 				$scope.ratingComment = response;
-				console.log(response);
 				$scope.ratComLength = $scope.ratingComment.length;
 				for(var i=0; i<$scope.ratComLength; i++){
 					if(response[i].user_image == null){
@@ -227,7 +228,7 @@ angular.module('starter.productCtrl', ['ionic.rating'])
 				});
 			}else{
 				var buyPopup = $ionicPopup.show({
-					template: 'จำนวนที่คุณต้องการ<input type="text" ng-model="forOrderBuyer.orderAmount" max="{{productdata.amountProduct}}"><br/> ภายในวันที่<sub style="color:red;">*ไม่รวมระยะเวลาขนส่งสินค้า</sub><input type="date" ng-model="forOrderBuyer.dateWithIn">',
+					template: 'จำนวนที่คุณต้องการ<input type="text" ng-model="forOrderBuyer.orderAmount" max="{{productdata.amountProduct}}"><br/> ภายในวันที่<sub style="color:red;">*ไม่รวมระยะเวลาขนส่งสินค้า</sub><label class="item item-input"><input type="date" ng-model="forOrderBuyer.dateWithIn"></label>',
 				    title: 'สั่งซื้อสินค้านี้',
 				    scope: $scope,
 					buttons: [
@@ -259,6 +260,55 @@ angular.module('starter.productCtrl', ['ionic.rating'])
 				});
 			}
 		};
+
+		$scope.loadProfile = function() {
+			$http
+			.get(urlService.getBaseUrl() + '/getViewProfiles', {params: {profId : $scope.productdata.idProfile}})
+			.success(function(response){
+				$scope.profileData = response;
+				if($scope.profileData[0].user_image == null){
+					$scope.profileData[0].user_image = urlService.getBaseUrl() + /img/ + 'null.png';
+				}else{
+					$scope.profileData[0].user_image = urlService.getBaseUrl() + /img/ + $scope.profileData[0].user_image;
+				}
+				showProfiles();
+			})
+		}
+
+		var showProfiles = function(){
+			var showProfile = $ionicPopup.show({
+				title: 'ข้อมูลส่วนตัว',
+				templateUrl: 'templates/showProfile.html',
+				scope: $scope
+			});
+			IonicClosePopupService.register(showProfile);
+		}
+
+		$scope.loadUserGroup = function(){
+			$http
+			.get(urlService.getBaseUrl() + '/getViewUserGroups', {params: {gId : $scope.productdata.idGroup}})
+			.success(function(response){
+				console.log(response);
+				$scope.userGroupData = response;
+				for(var i=0; i<response.length; i++){
+					if($scope.userGroupData[i].image == null){
+					$scope.userGroupData[i].image = urlService.getBaseUrl() + /img/ + 'null.png';
+					}else{
+						$scope.userGroupData[i].image = urlService.getBaseUrl() + /img/ + $scope.userGroupData[i].image;
+					}
+				}
+				showUserGroups();
+			})
+		}
+
+		var showUserGroups = function(){
+			var showUserGroup = $ionicPopup.show({
+				title: 'ข้อมูลเครือข่าย',
+				templateUrl: 'templates/showUserGroup.html',
+				scope: $scope
+			});
+			IonicClosePopupService.register(showUserGroup);
+		}
 
 		$scope.showImages = function(index) {
 			$scope.activeSlide = index;

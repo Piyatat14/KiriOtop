@@ -60,7 +60,7 @@ angular.module('starter.userCtrl', [])
 					loginPass = $crypto.decrypt(response[0].password);
 				}else {										//Password is server generate in case forget password.
 					loginPass = response[0].password;
-;				}
+				}
 
 				if(loginPass == $scope.loginData.password) {
 					//login success Authen set user detail.
@@ -151,7 +151,6 @@ angular.module('starter.userCtrl', [])
 			$scope.checkEmail.status = false;
 		}
 	};
-
 })
 
 .controller('registerCtrl', function($scope, $http, $ionicPopup, urlService, $ionicHistory, $state, $crypto) {
@@ -506,5 +505,4 @@ angular.module('starter.userCtrl', [])
 			}
 		}
 	}
-
-});
+})

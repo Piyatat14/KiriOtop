@@ -248,6 +248,17 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     }
   })
 
+  .state('app.viewProfile', {
+    cache: false,
+    url: '/viewProfile/:profId',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/viewProfile.html',
+        controller: 'viewProfileCtrl'
+      }
+    }
+  })
+
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/products');
 

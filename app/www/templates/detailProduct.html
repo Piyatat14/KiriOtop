@@ -4,13 +4,13 @@
 			<li class="item">
 				<div class="row">
 					<div class="col col-50 forImageDetailProduct">
-							<img ng-repeat="image in forImageDetail" ng-src="{{image.image}}" ng-click="showImages($index)">
+						<img ng-repeat="image in forImageDetail" ng-src="{{image.image}}" ng-click="showImages($index)">
 					</div>
 					<div class="col">
 						<p>ชื่อสินค้า : {{productdata.nameProduct}}</p>
 						<p>ชื่อผู้ผลิต : {{productdata.nameOwned}}</p>
-						<p>สถานที่ตั้ง : {{productdata.address}}</p>
-						<p>สถานที่ตั้ง : {{productdata.detailProduct}}</p>
+						<p>รูปแบบการผลิต : {{productdata.detailProduct}}</p>
+						<p>สถานที่ตั้ง : <a href="#" ng-click="loadUserGroup()" style="text-decoration:none;">{{productdata.nameGroup}}</a></p>
 						<p style="text-align:center;"><i class="icon ion-ios-location forIconDetailProduct"></i><i class="icon ion-navigate forIconDetailProduct"></i></p>
 					</div>
 				</div>
@@ -34,7 +34,7 @@
 				<div><p>ความคิดเห็น</p></div>
 				<div class="row">
 					<div class="col col-33">
-						<a><img src="{{ratComData.user_image}}" style="width:80px; height:80px;"></a>
+						<a href="#" ng-click="loadProfile()"><img src="{{ratComData.user_image}}" style="width:80px; height:80px;"></a>
 					</div>
 					<div class="col">
 						<p>
@@ -72,3 +72,59 @@
 		</a>
 	</div>
 </div>
+
+<script id="templates/showProfile.html" type="text/ng-template">
+	<ion-list>
+		<li class="item" style="background-color: #A9D0F5;">
+			<div class="user-profile">
+				<a class="item image-profile">
+					<img name="profile_image" ng-src="{{profileData[0].user_image}}"/>
+				</a>
+			</div>
+		</li>
+		<li class="item">
+			<div class="row">
+				<span class="input-label col col-33" style="display:inline"><b>ชื่อ</b></span><span class="input-label col" style="display:inline">{{profileData[0].first_name}} {{profileData[0].last_name}}</span>
+			</div>
+		</li>
+		<li class="item">
+			<div class="row">
+				<span class="input-label col col-33" style="display:inline"><b>ที่อยู่</b></span><span class="input-label col" style="display:inline">{{profileData[0].address}}</span>
+			</div>
+		</li>
+		<li class="item">
+			<div class="row">
+				<span class="input-label col col-50" style="display:inline"><b>เบอร์ติดต่อ</b></span><span class="input-label col" style="display:inline">{{profileData[0].tel_no}}</span>
+			</div>
+		</li>
+	</ion-list>
+</script>
+
+<script id="templates/showUserGroup.html" type="text/ng-template">
+	<ion-list>
+		<li class="item" style="background-color: #F3E2A9;">
+			<ion-scroll direction="x" overflow-scroll="false" style="overflow:hidden;">
+				<div class="row">
+					<a class="onePicture" ng-repeat="images in userGroupData">
+						<img class="imageUserGroup" ng-src="{{images.image}}"/>
+					</a>
+				</div>
+			</ion-scroll>
+		</li>
+		<li class="item">
+			<div class="row">
+				<span class="input-label col col-33" style="display:inline"><b>ชื่อกลุ่ม</b></span><span class="input-label col" style="display:inline">{{userGroupData[0].group_name}}</span>
+			</div>
+		</li>
+		<li class="item">
+			<div class="row">
+				<span class="input-label col col-33" style="display:inline"><b>ที่อยู่</b></span><span class="input-label col" style="display:inline">{{userGroupData[0].address_location}}</span>
+			</div>
+		</li>
+		<li class="item">
+			<div class="row">
+				<span class="input-label col col-50" style="display:inline"><b>เบอร์ติดต่อ</b></span><span class="input-label col" style="display:inline">{{userGroupData[0].tel_no}}</span>
+			</div>
+		</li>
+	</ion-list>
+</script>

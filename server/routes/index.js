@@ -44,6 +44,10 @@ router.post('/insertOrderBuyers', products.insertOrderBuyer);
 router.post('/insertOrderSellers', products.insertOrderSeller);
 //Get Rating Products
 router.get('/getRatingProducts', products.getRatingProduct);
+//Get View Profile
+router.get('/getViewProfiles', products.getViewProfile);
+//Get View User Group
+router.get('/getViewUserGroups', products.getViewUserGroup);
 
 //USERS
 //Get User
