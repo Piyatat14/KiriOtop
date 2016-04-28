@@ -69,22 +69,22 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 			$http
 			.get(urlService.getBaseUrl() + '/' + textPath, {params: {offset: countOffset}})
 			.success(function(response) {
+				console.log(response);
 				if(response == ''){
 					$scope.moreDataCanBeLoaded = false;
 				}
 				for(var i=0; i<response.length; i++){
-					$scope.productData.push(response[i]);
 					if(response[i].image == null){
-						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + 'nullProduct.jpg';
+						response[i].image = urlService.getBaseUrl() + /img/ + 'nullProduct.jpg';
 					}else{
-						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
+						response[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
 					}
+					$scope.productData.push(response[i]);
 				}
 				countOffset = countOffset+10;
 				$scope.$broadcast('scroll.infiniteScrollComplete');
 			})
 		}
-		
 	})
 
 	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, Users, $filter, $ionicModal, IonicClosePopupService) {

@@ -13,13 +13,13 @@ router.get('/recommendProducts', products.recommendProduct);
 //Get Products For Show Public SalableProduct
 router.get('/salableProducts', products.salableProduct);
 //Get Products For Show Public NewProduct
-router.get('/newAllProducts', products.newProduct);
+router.get('/newProducts', products.newProduct);
 //Get Products For Show Public RecommendAllProduct
 router.get('/recommendAllProducts', products.recommendAllProduct);
 //Get Products For Show Public SalableAllProduct
 router.get('/salableAllProducts', products.salableAllProduct);
 //Get Products For Show Public NewAllProduct
-router.get('/newProducts', products.newAllProduct);
+router.get('/newAllProducts', products.newAllProduct);
 //Get Products For Show Public NewAllProduct
 router.get('/getDetailProducts', products.getDetailProduct);
 //Get Products For Show Saler
