@@ -35,7 +35,7 @@
         </ion-item>
 
         <ion-item menu-close class="item item-complex">
-          <a class="menuTagA" href="#/app/product">
+          <a class="menuTagA" href="#/app/products">
             <div class="groupList">
               <i class="ion-android-cart" style="color:RoyalBlue;"></i>
               รายการสินค้า
@@ -98,6 +98,15 @@
               สมัครสมาชิก
             </div>
           </a>
+        </ion-item>
+
+        <ion-item menu-close class="item item-complex" ng-if="dataUser">
+          <a class="menuTagA" href="#/app/mainChat">
+            <div class="groupList">
+              <i class="ion-chatbubbles" style="color:brown;"></i>
+              การสนทนา
+            </div>
+          </a>       
         </ion-item>
 
         <ion-item menu-close class="item item-complex" ng-if="dataUser">

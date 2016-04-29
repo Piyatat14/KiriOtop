@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', 'starter.services', 'starter.bankAccountCtrl', 'starter.userGroupCtrl', 'starter.orderCtrl', 'ngCordova', 'mdo-angular-cryptography'])
+angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', 'starter.services', 'starter.bankAccountCtrl', 'starter.userGroupCtrl', 'starter.orderCtrl', 'starter.chatCtrl', 'ngCordova', 'mdo-angular-cryptography'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -255,6 +255,17 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
       'menuContent': {
         templateUrl: 'templates/viewProfile.html',
         controller: 'viewProfileCtrl'
+      }
+    }
+  })
+
+  .state('app.mainChat', {
+    cache: false,
+    url: '/mainChat',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/mainChat.html',
+        controller: 'MainChatCtrl'
       }
     }
   })
