@@ -41,7 +41,7 @@ angular.module('starter.userGroupCtrl', [])
 		googleMaps.loadMaps().then(function(){
 			var input = document.getElementById('pac-input');
 			var map = new google.maps.Map(document.getElementById('map_canvas'), {
-				center: {lat: 13.7248946, lng: 100.4930264},
+				center: {lat: 13.7248946, lng: 100.4930264},	
 				zoom: 13,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			});
