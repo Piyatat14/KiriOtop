@@ -2,7 +2,7 @@ angular.module('starter.services', ['ngCookies'])
 
 .service('urlService', function() {
 	this.getBaseUrl = function() {
-		return "http://192.168.1.35:3000";
+		return "http://192.168.1.111:3000";
 	};
 })
 
@@ -50,7 +50,6 @@ angular.module('starter.services', ['ngCookies'])
 })
 
 .service('googleMaps', function($q, $window) {
-	var check = 0;
 	function loadScript(src, callback){
 		var script = document.createElement("script");
 		script.type = "text/javascript";
@@ -61,15 +60,27 @@ angular.module('starter.services', ['ngCookies'])
 	var deferred = $q.defer();
 	$window.initMap = deferred.resolve;
 	loadScript('http://maps.googleapis.com/maps/api/js?key=AIzaSyC1HNbcKuIw1XZpzEw9E3tuBmusE1By1Uw&libraries=places&callback=', 'initMap');
-	// if ($window.attachEvent) {
-		// 	console.log('First');
-		// 	$window.attachEvent('onload', loadScript('http://maps.googleapis.com/maps/api/js?key=AIzaSyC1HNbcKuIw1XZpzEw9E3tuBmusE1By1Uw&libraries=places&callback=', 'initMap'));
-	// } else {
-		// 	console.log('Second');
-		// 	$window.addEventListener('load', loadScript('http://maps.googleapis.com/maps/api/js?key=AIzaSyC1HNbcKuIw1XZpzEw9E3tuBmusE1By1Uw&libraries=places&callback=', 'initMap'), false);
-	// }
-return{
+	return{
 		loadMaps : function(){
+			return deferred.promise;
+		}
+	}
+})
+
+.service('googleMapsMarkAndDirec', function($q, $window) {
+	console.log("555");
+	function loadMarkScirpt(src, callback){
+		var script = document.createElement("script");
+		script.type = "text/javascript";
+	    if(callback)script.onload=callback;
+	    document.getElementsByTagName("head")[0].appendChild(script);
+	    script.src = src+callback;
+	}
+	var deferred = $q.defer();
+	$window.initMap = deferred.resolve;
+	loadMarkScirpt('https://maps.googleapis.com/maps/api/js?key=AIzaSyC1HNbcKuIw1XZpzEw9E3tuBmusE1By1Uw&callback=', 'initMap');
+	return{
+		loadMap : function(){
 			return deferred.promise;
 		}
 	}

@@ -87,7 +87,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		}
 	})
 
-	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, Users, $filter, $ionicModal, IonicClosePopupService) {
+	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, Users, $filter, $ionicModal, IonicClosePopupService, googleMapsMarkAndDirec) {
 		$scope.forReportData = {};
 		$scope.forOrderBuyer = {};
 		$scope.forImageDetail = [];
@@ -111,6 +111,8 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 				$scope.productdata.nameProduct = response[0].product_name;
 				$scope.productdata.nameOwned = response[0].first_name;
 				$scope.productdata.address = response[0].address_location;
+				$scope.productdata.lat = response[0].address_lat;
+				$scope.productdata.lng = response[0].address_lng;
 				$scope.productdata.detailProduct = response[0].product_detail;
 				$scope.productdata.viewProduct = response[0].product_view;
 				$scope.productdata.ratingProduct = response[0].product_rating;
@@ -342,6 +344,65 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 			$scope.modal.hide();
 			$scope.modal.remove();
 		};
+
+		$ionicModal.fromTemplateUrl('templates/markMapGoogle.html', {
+			scope: $scope,
+			animation: 'slide-in-up'
+		}).then(function(modal) {
+			$scope.mapModal = modal;
+		});
+		$scope.loadLocation = function(lat, lng, add){
+			googleMapsMarkAndDirec.loadMap().then(function(){
+				var myLatLng = {lat: lat, lng: lng};
+				var map = new google.maps.Map(document.getElementById('map_canvas'), {
+					center: myLatLng,
+					zoom: 20,
+					mapTypeId: google.maps.MapTypeId.ROADMAP
+				});
+
+				var marker = new google.maps.Marker({
+					position: myLatLng,
+					map: map,
+					title: add
+				});
+			})
+			$scope.mapModal.show();
+		}
+
+		$scope.closeMaps = function() {
+			$scope.mapModal.hide();
+		};
+
+		$scope.$on('$destroy', function() {
+		    $scope.mapModal.remove();
+		});
+
+		$ionicModal.fromTemplateUrl('templates/directionMapGoogle.html', {
+			scope: $scope,
+			animation: 'slide-in-up'
+		}).then(function(modal) {
+			$scope.direcMap = modal;
+		});
+
+		$scope.loadDirection = function(){
+			googleMapsMarkAndDirec.loadMap().then(function(){
+				navigator.geolocation.getCurrentPosition(function(pos) {
+					console.log(pos);
+					//$scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+				}, function(error) {
+					alert('Unable to get location: ' + error.message);
+				});		
+			})
+			$scope.direcMap.show();
+		}
+
+		$scope.closeDirecMaps = function() {
+			$scope.direcMap.hide();
+		};
+
+		$scope.$on('$destroy', function() {
+		    $scope.direcMap.remove();
+		});
 
 	})
 
