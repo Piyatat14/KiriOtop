@@ -87,7 +87,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		}
 	})
 
-	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, Users, $filter, $ionicModal, IonicClosePopupService, googleMapsMarkAndDirec, $ionicActionSheet, launchnavigator) {
+	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, Users, $filter, $ionicModal, IonicClosePopupService, googleMapsMarkAndDirec, $ionicActionSheet, $cordovaLaunchNavigator) {
 		$scope.forReportData = {};
 		$scope.forOrderBuyer = {};
 		$scope.forImageDetail = [];
@@ -384,74 +384,75 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 			$scope.direcMap = modal;
 		});
 
+		var gpsAlert = function(){
+			var alertGPS = $ionicPopup.alert({
+				title: 'ไม่สามารถรับที่อยู่ปัจจุบันได้',
+				template: 'กรุณาเปิด GPS ก่อนเพื่อรับสถานที่อยู่'
+			});
+		}
 		$scope.loadDirection = function(lat, lng, add){
-			googleMapsMarkAndDirec.loadMap().then(function(){
-				if (window.cordova) {
-					cordova.plugins.diagnostic.isLocationEnabled(function(enabled) {
-						alert("Location is " + (enabled ? "enabled" : "disabled"));
-						console.log(enabled);
-					}, function(error) {
-						alert(error);
-						var alertGPS = function() {
-							var gpsAlert = $ionicPopup.alert({
-								title: 'ไม่สามารถรับที่อยู่ปัจจุบันได้',
-								template: 'กรุณาเปิด GPS เพื่อรับสถานที่อยู่'
-							});
-
-							gpsAlert.then(function(res) {
-								cordova.plugins.diagnostic.switchToLocationSettings();
-							});
+			cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
+				if(enabled == true){
+					navigator.geolocation.getCurrentPosition(function(pos) {
+						var cur = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+						var des = new google.maps.LatLng(lat, lng);
+						var directionsService = new google.maps.DirectionsService;
+						var directionsDisplay = new google.maps.DirectionsRenderer;
+						var map = new google.maps.Map(document.getElementById('map_canvas'), {
+							zoom: 7,
+							center: {lat: pos.coords.latitude, lng: pos.coords.longitude}
+						});
+						directionsDisplay.setMap(map);
+						//directionsDisplay.setPanel(document.getElementById('right-panel'));
+						var onChangeHandler = function() {
+							calculateAndDisplayRoute(directionsService, directionsDisplay);
 						};
+						onChangeHandler();
+						function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+							directionsService.route({
+								origin: cur,
+								destination: des,
+								travelMode: google.maps.TravelMode.DRIVING
+							}, function(response, status) {
+								if (status === google.maps.DirectionsStatus.OK) {
+									directionsDisplay.setDirections(response);
+								} else {
+									window.alert('Directions request failed due to ' + status);
+								}
+							});
+						}
+						$scope.openGoogleApp = function(){
+							var destination = [lat, lng];
+							var start = [pos.coords.latitude, pos.coords.longitude];
+							$cordovaLaunchNavigator.navigate(destination, start).then(function() {
+								console.log("Navigator launched");
+							}, function (err) {
+								console.error(err);
+							});
+							// $cordovaLaunchNavigator.isAppAvailable($cordovaLaunchNavigator.APP.GOOGLE_MAPS, function(isAvailable){
+							//     var app;
+							//     if(isAvailable){
+							//         app = $cordovaLaunchNavigator.APP.GOOGLE_MAPS;
+							//     }else{
+							//         console.warn("Google Maps not available - falling back to user selection");
+							//         app = $cordovaLaunchNavigator.APP.USER_SELECT;
+							//     }
+							//     $cordovaLaunchNavigator.navigate("London, UK", {
+							//         app: app
+							//     });
+							// });
+						}
+					}, function(error) {
+						alert('Unable to get location: ' + error.message);
 					});
+					$scope.direcMap.show();
+				}else{
+					gpsAlert();
+					$scope.direcMap.hide();
 				}
-				// navigator.geolocation.getCurrentPosition(function(pos) {
-				// 	var cur = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-				// 	var des = new google.maps.LatLng(lat, lng);
-				// 	var directionsService = new google.maps.DirectionsService;
-				// 	var directionsDisplay = new google.maps.DirectionsRenderer;
-				// 	var map = new google.maps.Map(document.getElementById('map_canvas'), {
-				// 		zoom: 7,
-				// 		center: {lat: 13.7248946, lng: 100.4930264}
-				// 	});
-				// 	directionsDisplay.setMap(map);
-				// 	//directionsDisplay.setPanel(document.getElementById('right-panel'));
-				// 	var onChangeHandler = function() {
-				// 		calculateAndDisplayRoute(directionsService, directionsDisplay);
-				// 	};
-				// 	onChangeHandler();
-				// 	function calculateAndDisplayRoute(directionsService, directionsDisplay) {
-				// 		directionsService.route({
-				// 			origin: cur,
-				// 			destination: des,
-				// 			travelMode: google.maps.TravelMode.DRIVING
-				// 		}, function(response, status) {
-				// 			if (status === google.maps.DirectionsStatus.OK) {
-				// 				directionsDisplay.setDirections(response);
-				// 			} else {
-				// 				window.alert('Directions request failed due to ' + status);
-				// 			}
-				// 		});
-				// 	}
-				// 	$scope.openGoogleApp = function(){
-				// 		launchnavigator.isAppAvailable(launchnavigator.APP.GOOGLE_MAPS, function(isAvailable){
-				// 		    var app;
-				// 		    if(isAvailable){
-				// 		        app = launchnavigator.APP.GOOGLE_MAPS;
-				// 		    }else{
-				// 		        console.warn("Google Maps not available - falling back to user selection");
-				// 		        app = launchnavigator.APP.USER_SELECT;
-				// 		    }
-				// 		    launchnavigator.navigate("London, UK", {
-				// 		        app: app
-				// 		    });
-				// 		});
-				// 	}
-				// 	//$scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-				// }, function(error) {
-				// 	alert('Unable to get location: ' + error.message);
-				// });		
-			})
-			$scope.direcMap.show();
+			}, function(error){
+				gpsAlert();
+			});
 		}
 
 		$scope.closeDirecMaps = function() {
