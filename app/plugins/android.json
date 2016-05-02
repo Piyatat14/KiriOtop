@@ -10,6 +10,9 @@
         "com-badrit-base64": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
+        "cordova-plugin-actionsheet": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
         "cordova-plugin-camera": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
@@ -28,6 +31,9 @@
         "cordova-plugin-filepath": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
         "cordova-plugin-image-picker": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
@@ -43,7 +49,7 @@
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
-        "cordova.plugins.diagnostic": {
+        "cordova.plugins.diagnostic.api-22": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "ionic-plugin-keyboard": {
@@ -54,7 +60,7 @@
         }
     },
     "dependent_plugins": {
-        "cordova-plugin-actionsheet": {
+        "cordova-plugin-compat": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         }
     }
