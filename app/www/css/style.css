@@ -298,6 +298,29 @@ ul.rating li i {
     border-color: #4d90fe;
 }
 
+.pac-container {
+	font-family: Roboto;
+	pointer-events: auto;
+}
+
+#type-selector {
+	color: #fff;
+	background-color: #4d90fe;
+	padding: 5px 11px 0px 11px;
+}
+
+#type-selector label {
+	font-family: Roboto;
+	font-size: 13px;
+	font-weight: 300;
+}
+
+.pathDirection{
+	position:absolute;
+	bottom:4%;
+	margin-left: 5px;
+}
+
 /* css use ionicActionSheet for android design same ios */
 .platform-android .action-sheet-backdrop.active {
 	background-color: rgba(0, 0, 0, 0.1);

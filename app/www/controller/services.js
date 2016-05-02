@@ -2,7 +2,7 @@ angular.module('starter.services', ['ngCookies'])
 
 .service('urlService', function() {
 	this.getBaseUrl = function() {
-		return "http://192.168.1.33:3000";
+		return "http://192.168.1.34:3000";
 	};
 })
 
@@ -68,7 +68,6 @@ angular.module('starter.services', ['ngCookies'])
 })
 
 .service('googleMapsMarkAndDirec', function($q, $window) {
-	console.log("555");
 	function loadMarkScirpt(src, callback){
 		var script = document.createElement("script");
 		script.type = "text/javascript";
@@ -85,3 +84,43 @@ angular.module('starter.services', ['ngCookies'])
 		}
 	}
 })
+
+  .service('launchnavigator', ['$q', function ($q) {
+    "use strict";
+
+    var launchnavigator = {};
+    launchnavigator.navigate = function (destination, options) {
+      var q = $q.defer(),
+        isRealDevice = ionic.Platform.isWebView();
+
+      if (!isRealDevice) {
+        q.reject("launchnavigator will only work on a real mobile device! It is a NATIVE app launcher.");
+      } else {
+        try {
+
+          var successFn = options.successCallBack || function () {
+              },
+            errorFn = options.errorCallback || function () {
+              },
+            _successFn = function () {
+              successFn();
+              q.resolve();
+            },
+            _errorFn = function (err) {
+              errorFn(err);
+              q.reject(err);
+            };
+
+          options.successCallBack = _successFn;
+          options.errorCallback = _errorFn;
+
+          launchnavigator.navigate(destination, options);
+        } catch (e) {
+          q.reject("Exception: " + e.message);
+        }
+      }
+      return q.promise;
+    };
+
+    return launchnavigator;
+  }])

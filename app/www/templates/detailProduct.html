@@ -66,6 +66,7 @@
 			พูดคุย
 		</a>
 		<a class="tab-item" ng-click="callToOwned()">
+			<!-- <access origin="tel:*" launch-external="yes"/> -->
 			<i class="icon ion-ios-telephone"></i>
 			ติดต่อ
 		</a>
@@ -147,11 +148,12 @@
 <script id="templates/directionMapGoogle.html" type="text/ng-template">
 	<ion-modal-view>
 		<ion-header-bar>
-		  	<h1 class="title">สถานที่ตั้งของเครือข่าย</h1>
+		  	<h1 class="title">เส้นทางไปยังที่ตั้ง</h1>
 		  	<button class="button" ng-click="closeDirecMaps()">ปิด</button>
 		</ion-header-bar>
 		<ion-content scroll="false">
 		  	<div id="map_canvas" style="height:100%;"></div>
+		  	<button class="button button-balanced pathDirection" ng-click="openGoogleApp()"><i class="ion-social-google-outline" style="font-size:20px;"></i>oogleMaps</button>
 		</ion-content>
 	</ion-modal-view>
 </script>

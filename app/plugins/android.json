@@ -43,9 +43,19 @@
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
+        "cordova.plugins.diagnostic": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
         "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "uk.co.workingedge.phonegap.plugin.launchnavigator": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         }
     },
-    "dependent_plugins": {}
+    "dependent_plugins": {
+        "cordova-plugin-actionsheet": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        }
+    }
 }

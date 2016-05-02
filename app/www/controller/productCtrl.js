@@ -87,7 +87,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		}
 	})
 
-	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, Users, $filter, $ionicModal, IonicClosePopupService, googleMapsMarkAndDirec) {
+	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, Users, $filter, $ionicModal, IonicClosePopupService, googleMapsMarkAndDirec, $ionicActionSheet, launchnavigator) {
 		$scope.forReportData = {};
 		$scope.forOrderBuyer = {};
 		$scope.forImageDetail = [];
@@ -384,14 +384,72 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 			$scope.direcMap = modal;
 		});
 
-		$scope.loadDirection = function(){
+		$scope.loadDirection = function(lat, lng, add){
 			googleMapsMarkAndDirec.loadMap().then(function(){
-				navigator.geolocation.getCurrentPosition(function(pos) {
-					console.log(pos);
-					//$scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-				}, function(error) {
-					alert('Unable to get location: ' + error.message);
-				});		
+				if (window.cordova) {
+					cordova.plugins.diagnostic.isLocationEnabled(function(enabled) {
+						alert("Location is " + (enabled ? "enabled" : "disabled"));
+						console.log(enabled);
+					}, function(error) {
+						alert(error);
+						var alertGPS = function() {
+							var gpsAlert = $ionicPopup.alert({
+								title: 'ไม่สามารถรับที่อยู่ปัจจุบันได้',
+								template: 'กรุณาเปิด GPS เพื่อรับสถานที่อยู่'
+							});
+
+							gpsAlert.then(function(res) {
+								cordova.plugins.diagnostic.switchToLocationSettings();
+							});
+						};
+					});
+				}
+				// navigator.geolocation.getCurrentPosition(function(pos) {
+				// 	var cur = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+				// 	var des = new google.maps.LatLng(lat, lng);
+				// 	var directionsService = new google.maps.DirectionsService;
+				// 	var directionsDisplay = new google.maps.DirectionsRenderer;
+				// 	var map = new google.maps.Map(document.getElementById('map_canvas'), {
+				// 		zoom: 7,
+				// 		center: {lat: 13.7248946, lng: 100.4930264}
+				// 	});
+				// 	directionsDisplay.setMap(map);
+				// 	//directionsDisplay.setPanel(document.getElementById('right-panel'));
+				// 	var onChangeHandler = function() {
+				// 		calculateAndDisplayRoute(directionsService, directionsDisplay);
+				// 	};
+				// 	onChangeHandler();
+				// 	function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+				// 		directionsService.route({
+				// 			origin: cur,
+				// 			destination: des,
+				// 			travelMode: google.maps.TravelMode.DRIVING
+				// 		}, function(response, status) {
+				// 			if (status === google.maps.DirectionsStatus.OK) {
+				// 				directionsDisplay.setDirections(response);
+				// 			} else {
+				// 				window.alert('Directions request failed due to ' + status);
+				// 			}
+				// 		});
+				// 	}
+				// 	$scope.openGoogleApp = function(){
+				// 		launchnavigator.isAppAvailable(launchnavigator.APP.GOOGLE_MAPS, function(isAvailable){
+				// 		    var app;
+				// 		    if(isAvailable){
+				// 		        app = launchnavigator.APP.GOOGLE_MAPS;
+				// 		    }else{
+				// 		        console.warn("Google Maps not available - falling back to user selection");
+				// 		        app = launchnavigator.APP.USER_SELECT;
+				// 		    }
+				// 		    launchnavigator.navigate("London, UK", {
+				// 		        app: app
+				// 		    });
+				// 		});
+				// 	}
+				// 	//$scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+				// }, function(error) {
+				// 	alert('Unable to get location: ' + error.message);
+				// });		
 			})
 			$scope.direcMap.show();
 		}
