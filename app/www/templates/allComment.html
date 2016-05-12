@@ -1,0 +1,27 @@
+<ion-view view-title="ความคิดเห็นทั้งหมด">
+	<ion-content>
+		<ion-list>
+			<li class="item" ng-repeat="ratComData in ratingComment | orderBy : '-comment_date'">
+				<div><p>ความคิดเห็น</p></div>
+				<div class="row">
+					<div class="col col-33">
+						<a href="#" ng-click="loadProfile()"><img src="{{ratComData.user_image}}" style="width:80px; height:80px;"></a>
+					</div>
+					<div class="col">
+						<p>
+							{{ratComData.first_name}} {{ratComData.last_name}}
+							<span style="padding-left:5px; float:right;">({{ratComData.comment_date | date: "dd/MM/yyyy"}})</span>
+						</p>
+						<p class="fixedRating">
+							<rating ng-model="ratComData.rating" max="5" readonly="true"></rating>
+						</p>
+						<p>
+							{{ratComData.comment}}
+						</p>
+					</div>
+				</div>
+			</li>
+		</ion-list>
+		<ion-infinite-scroll ng-if="canBeLoaded" on-infinite="loadComment()" distance="1%"></ion-infinite-scroll>
+	</ion-content>
+</ion-view>

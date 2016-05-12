@@ -275,13 +275,21 @@ exports.insertOrderSeller = function(req, res) {
 };
 
 exports.getRatingProduct = function(req, res) {
-	strQuery = "SELECT user_product_rating.profile_id, user_product_rating.rating, user_product_rating.comment, user_product_rating.comment_date, user_profile.first_name, user_profile.last_name, user_profile.user_image FROM user_product_rating JOIN user_profile ON user_product_rating.profile_id = user_profile.profile_id WHERE user_product_rating.product_id=?";
+	var dataOffset = req.query.offset;
+	var maxLimit = req.query.limit;
+	console.log(dataOffset+' '+maxLimit+ ' '+req.query.pId);
+	if(dataOffset == undefined && maxLimit == undefined){
+		dataOffset = 0;
+		maxLimit = 3;
+	}
+	strQuery = "SELECT user_product_rating.profile_id, user_product_rating.rating, user_product_rating.comment, user_product_rating.comment_date, user_profile.first_name, user_profile.last_name, user_profile.user_image FROM user_product_rating JOIN user_profile ON user_product_rating.profile_id = user_profile.profile_id WHERE user_product_rating.product_id=? LIMIT "+dataOffset+", "+maxLimit;
 	connection.query(strQuery, req.query.pId, function(err, rows){
 		if(err) {
 			console.log(err);
 			throw err;
 		}else {
 			res.send(rows);
+			console.log(rows);
 		}
 	});
 };
