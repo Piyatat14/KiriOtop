@@ -53,15 +53,15 @@
 					</div>
 				</div>
 			</li>
-			<li class="item" ng-if="ratComLength > 4" style="text-align:center;">
-				<a href="#">ความคิดเห็นทั้งหมด</a>
+			<li class="item" ng-if="ratComLength > 0" style="text-align:center;">
+				<a href="#/app/allComment/{{productdata.idProduct}}">ความคิดเห็นทั้งหมด</a>
 			</li>
 		</ion-list><br/><br/>
 	</ion-content>
 </ion-view>
 <div class="tabs-assertive tabs-icon-top tabs-striped">
 	<div class="tab-nav tabs">
-		<a class="tab-item" ng-click="helloFunction()">
+		<a class="tab-item" href="#/app/roomChat/{{productdata.idGroup}}/{{productdata.idProduct}}">
 			<i class="icon ion-person-stalker"></i>
 			พูดคุย
 		</a>

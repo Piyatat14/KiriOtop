@@ -6,6 +6,7 @@ var bank = require('./banks');
 var userGroup = require('./user-group');
 var order = require('./order');
 var report = require('./report');
+var chat = require('./chat');
 
 //PRODUCT
 //Get Products For Show Public RecommendProduct
@@ -118,5 +119,9 @@ router.post('/insertRatingComments', order.insertRatingComment);
 //REPORTS
 //Insert Report Product
 router.post('/insertReportProducts', report.insertReportProduct);
+
+//Chat Message
+//Get data for chat room.
+router.get('/getDataRoomChat', chat.getDataRoomChat);
 
 module.exports = router;

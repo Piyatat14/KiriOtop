@@ -270,6 +270,28 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     }
   })
 
+  .state('app.roomChat', {
+    cache: false,
+    url: '/roomChat/:groupId/:productId',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/roomChat.html',
+        controller: 'RoomChatCtrl'
+      }
+    }
+  })
+
+  .state('app.allComment', {
+    cache: false,
+    url: '/allComment/:prodId',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/allComment.html',
+        controller: 'allCommentCtrl'
+      }
+    }
+  })
+
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/products');
 

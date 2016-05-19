@@ -1,7 +1,7 @@
 angular.module('starter.userCtrl', [])
 
 
-.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, $timeout, Authen, Users, urlService, $state, $ionicHistory, $crypto) {
+.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, $timeout, Authen, Users, urlService, $state, $ionicHistory, $crypto, $ionicSideMenuDelegate) {
 
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
@@ -104,7 +104,7 @@ angular.module('starter.userCtrl', [])
 		Users.removeUserData();
 		$state.go('app.product', {}, {reload:true});
 		$scope.dataUser = Authen.getUser();
-		console.log(Authen.getUser());
+		$ionicSideMenuDelegate.toggleLeft();
 	};
 
 	$scope.sendPassword = function(email) {

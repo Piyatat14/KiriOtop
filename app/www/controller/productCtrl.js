@@ -81,7 +81,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 					}
 					$scope.productData.push(response[i]);
 				}
-				countOffset = countOffset+10;
+				countOffset = $scope.productData.length;
 				$scope.$broadcast('scroll.infiniteScrollComplete');
 			})
 		}
@@ -145,7 +145,6 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 						$scope.ratingComment[i].user_image = urlService.getBaseUrl() + /img/ + response[i].user_image;
 					}
 				}
-				console.log($scope.ratingComment);
 			})
 
 		$scope.reportProduct = function() {
@@ -197,81 +196,100 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 			$scope.forOrderBuyer.productId = $scope.productdata.idProduct;
 			$scope.forOrderBuyer.groupId = $scope.productdata.idGroup;
 			$scope.forOrderBuyer.orderDate = $filter('date')(new Date(), 'yyyy-MM-dd');
-			$scope.forOrderBuyer.idProfile = profileUser.profileID;
-			if($scope.productdata.detailProduct == 'สต็อกสินค้า'){
-				$scope.forOrderBuyer.dateWithIn = '0000-00-00'
-				var buyPopup = $ionicPopup.show({
-					template: 'จำนวนที่คุณต้องการ<input type="number" ng-model="forOrderBuyer.orderAmount" max="{{productdata.amountProduct}}">',
-				    title: 'สั่งซื้อสินค้านี้',
-				    subTitle: 'สินค้ามีจำนวน :' + $scope.productdata.amountProduct,
-				    scope: $scope,
-					buttons: [
-						{text: 'ยกเลิก'},
-						{
-							text: '<b>สั่งซื้อ</b>',
-				        	type: 'button-positive',
-				        	onTap: function(e){
-				        		$http
-								.get(urlService.getBaseUrl() + '/buildOrderIds', {params: {prodId : $scope.forOrderBuyer.productId, profId : profileUser.profileID, gId : $scope.productdata.idGroup}})
-								.success(function(response) {
-									var runOrder;
-									if(response == ''){
-										runOrder = '1001';
-									}else{
-										response[0].order_id++;
-										runOrder = response[0].order_id;
-									}
-									$scope.forOrderBuyer.orderId = runOrder;
-									$http
-									.post(urlService.getBaseUrl() + '/insertOrderBuyers', $scope.forOrderBuyer)
-									.success(function(response) {
-										var idOrderSeller = response.insertId;
-										$http
-										.post(urlService.getBaseUrl() + '/insertOrderSellers', {sId : idOrderSeller})
+			if(Authen.getUser() == undefined){
+				$ionicPopup.alert({
+					title: 'เกิดข้อผิดพลาด',
+					template: 'ไม่สามารถซื้อสินค้านี้ได้ กรุณาเข้าสู่ระบบก่อน'
+				});
+			}else if(profileUser == null){
+				$ionicPopup.alert({
+					title: 'เกิดข้อผิดพลาด',
+					template: 'กรุณากรอกข้อมูลส่วนตัวก่อนเพื่อใช้งาน'
+				});
+			}else if(profileUser.profileID != null){
+				if(profileUser.profileID == $scope.productdata.idProfile){
+					$ionicPopup.alert({
+						title: 'เกิดข้อผิดพลาด',
+						template: 'คุณไม่สามารถซื้อสินค้าของตัวเองได้'
+					});
+				}else{
+					$scope.forOrderBuyer.idProfile = profileUser.profileID;
+					if($scope.productdata.detailProduct == 'สต็อกสินค้า'){
+						$scope.forOrderBuyer.dateWithIn = '0000-00-00'
+						var buyPopup = $ionicPopup.show({
+							template: 'จำนวนที่คุณต้องการ<input type="number" ng-model="forOrderBuyer.orderAmount" max="{{productdata.amountProduct}}">',
+						    title: 'สั่งซื้อสินค้านี้',
+						    subTitle: 'สินค้ามีจำนวน :' + $scope.productdata.amountProduct,
+						    scope: $scope,
+							buttons: [
+								{text: 'ยกเลิก'},
+								{
+									text: '<b>สั่งซื้อ</b>',
+						        	type: 'button-positive',
+						        	onTap: function(e){
+						        		$http
+										.get(urlService.getBaseUrl() + '/buildOrderIds', {params: {prodId : $scope.forOrderBuyer.productId, profId : profileUser.profileID, gId : $scope.productdata.idGroup}})
 										.success(function(response) {
-											$ionicPopup.alert({
-												title: 'ทำการสั่งซื้อเสร็จเรียบร้อย',
-												template: 'ตรวจสอบสถานะสินค้าได้ที่ประวัติการซื้อ'
-											});
+											var runOrder;
+											if(response == ''){
+												runOrder = '1001';
+											}else{
+												response[0].order_id++;
+												runOrder = response[0].order_id;
+											}
+											$scope.forOrderBuyer.orderId = runOrder;
+											$http
+											.post(urlService.getBaseUrl() + '/insertOrderBuyers', $scope.forOrderBuyer)
+											.success(function(response) {
+												var idOrderSeller = response.insertId;
+												$http
+												.post(urlService.getBaseUrl() + '/insertOrderSellers', {sId : idOrderSeller})
+												.success(function(response) {
+													$ionicPopup.alert({
+														title: 'ทำการสั่งซื้อเสร็จเรียบร้อย',
+														template: 'ตรวจสอบสถานะสินค้าได้ที่ประวัติการซื้อ'
+													});
+												})
+											})
 										})
-									})
-								})
-				        	}
-						}
-					]
-				});
-			}else{
-				var buyPopup = $ionicPopup.show({
-					template: 'จำนวนที่คุณต้องการ<input type="text" ng-model="forOrderBuyer.orderAmount" max="{{productdata.amountProduct}}"><br/> ภายในวันที่<sub style="color:red;">*ไม่รวมระยะเวลาขนส่งสินค้า</sub><label class="item item-input"><input type="date" ng-model="forOrderBuyer.dateWithIn"></label>',
-				    title: 'สั่งซื้อสินค้านี้',
-				    scope: $scope,
-					buttons: [
-						{text: 'ยกเลิก'},
-						{
-							text: '<b>สั่งซื้อ</b>',
-				        	type: 'button-positive',
-				        	onTap: function(e){
-				        		$http
-								.get(urlService.getBaseUrl() + '/buildOrderIds', {params: {prodId : $scope.forOrderBuyer.productId, profId : profileUser.profileID, gId : $scope.productdata.idGroup}})
-								.success(function(response) {
-									var runOrder;
-									if(response == ''){
-										runOrder = '001';
-									}else{
-										response[0].order_id++;
-										runOrder = response[0].order_id;
-									}
-									$scope.forOrderBuyer.orderId = runOrder;
-								})
-				        		$http
-								.post(urlService.getBaseUrl() + '/insertOrderBuyers', $scope.forOrderBuyer)
-								.success(function(response) {
-									
-								})
-				        	}
-						}
-					]
-				});
+						        	}
+								}
+							]
+						});
+					}else{
+						var buyPopup = $ionicPopup.show({
+							template: 'จำนวนที่คุณต้องการ<input type="text" ng-model="forOrderBuyer.orderAmount" max="{{productdata.amountProduct}}"><br/> ภายในวันที่<sub style="color:red;">*ไม่รวมระยะเวลาขนส่งสินค้า</sub><label class="item item-input"><input type="date" ng-model="forOrderBuyer.dateWithIn"></label>',
+						    title: 'สั่งซื้อสินค้านี้',
+						    scope: $scope,
+							buttons: [
+								{text: 'ยกเลิก'},
+								{
+									text: '<b>สั่งซื้อ</b>',
+						        	type: 'button-positive',
+						        	onTap: function(e){
+						        		$http
+										.get(urlService.getBaseUrl() + '/buildOrderIds', {params: {prodId : $scope.forOrderBuyer.productId, profId : profileUser.profileID, gId : $scope.productdata.idGroup}})
+										.success(function(response) {
+											var runOrder;
+											if(response == ''){
+												runOrder = '001';
+											}else{
+												response[0].order_id++;
+												runOrder = response[0].order_id;
+											}
+											$scope.forOrderBuyer.orderId = runOrder;
+										})
+						        		$http
+										.post(urlService.getBaseUrl() + '/insertOrderBuyers', $scope.forOrderBuyer)
+										.success(function(response) {
+											
+										})
+						        	}
+								}
+							]
+						});
+					}
+				}
 			}
 		};
 
@@ -844,4 +862,30 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 				})
 			};
 		});
+	})
+	
+	.controller('allCommentCtrl', function($scope, $http, $stateParams, urlService) {
+		var setOffset = 0;
+		var setLimit = 10;
+		$scope.canBeLoaded = true;
+		$scope.ratingComment = [];
+		$scope.loadComment = function(){
+			$http
+			.get(urlService.getBaseUrl() + '/getRatingProducts', {params: {pId: $stateParams.prodId, offset: setOffset, limit: setLimit}})
+			.success(function(response) {
+				if(response == ''){
+					$scope.canBeLoaded = false;
+				}
+				for(var i=0; i<response.length; i++){
+					if(response[i].user_image == null){
+						response[i].user_image = urlService.getBaseUrl() + /img/ + 'nullProduct.jpg';
+					}else{
+						response[i].user_image = urlService.getBaseUrl() + /img/ + response[i].user_image;
+					}
+					$scope.ratingComment.push(response[i]);
+				}
+				setOffset = $scope.ratingComment.length;
+				$scope.$broadcast('scroll.infiniteScrollComplete');
+			})
+		}
 	})
