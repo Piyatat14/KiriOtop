@@ -14,8 +14,8 @@
 				</ion-scroll>
 				<label class="item item-input item-stacked-label item-icon-right">
 					<span class="input-label">รหัสสินค้า</span>
-					<input type="text" placeholder="รหัสสินค้า (ถ้ามี)" ng-model="products.productId" name="productId" required/>
-					<i ng-show="productForm.productId.$error.required && !productForm.productId.$pristine" class="icon ion-close-circled" style="color:red;"></i>
+					<input type="text" placeholder="รหัสสินค้า (ถ้ามี)" ng-model="products.productId" name="productId"/><!-- required -->
+					<!-- <i ng-show="productForm.productId.$error.required && !productForm.productId.$pristine" class="icon ion-close-circled" style="color:red;"></i> -->
 				</label>
 				<label class="item item-input item-stacked-label item-icon-right">
 					<span class="input-label">ชื่อสินค้า</span>
@@ -26,6 +26,11 @@
 					<span class="input-label">ราคาสินค้า</span>
 					<input type="number" placeholder="ราคาสินค้า" min="1" ng-model="products.productPrice" name="productPrice" required/>
 					<i ng-show="productForm.productPrice.$error.required && !productForm.productPrice.$pristine" class="icon ion-close-circled" style="color:red;"></i>
+				</label>
+				<label class="item item-input item-stacked-label item-icon-right">
+					<span class="input-label">คำอธิบายสินค้า</span>
+					<textarea placeholder="คำอธิบาย" ng-model="products.productOfDetail" name="productOfDetail" style="resize:none;" maxlength="480" required></textarea>
+					<i ng-show="productForm.productOfDetail.$error.required && !productForm.productOfDetail.$pristine" class="icon ion-close-circled" style="color:red;"></i>
 				</label>
 				<ion-toggle toggle-class="toggle-assertive" ng-model="products.productStock" ng-true-value="'สต็อกสินค้า'" ng-false-value="'ไม่สต็อกสินค้า'">
 					มีการสต็อกสินค้า

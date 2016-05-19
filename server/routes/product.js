@@ -34,7 +34,7 @@ exports.salableProduct = function(req, res, next) {
 };
 
 exports.newProduct = function(req, res, next) {
-	strQuery = "SELECT product.product_id, product.profile_id, product.product_name, product.product_price, product.product_rating, product.product_view, product.release_date, product_image.image, user_profile.first_name FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id GROUP BY product.product_id ORDER BY product.release_date ASC LIMIT 10";
+	strQuery = "SELECT product.product_id, product.profile_id, product.product_name, product.product_price, product.product_rating, product.product_view, product.release_date, product_image.image, user_profile.first_name FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id GROUP BY product.product_id ORDER BY product.release_date DESC LIMIT 10";
 	connection.query(strQuery, function(err, rows){
 		if(err) {
 			console.log(err);
@@ -94,7 +94,7 @@ exports.newAllProduct = function(req, res, next) {
 };
 
 exports.getDetailProduct = function(req, res, next) {
-	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_detail, product.product_price, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image, user_profile.profile_id, user_profile.first_name, user_group.group_id, user_group.group_name, user_group.group_id, user_group.address_location, user_group.address_lat, user_group.address_lng, user_group.tel_no FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id JOIN user_group ON product.group_id = user_group.group_id WHERE product.product_id=?";
+	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_detail, product.product_price, product.product_rating, product.product_view, product.product_amount, product.product_stock, product.release_date, product_image.image, user_profile.profile_id, user_profile.first_name, user_group.group_id, user_group.group_name, user_group.group_id, user_group.address_location, user_group.address_lat, user_group.address_lng, user_group.tel_no FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id JOIN user_profile ON product.profile_id = user_profile.profile_id JOIN user_group ON product.group_id = user_group.group_id WHERE product.product_id=?";
 	connection.query(strQuery, [req.query.pId], function(err, rows){
 		if(err) {
 			console.log(err);
@@ -125,14 +125,15 @@ exports.insertProduct = function(req, res, next) {
 		group_id : req.body.idGroup,
 		product_user_id : req.body.productId,
 		product_name : req.body.productName,
-		product_detail : req.body.productStock,
+		product_detail : req.body.productOfDetail,
 		product_category : req.body.categoryText,
 		product_price : req.body.productPrice,
 		product_rating : '0',
 		product_view : '0',
 		product_status : 'คงเหลือ',
 		product_amount : req.body.productAmount,
-		release_date : req.body.dateRelease,
+		product_stock : req.body.productStock,
+		release_date : req.body.dateRelease
 	}
 	strQuery = "INSERT INTO product SET ?";
 	connection.query(strQuery, productData, function(err, rows){
@@ -162,7 +163,7 @@ exports.insertImageProduct = function(req, res) {
 };
 
 exports.editProduct = function(req, res) {
-	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_detail, product.product_price, product.product_category, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.profile_id=? AND product.product_id=?";
+	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_detail, product.product_price, product.product_category, product.product_rating, product.product_view, product.product_amount, product.product_stock, product.release_date, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.profile_id=? AND product.product_id=?";
 	connection.query(strQuery, [req.query.pId, req.query.productId], function(err, rows){
 		if(err) {
 			console.log(err);
@@ -191,8 +192,10 @@ exports.updateProduct = function(req, res) {
 		group_id : req.body.idGroup,
 		product_user_id : req.body.productId,
 		product_name : req.body.productName,
+		product_detail : req.body.productOfDetail,
 		product_category : req.body.categoryText,
 		product_price : req.body.productPrice,
+		product_stock : req.body.productStock,
 		product_amount : req.body.productAmount
 	}
 	strQuery = "UPDATE product SET ? WHERE product_id=?";
@@ -277,7 +280,6 @@ exports.insertOrderSeller = function(req, res) {
 exports.getRatingProduct = function(req, res) {
 	var dataOffset = req.query.offset;
 	var maxLimit = req.query.limit;
-	console.log(dataOffset+' '+maxLimit+ ' '+req.query.pId);
 	if(dataOffset == undefined && maxLimit == undefined){
 		dataOffset = 0;
 		maxLimit = 3;

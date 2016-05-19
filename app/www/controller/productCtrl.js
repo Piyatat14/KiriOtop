@@ -117,6 +117,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 				$scope.productdata.viewProduct = response[0].product_view;
 				$scope.productdata.ratingProduct = response[0].product_rating;
 				$scope.productdata.amountProduct = response[0].product_amount;
+				$scope.productdata.stockProduct = response[0].product_stock;
 				$scope.productdata.nameGroup = response[0].group_name;
 				$scope.productdata.telNo = response[0].tel_no;
 				$scope.imgLength = response.length;
@@ -693,10 +694,11 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 					$scope.products.primaryProduct = response[0].product_id;
 					$scope.products.productId = response[0].product_user_id;
 					$scope.products.productName = response[0].product_name;
-					$scope.products.productStock = response[0].product_detail;
+					$scope.products.productOfDetail = response[0].product_detail;
 					$scope.products.productPrice = response[0].product_price;
 					$scope.products.productAmount = response[0].product_amount;
 					$scope.products.categoryText = response[0].product_category;
+					$scope.products.productStock = response[0].product_stock;
 					$scope.products.idGroup = response[0].group_id;
 					$scope.imgLength = response.length;
 					for(var i=0; i<$scope.imgLength; i++){
