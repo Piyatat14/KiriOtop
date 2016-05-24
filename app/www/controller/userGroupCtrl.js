@@ -37,6 +37,7 @@ angular.module('starter.userGroupCtrl', [])
 	}).then(function(modal) {
 		$scope.modal = modal;
 	});
+	
 	$scope.openMaps = function() {
 		googleMaps.loadMaps().then(function(){
 			var input = document.getElementById('pac-input');
