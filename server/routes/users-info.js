@@ -70,7 +70,7 @@ exports.insertRegis = function(req, res) {
 		email : req.body.email,
 		password : req.body.encryptPass,
 		register_date : new Date(),
-		user_status : "User"
+		user_status : "ใช้งานได้"
 	}
 	strQuery = "INSERT INTO user_info SET ?";
 	connection.query(strQuery, regisData, function(err, rows){

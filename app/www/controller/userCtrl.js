@@ -52,6 +52,13 @@ angular.module('starter.userCtrl', [])
 					okText: 'ตกลง',
 					okType: 'button-assertive'
 				});
+			}else if(response[0].user_status == 'ไม่สามารถใช้งานได้'){
+				$ionicPopup.alert({
+					title: 'การเข้าสู่ระบบผิดพลาด',
+					template: "ผู้ใช้นี้ถูกระงับ กรุณาติดต่อ kiriotop.server@gmail.com",
+					okText: 'ตกลง',
+					okType: 'button-assertive'
+				});
 			}else {
 				var loginPass = null;
 				//If password in database not server assign.

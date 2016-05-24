@@ -6,6 +6,7 @@ var bank = require('./banks');
 var userGroup = require('./user-group');
 var order = require('./order');
 var report = require('./report');
+var backend = require('./backend');
 
 //PRODUCT
 //Get Products For Show Public RecommendProduct
@@ -119,4 +120,13 @@ router.post('/insertRatingComments', order.insertRatingComment);
 //Insert Report Product
 router.post('/insertReportProducts', report.insertReportProduct);
 
+//BACKEND
+//Get Report Product From Reporter
+router.get('/getReportProducts', backend.getReportProduct);
+//Update Ban User
+router.put('/updateBanUsers', backend.updateBanUser);
+//Update Unban User
+router.put('/updateUnbanUsers', backend.updateUnbanUser);
+//Find User type admin
+router.post('/findUserAdmins', backend.findUserAdmin);
 module.exports = router;
