@@ -10,6 +10,5 @@ var mysql = require('mysql'),
 connection.connect();
 
 exports.getDataRoomChat = function(req, res, next) {
-	console.log('OK getDataRoomChat');
-	res.send("Connect Database OK.");
+	strQuery = "SELECT room_id, product_id, group_id, profile_id FROM chat_room WHERE "
 };
