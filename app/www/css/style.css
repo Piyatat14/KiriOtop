@@ -2,6 +2,7 @@
 .image-view-product{
 	width: 100px;
 	height: 100px;
+	image-orientation: from-image;
 }
 
 .image-view-userGroup{

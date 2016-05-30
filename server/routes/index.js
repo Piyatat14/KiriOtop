@@ -6,11 +6,8 @@ var bank = require('./banks');
 var userGroup = require('./user-group');
 var order = require('./order');
 var report = require('./report');
-<<<<<<< HEAD
 var backend = require('./backend');
-=======
 var chat = require('./chat');
->>>>>>> 96e350ef1d1b80cfaa5c5632ea37c78a84eb2252
 
 //PRODUCT
 //Get Products For Show Public RecommendProduct

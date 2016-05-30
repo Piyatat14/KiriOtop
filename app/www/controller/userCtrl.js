@@ -76,7 +76,12 @@ angular.module('starter.userCtrl', [])
 						email : response[0].email
 					});
 					$scope.dataUser = Authen.getUser();
-
+					$scope.userData = response[0];
+					if($scope.userData.user_image == null){
+						$scope.imageMenu = '/img/no-image.jpg';
+					}else{
+						$scope.imageMenu = urlService.getBaseUrl() + /img/ + $scope.userData.user_image;
+					}
 					//get profile_id each user.
 					$http.post(urlService.getBaseUrl() + '/findProfileUsers', $scope.dataUser)
 						.success(function(res) {
@@ -89,7 +94,6 @@ angular.module('starter.userCtrl', [])
 							}
 						}
 					);
-
 					$scope.closeLogin();
 					$state.go('app.product', {}, {reload:true});
 				}else {
