@@ -17,7 +17,7 @@ var smtpTransport = require('nodemailer-smtp-transport');
 exports.findUser = function(req, res) {
 	var emailUser = req.body.username;
 	console.log(emailUser);
-	strQuery = "SELECT user_id, email, password, register_date, user_status FROM user_info WHERE email=? LIMIT 1";
+	strQuery = "SELECT user_info.user_id, user_info.email, user_info.password, user_info.register_date, user_info.user_status, user_profile.first_name, user_profile.last_name, user_profile.user_image FROM user_info LEFT JOIN user_profile ON user_info.user_id = user_profile.user_id WHERE user_info.email=? LIMIT 1";
 	connection.query(strQuery, [emailUser], function(err, rows){
 		if(err) {
 			console.log(err);
@@ -70,7 +70,7 @@ exports.insertRegis = function(req, res) {
 		email : req.body.email,
 		password : req.body.encryptPass,
 		register_date : new Date(),
-		user_status : "User"
+		user_status : "ใช้งานได้"
 	}
 	strQuery = "INSERT INTO user_info SET ?";
 	connection.query(strQuery, regisData, function(err, rows){
@@ -220,6 +220,36 @@ exports.editPassword = function(req, res) {
 			throw err;
 		}else {
 			res.send("SUCCESS");
+		}
+	});
+};
+
+exports.searchProuct = function(req, res) {
+	var name = req.query.prodName;
+	var price = parseInt(req.query.prodPrice);
+	var twentyPer = parseInt(price*(20/100));
+	var bPrice = price-twentyPer;
+	var aPrice = price+twentyPer;
+	strQuery = "SELECT product.product_id, product.product_name, product.product_price, product.product_rating, product.product_view, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.product_name LIKE ? AND product.product_price >= "+ bPrice +" AND product.product_price <= "+ aPrice;
+	connection.query(strQuery, ['%'+name+'%'], function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
+		}
+	});
+};
+
+exports.searchProductByName = function(req, res) {
+	var name = req.query.prodName;
+	strQuery = "SELECT product.product_id, product.product_name, product.product_price, product.product_rating, product.product_view, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.product_name LIKE ?";
+	connection.query(strQuery, ['%'+name+'%'], function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
 		}
 	});
 };

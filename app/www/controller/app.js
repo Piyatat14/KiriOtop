@@ -292,6 +292,20 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     }
   })
 
+  .state('app.search', {
+    cache: false,
+    url: '/search',
+    params:{
+      searchData : null
+    },
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/productSearch.html',
+        controller: 'searchCtrl'
+      }
+    }
+  })
+
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/products');
 

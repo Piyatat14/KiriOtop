@@ -215,10 +215,15 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 					});
 				}else{
 					$scope.forOrderBuyer.idProfile = profileUser.profileID;
-					if($scope.productdata.detailProduct == 'สต็อกสินค้า'){
+					$scope.setAmount = function(){
+						if($scope.forOrderBuyer.orderAmount > $scope.productdata.amountProduct){
+							$scope.forOrderBuyer.orderAmount = $scope.productdata.amountProduct;
+						}
+					}
+					if($scope.productdata.stockProduct == 'สต็อกสินค้า'){
 						$scope.forOrderBuyer.dateWithIn = '0000-00-00'
 						var buyPopup = $ionicPopup.show({
-							template: 'จำนวนที่คุณต้องการ<input type="number" ng-model="forOrderBuyer.orderAmount" max="{{productdata.amountProduct}}">',
+							template: 'จำนวนที่คุณต้องการ<input type="number" ng-model="forOrderBuyer.orderAmount" ng-change="setAmount()">',
 						    title: 'สั่งซื้อสินค้านี้',
 						    subTitle: 'สินค้ามีจำนวน :' + $scope.productdata.amountProduct,
 						    scope: $scope,
@@ -259,7 +264,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 						});
 					}else{
 						var buyPopup = $ionicPopup.show({
-							template: 'จำนวนที่คุณต้องการ<input type="text" ng-model="forOrderBuyer.orderAmount" max="{{productdata.amountProduct}}"><br/> ภายในวันที่<sub style="color:red;">*ไม่รวมระยะเวลาขนส่งสินค้า</sub><label class="item item-input"><input type="date" ng-model="forOrderBuyer.dateWithIn"></label>',
+							template: 'จำนวนที่คุณต้องการ<input type="number" ng-model="forOrderBuyer.orderAmount"><br/> ภายในวันที่<sub style="color:red;">*ไม่รวมระยะเวลาขนส่งสินค้า</sub><label class="item item-input"><input type="date" ng-model="forOrderBuyer.dateWithIn"></label>',
 						    title: 'สั่งซื้อสินค้านี้',
 						    scope: $scope,
 							buttons: [

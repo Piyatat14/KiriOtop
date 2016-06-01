@@ -1,6 +1,6 @@
-<ion-view view-title="{{setTitle}}">
+<ion-view view-title="สินค้าจากการค้นหา">
 	<ion-content>
-		<ion-list>
+		<ion-list ng-if="productData != ''">
 			<a class="item item-thumbnail-left" href="#/app/detailProduct/{{product.product_id}}" ng-repeat="product in productData">
 				<img src="{{product.image}}">
 				<h2>{{product.product_name}}</h2>
@@ -10,6 +10,11 @@
 				</p>
 				<p>{{product.product_price | currency : 'ราคา : ' | limitTo: 16}}{{product.product_rating.length > 16 ? '&hellip;' : ''}}</p>
 			</a>
+		</ion-list>
+		<ion-list ng-if="productData == ''">
+			<div class="item" style="text-align: center;">
+		    	ไม่พบข้อมูล
+		    </div>
 		</ion-list>
 		<ion-infinite-scroll ng-if="moreDataCanBeLoaded" on-infinite="loadMore()" distance="1%"></ion-infinite-scroll>
 	</ion-content>

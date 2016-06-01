@@ -4,7 +4,7 @@
 			<li class="item">
 				<div class="row">
 					<div class="col col-50 forImageDetailProduct">
-						<img ng-repeat="image in forImageDetail" ng-src="{{image.image}}" ng-click="showImages($index)">
+						<img ng-repeat="image in forImageDetail" ng-src="{{image.image}}" ng-click="showImages($index)" width="200" height="300">
 					</div>
 					<div class="col">
 						<p>ชื่อสินค้า : {{productdata.nameProduct}}</p>
@@ -53,7 +53,7 @@
 					</div>
 				</div>
 			</li>
-			<li class="item" ng-if="ratComLength > 0" style="text-align:center;">
+			<li class="item" ng-if="ratComLength > 3" style="text-align:center;">
 				<a href="#/app/allComment/{{productdata.idProduct}}">ความคิดเห็นทั้งหมด</a>
 			</li>
 		</ion-list><br/><br/>

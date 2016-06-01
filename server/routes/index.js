@@ -6,6 +6,7 @@ var bank = require('./banks');
 var userGroup = require('./user-group');
 var order = require('./order');
 var report = require('./report');
+var backend = require('./backend');
 var chat = require('./chat');
 
 //PRODUCT
@@ -71,6 +72,10 @@ router.post('/sendPasswords', users.sendPassword);
 router.post('/editPasswords', users.editPassword);
 //Check password for user change password.
 router.get('/checkPasswords', users.checkPassword);
+//Search Product By Name And Price
+router.get('/searchProducts', users.searchProuct);
+//Search Product By Name
+router.get('/searchProductByNames', users.searchProductByName);
 
 //BANKS
 //Get Banks
@@ -119,6 +124,16 @@ router.post('/insertRatingComments', order.insertRatingComment);
 //REPORTS
 //Insert Report Product
 router.post('/insertReportProducts', report.insertReportProduct);
+
+//BACKEND
+//Get Report Product From Reporter
+router.get('/getReportProducts', backend.getReportProduct);
+//Update Ban User
+router.put('/updateBanUsers', backend.updateBanUser);
+//Update Unban User
+router.put('/updateUnbanUsers', backend.updateUnbanUser);
+//Find User type admin
+router.post('/findUserAdmins', backend.findUserAdmin);
 
 //Chat Message
 //Get data for chat room.

@@ -1,7 +1,7 @@
 angular.module('starter.userCtrl', [])
 
 
-.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, $timeout, Authen, Users, urlService, $state, $ionicHistory, $crypto, $ionicSideMenuDelegate) {
+.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, Authen, Users, urlService, $state, $ionicHistory, $crypto, $ionicSideMenuDelegate) {
 
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
@@ -52,6 +52,13 @@ angular.module('starter.userCtrl', [])
 					okText: 'ตกลง',
 					okType: 'button-assertive'
 				});
+			}else if(response[0].user_status == 'ไม่สามารถใช้งานได้'){
+				$ionicPopup.alert({
+					title: 'การเข้าสู่ระบบผิดพลาด',
+					template: "ผู้ใช้นี้ถูกระงับ กรุณาติดต่อ kiriotop.server@gmail.com",
+					okText: 'ตกลง',
+					okType: 'button-assertive'
+				});
 			}else {
 				var loginPass = null;
 				//If password in database not server assign.
@@ -69,7 +76,12 @@ angular.module('starter.userCtrl', [])
 						email : response[0].email
 					});
 					$scope.dataUser = Authen.getUser();
-
+					$scope.userData = response[0];
+					if($scope.userData.user_image == null){
+						$scope.imageMenu = '/img/no-image.jpg';
+					}else{
+						$scope.imageMenu = urlService.getBaseUrl() + /img/ + $scope.userData.user_image;
+					}
 					//get profile_id each user.
 					$http.post(urlService.getBaseUrl() + '/findProfileUsers', $scope.dataUser)
 						.success(function(res) {
@@ -82,7 +94,6 @@ angular.module('starter.userCtrl', [])
 							}
 						}
 					);
-
 					$scope.closeLogin();
 					$state.go('app.product', {}, {reload:true});
 				}else {
@@ -149,6 +160,16 @@ angular.module('starter.userCtrl', [])
 			});
 		}else {
 			$scope.checkEmail.status = false;
+		}
+	};
+
+	$scope.doSearch = function(name, price){
+		if(name == undefined){
+
+		}else if(name != undefined && price == undefined){
+			$state.go('app.search', {searchData: {prodName:name}});
+		}else{
+			$state.go('app.search', {searchData: {prodName:name, prodPrice:price}});
 		}
 	};
 })
@@ -504,5 +525,36 @@ angular.module('starter.userCtrl', [])
 				});
 			}
 		}
+	}
+})
+
+.controller('searchCtrl', function($scope, $http, Authen, urlService, $stateParams) {
+	console.log($stateParams);
+	if($stateParams.searchData.prodPrice == undefined){
+		$http.get(urlService.getBaseUrl() + '/searchProductByNames', {params : {prodName : $stateParams.searchData.prodName}})
+			.success(function(response) {
+				$scope.productData = response;
+				for(var i=0; i<response.length; i++){
+					if(response[i].image == null){
+						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + 'nullProduct.jpg';
+					}else{
+						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
+					}
+				}
+			}
+		);
+	}else{
+		$http.get(urlService.getBaseUrl() + '/searchProducts', {params : {prodName : $stateParams.searchData.prodName, prodPrice : $stateParams.searchData.prodPrice}})
+			.success(function(response) {
+				$scope.productData = response;
+				for(var i=0; i<response.length; i++){
+					if(response[i].image == null){
+						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + 'nullProduct.jpg';
+					}else{
+						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
+					}
+				}
+			}
+		);
 	}
 })
