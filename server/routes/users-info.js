@@ -286,15 +286,3 @@ function decodeDataHex(data) {
 	return decrypted;
 }
 */
-
-
-
-
-
-
-
-
-
-
-
-

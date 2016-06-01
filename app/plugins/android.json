@@ -16,6 +16,9 @@
         "cordova-plugin-camera": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
         "cordova-plugin-crosswalk-webview": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
@@ -57,11 +60,10 @@
         },
         "uk.co.workingedge.phonegap.plugin.launchnavigator": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
-        }
-    },
-    "dependent_plugins": {
-        "cordova-plugin-compat": {
+        },
+        "cordova-plugin-x-toast": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         }
-    }
+    },
+    "dependent_plugins": {}
 }
