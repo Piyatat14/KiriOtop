@@ -224,6 +224,36 @@ exports.editPassword = function(req, res) {
 	});
 };
 
+exports.searchProuct = function(req, res) {
+	var name = req.query.prodName;
+	var price = parseInt(req.query.prodPrice);
+	var twentyPer = parseInt(price*(20/100));
+	var bPrice = price-twentyPer;
+	var aPrice = price+twentyPer;
+	strQuery = "SELECT product.product_id, product.product_name, product.product_price, product.product_rating, product.product_view, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.product_name LIKE ? AND product.product_price >= "+ bPrice +" AND product.product_price <= "+ aPrice;
+	connection.query(strQuery, ['%'+name+'%'], function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
+		}
+	});
+};
+
+exports.searchProductByName = function(req, res) {
+	var name = req.query.prodName;
+	strQuery = "SELECT product.product_id, product.product_name, product.product_price, product.product_rating, product.product_view, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.product_name LIKE ?";
+	connection.query(strQuery, ['%'+name+'%'], function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
+		}
+	});
+};
+
 //function generate data 8 digits.
 function generateCryp(callback) {								//call back function.
 	//Random Password for send temp password to user in case recovery.

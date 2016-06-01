@@ -211,16 +211,23 @@
     height: 100%;
 }
 
-.forImageDetailProduct > img:first-child{
+.forImageDetailProduct{
 	width: 100%;
+	height: 180px;
+}
+
+.forImageDetailProduct img:first-child{
+	width: 100%;
+	height: 85%;
 	text-decoration: none;
 	cursor: pointer;
 }
 
-.forImageDetailProduct > img:not(:first-child){
+.forImageDetailProduct img:not(:first-child){
 	display: block;
 	padding-right: 4px;
 	width: 20%;
+	height: 15%;
 	text-decoration: none;
 	cursor: pointer;
 }

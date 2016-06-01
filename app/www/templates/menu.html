@@ -24,14 +24,15 @@
         <ion-item>
           <label class="item item-input" style="background-color:#E8E8E8 ;">
             <i class="icon ion-search placeholder-icon"></i>
-            <input type="text" placeholder="Search">
+            <input type="text" placeholder="ค้นหา" ng-model="dataSearch">
           </label>
           <div class="range range-positive" style="padding-left:0; padding-right:0;">
             <label>ราคา</label>
-            <input type="range" min="0" max="100" ng-model="price_value">
-            <label>{{price_value}}</label>
-            <a class="button button-icon icon ion-search" style="color:blue;"></a>
+            <input type="range" min="50" max="10000" ng-model="priceValue">
+            <label>{{priceValue}}</label>
+            <!-- <a class="button button-icon icon ion-search" style="color:blue;" ng-click="doSearch(dataSearch, priceValue)"></a> -->
           </div>
+          <button menu-close class="button button-block button-outline button-positive" style="margin-top:0px; margin-bottom:0px;" ng-click="doSearch(dataSearch, priceValue)">ค้นหา</button>
         </ion-item>
 
         <ion-item menu-close class="item item-complex">

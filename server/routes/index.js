@@ -72,6 +72,10 @@ router.post('/sendPasswords', users.sendPassword);
 router.post('/editPasswords', users.editPassword);
 //Check password for user change password.
 router.get('/checkPasswords', users.checkPassword);
+//Search Product By Name And Price
+router.get('/searchProducts', users.searchProuct);
+//Search Product By Name
+router.get('/searchProductByNames', users.searchProductByName);
 
 //BANKS
 //Get Banks

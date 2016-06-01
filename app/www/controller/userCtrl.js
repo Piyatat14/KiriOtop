@@ -1,7 +1,7 @@
 angular.module('starter.userCtrl', [])
 
 
-.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, $timeout, Authen, Users, urlService, $state, $ionicHistory, $crypto, $ionicSideMenuDelegate) {
+.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, Authen, Users, urlService, $state, $ionicHistory, $crypto, $ionicSideMenuDelegate) {
 
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
@@ -160,6 +160,16 @@ angular.module('starter.userCtrl', [])
 			});
 		}else {
 			$scope.checkEmail.status = false;
+		}
+	};
+
+	$scope.doSearch = function(name, price){
+		if(name == undefined){
+
+		}else if(name != undefined && price == undefined){
+			$state.go('app.search', {searchData: {prodName:name}});
+		}else{
+			$state.go('app.search', {searchData: {prodName:name, prodPrice:price}});
 		}
 	};
 })
@@ -515,5 +525,36 @@ angular.module('starter.userCtrl', [])
 				});
 			}
 		}
+	}
+})
+
+.controller('searchCtrl', function($scope, $http, Authen, urlService, $stateParams) {
+	console.log($stateParams);
+	if($stateParams.searchData.prodPrice == undefined){
+		$http.get(urlService.getBaseUrl() + '/searchProductByNames', {params : {prodName : $stateParams.searchData.prodName}})
+			.success(function(response) {
+				$scope.productData = response;
+				for(var i=0; i<response.length; i++){
+					if(response[i].image == null){
+						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + 'nullProduct.jpg';
+					}else{
+						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
+					}
+				}
+			}
+		);
+	}else{
+		$http.get(urlService.getBaseUrl() + '/searchProducts', {params : {prodName : $stateParams.searchData.prodName, prodPrice : $stateParams.searchData.prodPrice}})
+			.success(function(response) {
+				$scope.productData = response;
+				for(var i=0; i<response.length; i++){
+					if(response[i].image == null){
+						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + 'nullProduct.jpg';
+					}else{
+						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
+					}
+				}
+			}
+		);
 	}
 })
