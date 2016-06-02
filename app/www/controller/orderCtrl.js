@@ -11,8 +11,6 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 		$scope.rating.max = 5;
 		$scope.rating.comment = '';
 
-		$scope.forWatch = 1;
-
 		function getOrder(){
 			$http
 			.get(urlService.getBaseUrl() + '/getOrderBuyers', {params : {pfId : profileUser.profileID}})
@@ -34,10 +32,7 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 			})
 		}
 
-		$scope.$watch('', function() {
-			getOrder();
-			console.log('22');
-		});
+		getOrder();
 
 		$ionicPopover.fromTemplateUrl('templates/orderBuyer.html', {
 			scope: $scope,
