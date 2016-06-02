@@ -31,7 +31,11 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 				}
 			})
 		}
-		getOrder();
+
+		$scope.$watch('test', function() {
+			getOrder();
+			console.log('22');
+		});
 
 		$ionicPopover.fromTemplateUrl('templates/orderBuyer.html', {
 			scope: $scope,

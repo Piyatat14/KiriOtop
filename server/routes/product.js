@@ -264,6 +264,7 @@ exports.insertOrderBuyer = function(req, res) {
 exports.insertOrderSeller = function(req, res) {
 	var orderData = {
 		order_buyer_id : req.body.sId,
+		profile_id : req.body.profId,
 		seller_status_name : 'รอการยืนยัน'
 	}
 	strQuery = "INSERT INTO order_seller SET ?";

@@ -95,6 +95,9 @@ angular.module('starter.userCtrl', [])
 						}
 					);
 					$scope.closeLogin();
+					$ionicHistory.nextViewOptions({
+						disableBack: true
+					});
 					$state.go('app.product', {}, {reload:true});
 				}else {
 					$ionicPopup.alert({

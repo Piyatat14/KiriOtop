@@ -218,6 +218,8 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 					$scope.setAmount = function(){
 						if($scope.forOrderBuyer.orderAmount > $scope.productdata.amountProduct){
 							$scope.forOrderBuyer.orderAmount = $scope.productdata.amountProduct;
+						}else if($scope.forOrderBuyer.orderAmount < 1){
+							$scope.forOrderBuyer.orderAmount = 1;
 						}
 					}
 					if($scope.productdata.stockProduct == 'สต็อกสินค้า'){
@@ -249,7 +251,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 											.success(function(response) {
 												var idOrderSeller = response.insertId;
 												$http
-												.post(urlService.getBaseUrl() + '/insertOrderSellers', {sId : idOrderSeller})
+												.post(urlService.getBaseUrl() + '/insertOrderSellers', {sId : idOrderSeller, profId : $scope.productdata.idProfile})
 												.success(function(response) {
 													$ionicPopup.alert({
 														title: 'ทำการสั่งซื้อเสร็จเรียบร้อย',
@@ -278,17 +280,25 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 										.success(function(response) {
 											var runOrder;
 											if(response == ''){
-												runOrder = '001';
+												runOrder = '1001';
 											}else{
 												response[0].order_id++;
 												runOrder = response[0].order_id;
 											}
 											$scope.forOrderBuyer.orderId = runOrder;
-										})
-						        		$http
-										.post(urlService.getBaseUrl() + '/insertOrderBuyers', $scope.forOrderBuyer)
-										.success(function(response) {
-											
+											$http
+											.post(urlService.getBaseUrl() + '/insertOrderBuyers', $scope.forOrderBuyer)
+											.success(function(response) {
+												var idOrderSeller = response.insertId;
+												$http
+												.post(urlService.getBaseUrl() + '/insertOrderSellers', {sId : idOrderSeller, profId : $scope.productdata.idProfile})
+												.success(function(response) {
+													$ionicPopup.alert({
+														title: 'ทำการสั่งซื้อเสร็จเรียบร้อย',
+														template: 'ตรวจสอบสถานะสินค้าได้ที่ประวัติการซื้อ'
+													});
+												})
+											})
 										})
 						        	}
 								}
