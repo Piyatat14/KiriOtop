@@ -87,6 +87,9 @@
         },
         "cordova-plugin-filepath": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "com.phonegap.plugins.PushPlugin": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
         }
     },
     "dependent_plugins": {}

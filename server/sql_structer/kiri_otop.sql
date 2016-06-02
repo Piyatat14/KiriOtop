@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 22, 2016 at 04:29 AM
+-- Generation Time: Jun 02, 2016 at 07:39 AM
 -- Server version: 10.1.8-MariaDB
 -- PHP Version: 5.6.14
 
@@ -34,6 +34,13 @@ CREATE TABLE `admin_info` (
   `start_date` date NOT NULL COMMENT 'วันที่สมัคร'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ข้อมูลผู้ดูแล';
 
+--
+-- Dumping data for table `admin_info`
+--
+
+INSERT INTO `admin_info` (`admin_id`, `username`, `password`, `admin_type`, `start_date`) VALUES
+(1, 'admin', 'admin', 'Siggy', '2016-05-18');
+
 -- --------------------------------------------------------
 
 --
@@ -48,6 +55,13 @@ CREATE TABLE `admin_log` (
   `log_comment` varchar(100) NOT NULL COMMENT 'ประวัติความคิดเห็น',
   `log_date` date NOT NULL COMMENT 'วันที่ประวัติการจัดการ'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ข้อมูลประวัติการจัดการของผู้ดูแล';
+
+--
+-- Dumping data for table `admin_log`
+--
+
+INSERT INTO `admin_log` (`admin_log_id`, `user_id`, `product_id`, `admin_id`, `log_comment`, `log_date`) VALUES
+(1, 1, 1, 0, 'eqwe', '2016-04-11');
 
 -- --------------------------------------------------------
 
@@ -74,7 +88,9 @@ INSERT INTO `book_bank` (`book_bank_id`, `profile_id`, `logo_bank_id`, `book_ban
 (46, 1, 3, 'qwe', 'qwe', 'wqe'),
 (47, 1, 4, 'qweqq', 'qwe', 'wqe'),
 (48, 2, 5, '123', '123', '213'),
-(49, 1, 5, 'tqwe', 'wqe', 'qwe');
+(49, 1, 5, 'tqwe', 'wqe', 'qwe'),
+(50, 1, 6, '123123123', '123123', '132123'),
+(51, 2, 7, 'qwe', 'qwe', 'qwe');
 
 -- --------------------------------------------------------
 
@@ -152,6 +168,13 @@ CREATE TABLE `order_buyer` (
   `order_date` date NOT NULL COMMENT 'วันที่ทำรายการสั่งซื้อ'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ข้อมูลการสั่งซื้อ (แสดงฝั่งผู้ซื้อ)';
 
+--
+-- Dumping data for table `order_buyer`
+--
+
+INSERT INTO `order_buyer` (`order_buyer_id`, `product_id`, `profile_id`, `group_id`, `order_id`, `order_amount`, `date_of_within`, `buyer_status_name`, `product_order_price`, `order_date`) VALUES
+(59, 1, 2, 42, '1001', 2, '0000-00-00', 'รอการยืนยัน', 1, '2016-06-02');
+
 -- --------------------------------------------------------
 
 --
@@ -161,8 +184,10 @@ CREATE TABLE `order_buyer` (
 CREATE TABLE `order_log` (
   `order_log_id` int(11) NOT NULL COMMENT 'รหัสประวัติการสั่งซื้อ',
   `order_buyer_id` int(11) NOT NULL COMMENT 'รหัสการสั่งซื้อฝั่งผู้ซื้อ',
-  `order_status` varchar(50) COLLATE utf8_bin NOT NULL COMMENT 'สถานะการสั่งซื้อ',
-  `order_log_date` date NOT NULL COMMENT 'วันที่เปลี่ยนสถานะ'
+  `order_before_status` varchar(200) COLLATE utf8_bin NOT NULL COMMENT 'สถานะก่อนการเปลี่ยนแปลง',
+  `order_after_status` varchar(200) COLLATE utf8_bin NOT NULL COMMENT 'สถานะหลังการเปลี่ยนแปลง',
+  `order_log_date` varchar(200) COLLATE utf8_bin NOT NULL COMMENT 'วันที่เปลี่ยนสถานะ',
+  `profile_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='ข้อมูลประวัติการสั่งซื้อ';
 
 -- --------------------------------------------------------
@@ -174,8 +199,16 @@ CREATE TABLE `order_log` (
 CREATE TABLE `order_seller` (
   `order_seller_id` int(11) NOT NULL COMMENT 'รหัสการสั่งซื้อฝั่งผู้ขาย',
   `order_buyer_id` int(11) NOT NULL COMMENT 'รหัสการสั่งซื้อฝั่งผู้ซื้อ',
-  `seller_status_name` varchar(50) NOT NULL COMMENT 'สถานะการสั่งซื้อของผู้ขาย'
+  `seller_status_name` varchar(50) NOT NULL COMMENT 'สถานะการสั่งซื้อของผู้ขาย',
+  `profile_id` int(11) NOT NULL COMMENT 'รหัสข้อมูลส่วนตัว (ผู้ขาย)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ข้อมูลการสั่งซื้อ (แสดงฝั่งผู้ขาย)';
+
+--
+-- Dumping data for table `order_seller`
+--
+
+INSERT INTO `order_seller` (`order_seller_id`, `order_buyer_id`, `seller_status_name`, `profile_id`) VALUES
+(43, 59, 'รอการยืนยัน', 1);
 
 -- --------------------------------------------------------
 
@@ -185,18 +218,34 @@ CREATE TABLE `order_seller` (
 
 CREATE TABLE `product` (
   `product_id` int(11) NOT NULL COMMENT 'รหัสสินค้า',
+  `profile_id` int(11) NOT NULL COMMENT 'รหัสประจำตัวสมาชิก',
   `group_id` int(11) NOT NULL COMMENT 'รหัสเครือข่าย',
   `product_user_id` varchar(10) NOT NULL COMMENT 'รหัสสินค้าที่ผู้ขายเป็นคนกรอก',
   `product_name` varchar(100) NOT NULL COMMENT 'ชื่อสินค้า',
+  `product_detail` varchar(500) NOT NULL COMMENT 'รายละเอียดสินค้า',
   `product_category` set('อาหาร','เครื่องดื่ม','ผ้า เครื่องแต่งกาย','ของใช้และของประดับตกแต่ง','ศิลปะประดิษฐ์และของที่ระลึก','สมุนไพรที่ไม่ใช่อาหาร') NOT NULL COMMENT 'หมวดหมู่',
   `product_price` double NOT NULL COMMENT 'ราคา',
   `product_rating` int(1) UNSIGNED NOT NULL COMMENT 'คะแนน',
   `product_view` int(11) NOT NULL COMMENT 'จำนวนผู้เข้าชม',
   `product_status` varchar(50) NOT NULL COMMENT 'สถานะ',
   `product_amount` int(11) UNSIGNED NOT NULL COMMENT 'จำนวน',
-  `product_video` text NOT NULL COMMENT 'ชื่อไฟล์วีดีโอ',
+  `product_stock` varchar(20) NOT NULL COMMENT 'ชื่อไฟล์วีดีโอ',
   `release_date` date NOT NULL COMMENT 'วันที่ลงสินค้า'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ข้อมูลสินค้า';
+
+--
+-- Dumping data for table `product`
+--
+
+INSERT INTO `product` (`product_id`, `profile_id`, `group_id`, `product_user_id`, `product_name`, `product_detail`, `product_category`, `product_price`, `product_rating`, `product_view`, `product_status`, `product_amount`, `product_stock`, `release_date`) VALUES
+(1, 1, 42, 'qweeo', 'สร้อยข้อมือหิน', 'ก็ลองอธิบายดูดิเดียวก็รู้จ้าส', 'อาหาร', 123, 5, 0, 'คงเหลือ', 2, 'สต็อกสินค้า', '2016-04-11'),
+(2, 1, 42, 'wqee', 'สร้อยคอหิน', 'ไม่สต็อกสินค้า', 'ศิลปะประดิษฐ์และของที่ระลึก', 1234, 5, 0, 'คงเหลือ', 2, '', '0000-00-00'),
+(3, 1, 43, 'qqq', 'asd', 'ไม่สต็อกสินค้า', 'อาหาร', 123, 0, 0, 'คงเหลือ', 123, '', '0000-00-00'),
+(4, 1, 42, 'qweqqqwe', '1232', 'ไม่สต็อกสินค้า', 'เครื่องดื่ม', 22, 0, 0, 'คงเหลือ', 22, '', '0000-00-00'),
+(5, 1, 49, 'qweqqr', '232', 'สต็อกสินค้า', 'ผ้า เครื่องแต่งกาย', 23, 0, 0, 'คงเหลือ', 232, '', '2016-04-07'),
+(6, 1, 44, 'tttttt', 'qweqqwe', 'สต็อกสินค้า', 'อาหาร', 22222, 0, 0, 'คงเหลือ', 12, '', '2016-04-27'),
+(7, 1, 45, 'hfgdf', 'rtersdf', 'สต็อกสินค้า', 'อาหาร', 31111, 0, 0, 'คงเหลือ', 21, '', '2016-04-27'),
+(8, 1, 44, 'qweqwe', 'qweqwe', 'qweeeeeeeeeeeeeeeeqweqweeeeeeeeeeeqdsaddddddd', 'อาหาร', 123, 0, 0, 'คงเหลือ', 10, 'สต็อกสินค้า', '2016-05-17');
 
 -- --------------------------------------------------------
 
@@ -210,6 +259,16 @@ CREATE TABLE `product_image` (
   `image` text NOT NULL COMMENT 'ชื่อไฟล์รูป'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ข้อมูลไฟล์รูปสินค้า';
 
+--
+-- Dumping data for table `product_image`
+--
+
+INSERT INTO `product_image` (`product_image_id`, `product_id`, `image`) VALUES
+(12, 5, '1-20150802_101738-1460656176698.jpg'),
+(13, 5, '1-20151109_084617-1460597921284.jpg'),
+(14, 1, '1-received_1060533527347564-1464670576199.jpg'),
+(15, 2, '1-received_1060533540680896-1464670611605.jpg');
+
 -- --------------------------------------------------------
 
 --
@@ -221,8 +280,24 @@ CREATE TABLE `user_group` (
   `profile_id` int(11) NOT NULL COMMENT 'รหัสประจำตัวสมาชิก',
   `group_name` varchar(100) NOT NULL COMMENT 'ชื่อเครือข่าย',
   `address_location` text NOT NULL COMMENT 'ตำแหน่งที่อยู่',
+  `address_lat` double NOT NULL,
+  `address_lng` double NOT NULL,
   `tel_no` varchar(10) NOT NULL COMMENT 'เบอร์ติดต่อ'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ข้อมูลเครือข่าย';
+
+--
+-- Dumping data for table `user_group`
+--
+
+INSERT INTO `user_group` (`group_id`, `profile_id`, `group_name`, `address_location`, `address_lat`, `address_lng`, `tel_no`) VALUES
+(42, 1, 'qwe', 'Rrrrrr', 0, 0, '9996588'),
+(43, 1, 'Hnnbแ', 'เเเดดด', 0, 0, '55555'),
+(44, 1, 'Siggy', 'Soi6', 0, 0, '0865537070'),
+(45, 1, 'Siggy2', 'Soi6', 0, 0, '0865537070'),
+(47, 1, 'testt', 'test', 0, 0, 'test'),
+(48, 1, 'test5', 'test', 0, 0, '0844575215'),
+(49, 1, 'LastTest', 'ไทย ซี-เซ็นเตอร์ สาขาวิสุทธิกษัตริย์ เขต พระนคร ประเทศไทย', 13.7624622, 100.50430729999994, '0865537070'),
+(50, 2, 'WIWI', 'ราชวิถี แขวง สวนจิตรลดา กรุงเทพมหานคร ประเทศไทย', 13.7665848, 100.52456770000003, '0832789162');
 
 -- --------------------------------------------------------
 
@@ -235,6 +310,19 @@ CREATE TABLE `user_group_image` (
   `group_id` int(11) NOT NULL COMMENT 'รหัสเครือข่าย',
   `image` text NOT NULL COMMENT 'ชื่อไฟล์รูป'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ข้อมูลไฟล์รูปเครือข่าย';
+
+--
+-- Dumping data for table `user_group_image`
+--
+
+INSERT INTO `user_group_image` (`group_image_id`, `group_id`, `image`) VALUES
+(6, 43, '20160330_120449.jpg'),
+(7, 44, '1-20151109_084617-1460597921284.jpg'),
+(8, 44, '1-20151109_085144-1460597921293.jpg'),
+(21, 47, '1-20160131_152601-1460646421078.jpg'),
+(22, 47, '1-20150425_090428-1460646574673.jpg'),
+(23, 47, '1-20150802_101527-1460646954048.jpg'),
+(35, 48, '1-2_Knitting Balls-1460647037779.jpg');
 
 -- --------------------------------------------------------
 
@@ -255,11 +343,16 @@ CREATE TABLE `user_info` (
 --
 
 INSERT INTO `user_info` (`user_id`, `email`, `password`, `register_date`, `user_status`) VALUES
-(1, 'test@email.com', 'test', '2016-02-01', 'test'),
+(1, 'test@email.com', 'test', '2016-02-01', 'ใช้งานได้'),
 (2, '555', '55', '2016-02-25', 'test'),
 (3, 'qwewe@qwe', 'qwe', '2016-02-29', 'test'),
 (4, 'test2@hotmail.com', 'test', '2016-02-29', 'test'),
-(5, 'o_l3k_o@hotmail.com', 'ะำหะ', '2016-03-01', 'User');
+(5, 'o_l3k_o@hotmail.com', 'ะำหะ', '2016-03-01', 'User'),
+(6, 'aa@email.com', 'oo', '2016-03-29', 'User'),
+(7, 'qwe@qwe', 'wqe', '2016-03-30', 'User'),
+(8, 'qqq@qwe', 'qwe', '2016-03-30', 'User'),
+(9, 'qweqq@qwe', 'qwe', '2016-03-30', 'User'),
+(10, 'qewqqq!@qweqwe', 'qweqwe', '2016-03-30', 'User');
 
 -- --------------------------------------------------------
 
@@ -275,6 +368,13 @@ CREATE TABLE `user_product_rating` (
   `comment` text NOT NULL COMMENT 'ความคิดเห็น',
   `comment_date` date NOT NULL COMMENT 'วันที่แสดงความคิดเห็น'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ข้อมูลคะแนนสินค้า';
+
+--
+-- Dumping data for table `user_product_rating`
+--
+
+INSERT INTO `user_product_rating` (`user_product_rating_id`, `product_id`, `profile_id`, `rating`, `comment`, `comment_date`) VALUES
+(5, 1, 1, 4, 'ดีมากเลยครับ :D', '2016-04-19');
 
 -- --------------------------------------------------------
 
@@ -292,6 +392,14 @@ CREATE TABLE `user_profile` (
   `user_image` text NOT NULL COMMENT 'ชื่อไฟล์รูปสมาชิก',
   `can_sell` tinyint(1) NOT NULL COMMENT 'สิทธิ์ลงขายสินค้า'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ข้อมูลรายละเอียดเพิ่มเติมสมาชิก';
+
+--
+-- Dumping data for table `user_profile`
+--
+
+INSERT INTO `user_profile` (`profile_id`, `user_id`, `first_name`, `last_name`, `address`, `tel_no`, `user_image`, `can_sell`) VALUES
+(1, 1, 'testtt', 'test', '260 ', '08888888', '1-20160413_153056-1460611310030.jpg', 1),
+(2, 4, 'ณัฏฐพล', 'ศรีกิจพิพัฒน์', '260 กรุงธนบุรี จ้า', '0865537070', '', 0);
 
 --
 -- Indexes for dumped tables
@@ -404,17 +512,17 @@ ALTER TABLE `user_profile`
 -- AUTO_INCREMENT for table `admin_info`
 --
 ALTER TABLE `admin_info`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสผู้ดูแล';
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสผู้ดูแล', AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `admin_log`
 --
 ALTER TABLE `admin_log`
-  MODIFY `admin_log_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสประวัติการจัดการ';
+  MODIFY `admin_log_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสประวัติการจัดการ', AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `book_bank`
 --
 ALTER TABLE `book_bank`
-  MODIFY `book_bank_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสสมุดบัญชี', AUTO_INCREMENT=50;
+  MODIFY `book_bank_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสสมุดบัญชี', AUTO_INCREMENT=52;
 --
 -- AUTO_INCREMENT for table `chat_message`
 --
@@ -434,7 +542,7 @@ ALTER TABLE `logo_bank`
 -- AUTO_INCREMENT for table `order_buyer`
 --
 ALTER TABLE `order_buyer`
-  MODIFY `order_buyer_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสการสั่งซื้อฝั่งผู้ซื้อ';
+  MODIFY `order_buyer_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสการสั่งซื้อฝั่งผู้ซื้อ', AUTO_INCREMENT=60;
 --
 -- AUTO_INCREMENT for table `order_log`
 --
@@ -444,42 +552,42 @@ ALTER TABLE `order_log`
 -- AUTO_INCREMENT for table `order_seller`
 --
 ALTER TABLE `order_seller`
-  MODIFY `order_seller_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสการสั่งซื้อฝั่งผู้ขาย';
+  MODIFY `order_seller_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสการสั่งซื้อฝั่งผู้ขาย', AUTO_INCREMENT=44;
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสสินค้า';
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสสินค้า', AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `product_image`
 --
 ALTER TABLE `product_image`
-  MODIFY `product_image_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสไฟล์รูปสินค้า';
+  MODIFY `product_image_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสไฟล์รูปสินค้า', AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT for table `user_group`
 --
 ALTER TABLE `user_group`
-  MODIFY `group_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสเครือข่าย';
+  MODIFY `group_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสเครือข่าย', AUTO_INCREMENT=51;
 --
 -- AUTO_INCREMENT for table `user_group_image`
 --
 ALTER TABLE `user_group_image`
-  MODIFY `group_image_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสไฟล์รูป';
+  MODIFY `group_image_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสไฟล์รูป', AUTO_INCREMENT=36;
 --
 -- AUTO_INCREMENT for table `user_info`
 --
 ALTER TABLE `user_info`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสสมาชิก', AUTO_INCREMENT=6;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสสมาชิก', AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `user_product_rating`
 --
 ALTER TABLE `user_product_rating`
-  MODIFY `user_product_rating_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสคะแนนสินค้า';
+  MODIFY `user_product_rating_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสคะแนนสินค้า', AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `user_profile`
 --
 ALTER TABLE `user_profile`
-  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสประจำตัวสมาชิก';
+  MODIFY `profile_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'รหัสประจำตัวสมาชิก', AUTO_INCREMENT=3;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
