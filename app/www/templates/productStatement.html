@@ -1,7 +1,25 @@
 <ion-view view-title="สรุปผลรายงาน">
-  <ion-content>
-    <div>
-      <canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels"></canvas>
-    </div>
-  </ion-content>
+	<ion-content>
+		<div class="list">
+			<div class="item item-divider">
+				ปฏิทิน
+			</div>
+			<label class="item item-input">
+				<span class="input-label">วันที่</span>
+				<input type="date">
+			</label>
+			<div class="item item-divider">
+				วันที่ 03/06/2016
+			</div>
+			<label class="item">
+				<canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels"></canvas>
+			</label>
+			<div class="item item-divider">
+				เดือน 06
+			</div>
+			<label class="item">
+				<canvas id="pie" class="chart chart-pie" chart-data="data" chart-labels="labels"></canvas> 
+			</label>
+		</div>
+	</ion-content>
 </ion-view>

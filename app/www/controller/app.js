@@ -6,7 +6,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', 'starter.services', 'starter.bankAccountCtrl', 'starter.userGroupCtrl', 'starter.orderCtrl', 'starter.chatCtrl', 'starter.statementCtrl', 'ngCordova', 'mdo-angular-cryptography'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -19,6 +19,15 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
       StatusBar.styleDefault();
     }
   });
+
+  // $rootScope.$on('$stateChangeStart', function (event, toState) {
+  //   if (!UserService.current() && toState.name !== 'login') {
+  //     $ionicHistory.nextViewOptions({
+  //       disableBack: true
+  //     });
+  //     $state.go('login');
+  //   }
+  // });
 })
 
 .config(function($stateProvider, $urlRouterProvider, $compileProvider) { 
