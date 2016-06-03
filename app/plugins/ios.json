@@ -79,9 +79,6 @@
         "cordova-plugin-camera": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
-        "cordova-plugin-crosswalk-webview": {
-            "PACKAGE_NAME": "com.ionicframework.app445426"
-        },
         "com-badrit-base64": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
@@ -89,6 +86,9 @@
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "com.phonegap.plugins.PushPlugin": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-crosswalk-webview": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         }
     },

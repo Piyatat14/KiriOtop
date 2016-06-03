@@ -19,9 +19,6 @@
         "cordova-plugin-compat": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
-        "cordova-plugin-crosswalk-webview": {
-            "PACKAGE_NAME": "com.ionicframework.app445426"
-        },
         "cordova-plugin-device": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
@@ -65,6 +62,9 @@
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "com.phonegap.plugins.PushPlugin": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-crosswalk-webview": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         }
     },
