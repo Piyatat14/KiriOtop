@@ -6,19 +6,25 @@
 			</div>
 			<label class="item item-input">
 				<span class="input-label">วันที่</span>
-				<input type="date">
+				<input type="date" name="date.picked" ng-model="date.picked" ng-change="dateChanged()">
 			</label>
 			<div class="item item-divider">
-				วันที่ 03/06/2016
+				วันที่ : {{date.picked | date: "dd/MM/yyyy"}}
 			</div>
-			<label class="item">
-				<canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels"></canvas>
+			<label class="item" ng-if="buyer != ''">
+				<canvas id="doughnut" class="chart chart-doughnut" chart-data="priceDay" chart-labels="buyer"></canvas>
+			</label>
+			<label class="item" ng-if="buyer == ''" style="text-align:center;">
+				ไม่มีรายการขายในวันนี้
 			</label>
 			<div class="item item-divider">
-				เดือน 06
+				ภายในเดือน : {{date.picked | date: "dd/MM/yyyy"}}
 			</div>
-			<label class="item">
-				<canvas id="pie" class="chart chart-pie" chart-data="data" chart-labels="labels"></canvas> 
+			<label class="item" ng-if="orderDate != ''">
+				<canvas id="line" class="chart chart-line" chart-data="priceMonth" chart-labels="orderDate" chart-legend="true" chart-series="series"></canvas> 
+			</label>
+			<label class="item" ng-if="orderDate == ''" style="text-align:center;">
+				ไม่มีรายการขายในเดือนนี้
 			</label>
 		</div>
 	</ion-content>

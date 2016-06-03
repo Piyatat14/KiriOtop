@@ -8,6 +8,7 @@ var order = require('./order');
 var report = require('./report');
 var backend = require('./backend');
 var chat = require('./chat');
+var statement = require('./statement');
 
 //PRODUCT
 //Get Products For Show Public RecommendProduct
@@ -124,6 +125,10 @@ router.post('/insertRatingComments', order.insertRatingComment);
 //REPORTS
 //Insert Report Product
 router.post('/insertReportProducts', report.insertReportProduct);
+
+//STATEMENT
+//Get Products Statement
+router.get('/getProductStatements', statement.getProductStatement);
 
 //BACKEND
 //Get Report Product From Reporter
