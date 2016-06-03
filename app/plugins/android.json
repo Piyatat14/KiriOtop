@@ -7,6 +7,20 @@
         "files": {}
     },
     "installed_plugins": {
+        "com.phonegap.plugins.PushPlugin": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova.plugins.diagnostic.api-22": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "uk.co.workingedge.phonegap.plugin.launchnavigator": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        }
+    },
+    "dependent_plugins": {
         "com-badrit-base64": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
@@ -31,9 +45,6 @@
         "cordova-plugin-filepath": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
-        "cordova-plugin-geolocation": {
-            "PACKAGE_NAME": "com.ionicframework.app445426"
-        },
         "cordova-plugin-image-picker": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
@@ -49,12 +60,6 @@
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
-        "cordova-plugin-x-toast": {
-            "PACKAGE_NAME": "com.ionicframework.app445426"
-        },
-        "cordova.plugins.diagnostic.api-22": {
-            "PACKAGE_NAME": "com.ionicframework.app445426"
-        },
         "ionic-plugin-keyboard": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
@@ -67,6 +72,5 @@
         "cordova-plugin-crosswalk-webview": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         }
-    },
-    "dependent_plugins": {}
+    }
 }

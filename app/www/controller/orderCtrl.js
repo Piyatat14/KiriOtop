@@ -1,6 +1,22 @@
 angular.module('starter.orderCtrl', ['ionic.rating'])
 
-	.controller('orderBuyerCtrl', function($scope, $http, urlService, Users, $ionicPopover, $state, $filter, $ionicPopup) {
+	.controller('orderBuyerCtrl', function($scope, $http, urlService, Users, $ionicPopover, $state, $filter, $ionicPopup) { //, $ionicPlatform, $cordovaPush
+		// $ionicPlatform.ready(function () {
+		// 	$cordovaPush.register({
+		// 		badge: true,
+		// 		sound: true,
+		// 		alert: true
+		// 	}).then(function (result) {
+		// 		UserService.registerDevice({user: user, token: result}).then(function () {
+		// 			$ionicLoading.hide();
+		// 			$state.go('tab.news');
+		// 		}, function (err) {
+		// 			console.log(err);
+		// 		});
+		// 	}, function (err) {
+		// 		console.log('reg device error', err);
+		// 	});
+		// });
 		var profileUser = Users.getUserData();
 		var idOderBuyer = '';
 		var statusBuyer = '';
@@ -11,7 +27,7 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 		$scope.rating.max = 5;
 		$scope.rating.comment = '';
 
-		function getOrder(){
+		var getOrder = function(){
 			$http
 			.get(urlService.getBaseUrl() + '/getOrderBuyers', {params : {pfId : profileUser.profileID}})
 			.success(function(response){
