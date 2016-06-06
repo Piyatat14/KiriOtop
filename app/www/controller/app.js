@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', 'starter.services', 'starter.bankAccountCtrl', 'starter.userGroupCtrl', 'starter.orderCtrl', 'starter.chatCtrl', 'starter.statementCtrl', 'ngCordova', 'mdo-angular-cryptography'])
+angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', 'starter.services', 'starter.bankAccountCtrl', 'starter.userGroupCtrl', 'starter.orderCtrl', 'starter.statementCtrl', 'ngCordova', 'mdo-angular-cryptography'])
 
 .run(function($ionicPlatform, $rootScope) {
   $ionicPlatform.ready(function() {
