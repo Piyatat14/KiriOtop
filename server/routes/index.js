@@ -51,6 +51,22 @@ router.get('/getRatingProducts', products.getRatingProduct);
 router.get('/getViewProfiles', products.getViewProfile);
 //Get View User Group
 router.get('/getViewUserGroups', products.getViewUserGroup);
+//Check Rating Products
+router.get('/checkRatingProducts', products.checkRatingProduct);
+//Get Only One Rating Products
+router.get('/getOnlyOneRatingProducts', products.getOnlyOneRatingProduct);
+//Delete Only One Rating Products
+router.delete('/deleteOnlyOneRatingComments', products.deleteOnlyOneRatingComment);
+//Edit Only One Rating Products
+router.put('/editOnlyOneRatingComments', products.editOnlyOneRatingComment);
+//Check Before Delete
+router.get('/checkBeforeDeletes', products.checkBeforeDelete);
+//Delete Products
+router.put('/deleteProducts', products.deleteProduct);
+//Get Average Rating
+router.get('/getAverageRatings', products.getAverageRating);
+//Get Average Rating
+router.get('/increaseViewers', products.increaseViewer);
 
 //USERS
 //Get User
@@ -105,6 +121,10 @@ router.delete('/editDeleteImages', userGroup.editDeleteImage);
 router.delete('/editAllDeleteImages', userGroup.editAllDeleteImage);
 //Update User Group Data
 router.put('/updateUserGroups', userGroup.updateUserGroup);
+//Check Products in User Group For Detele
+router.get('/checkDeleteUsergroups', userGroup.checkDeleteUsergroup);
+//Delete UserGroup
+router.delete('/deleteUsergroups', userGroup.deleteUsergroup);
 
 //ORDERS
 //Get Order Buyer

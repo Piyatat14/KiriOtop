@@ -1,7 +1,8 @@
 angular.module('starter.userGroupCtrl', [])
 
-.controller('showUserGroupCtrl', function($scope, $http, Authen, Users, urlService) {
+.controller('showUserGroupCtrl', function($scope, $http, Authen, Users, urlService, $ionicPopover, $ionicPopup) {
 	var profileData = {};
+	var idGroup = '';
 	var idProfile;
 	profileData.profileID = '';
 	profileData = Users.getUserData();
@@ -10,18 +11,59 @@ angular.module('starter.userGroupCtrl', [])
 	}else{
 		idProfile = profileData.profileID;
 	}
-	$http
-	.get(urlService.getBaseUrl() + '/getUserGroups', {params: {pId: idProfile}})
-	.success(function(response) {
-		$scope.userGroupData = response;
-		for(var i=0; i<response.length; i++){
-			if(response[i].image == null){
-				$scope.userGroupData[i].image = urlService.getBaseUrl() + /img/ + 'null.png';
-			}else{
-				$scope.userGroupData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
+	var getUsergroup = function(){
+		$http
+		.get(urlService.getBaseUrl() + '/getUserGroups', {params: {pId: idProfile}})
+		.success(function(response) {
+			$scope.userGroupData = response;
+			for(var i=0; i<response.length; i++){
+				if(response[i].image == null){
+					$scope.userGroupData[i].image = urlService.getBaseUrl() + /img/ + 'null.png';
+				}else{
+					$scope.userGroupData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
+				}
 			}
-		}
-	})
+		})
+	}
+
+	getUsergroup();
+
+	$ionicPopover.fromTemplateUrl('my-popover.html', {
+		scope: $scope
+	}).then(function(popover) {
+		$scope.popover = popover;
+	});
+
+	$scope.holdToDelete = function($event, groupId) {
+		$scope.popover.show($event);
+		idGroup = groupId
+	};
+	$scope.closePopover = function() {
+		$scope.popover.hide();
+	};
+	$scope.$on('$destroy', function() {
+	    $scope.popover.remove();
+	});
+
+	$scope.deleteUsergroup = function(){
+		$http
+		.get(urlService.getBaseUrl() + '/checkDeleteUsergroups', {params: {grpId: idGroup}})
+		.success(function(response) {
+			if(response != ''){
+				$ionicPopup.alert({
+					title: '<b>เกิดข้อผิดพลาด</b>',
+					template: 'ไม่สามารถลบเครือข่ายได้เพราะเครือข่ายนี้ยังมีสินค้าอยู่'
+				});
+			}else{
+				$http
+				.delete(urlService.getBaseUrl() + '/deleteUsergroups', {params: {grpId: idGroup}})
+				.success(function(response) {
+					getUsergroup();
+				})
+			}
+		})
+		$scope.closePopover();
+	}
 })
 
 .controller('ImageUserGroupCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory, googleMaps, $ionicModal) {

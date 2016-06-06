@@ -1,7 +1,7 @@
 <ion-view view-title="เครือข่าย">
 	<ion-content>
 		<li class="item" ng-if="userGroupData == ''" style="text-align:center;">ไม่มีเครือข่าย</li>
-			<a class="forAreaUserGroup" href="#/app/editUserGroup/{{userGroup.group_id}}" collection-repeat="userGroup in userGroupData" item-width="33%" item-height="140px">
+			<a class="forAreaUserGroup" href="#/app/editUserGroup/{{userGroup.group_id}}" collection-repeat="userGroup in userGroupData" item-width="33%" item-height="140px" on-hold="holdToDelete($event, userGroup.group_id)">
 				<div class="bodyCardCustom">
 					<img class="image-view-userGroup" src="{{userGroup.image}}">
 					<p class="forTextUserGroup">{{userGroup.group_name}}</p>
@@ -12,3 +12,14 @@
 		<i class="ion-plus-circled setPositionPlus"></i>
 	</a>
 </ion-view>
+
+<script id="my-popover.html" type="text/ng-template">
+	<ion-popover-view class="fit">
+		<ion-content>
+			<ui class="list">
+				<li class="item" style="color:red;" ng-click="deleteUsergroup()">
+					ลบเครือข่าย
+				</li>
+		</ion-content>
+	</ion-popover-view>
+</script>

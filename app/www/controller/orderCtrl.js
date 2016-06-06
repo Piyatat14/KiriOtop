@@ -22,11 +22,6 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 		var statusBuyer = '';
 		var orderStatus = '';
 		var productId = '';
-		$scope.rating = {};
-		$scope.rating.rate = 3;
-		$scope.rating.max = 5;
-		$scope.rating.comment = '';
-
 		var getOrder = function(){
 			$http
 			.get(urlService.getBaseUrl() + '/getOrderBuyers', {params : {pfId : profileUser.profileID}})
@@ -50,12 +45,21 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 
 		getOrder();
 
+		$scope.$on('$stateChangeSuccess', function(){
+			getOrder();
+		});
+
+		$scope.loadOrder = function(){
+			getOrder();
+			$scope.$broadcast('scroll.refreshComplete');
+		}
+
 		$ionicPopover.fromTemplateUrl('templates/orderBuyer.html', {
 			scope: $scope,
 		}).then(function(popover) {
 			$scope.popover = popover;
 		});
-
+		
 		$scope.popoverStatus = function($event, status, idOrder, idProduct) {
 			idOderBuyer = idOrder;
 			productId = idProduct;
@@ -121,27 +125,6 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 				$http
 				.post(urlService.getBaseUrl() + '/insertOrderDetails', {orderId : idOderBuyer, bStatus : beforeStatus, aStatus : afterStatus, logDate : date, pId : profileUser.profileID})
 				.success(function(response){
-					var myPopup = $ionicPopup.show({
-					    templateUrl: 'templates/ratingComment.html',
-					    title: 'ให้คะแนนสินค้า',
-					    scope: $scope,
-					    buttons: [
-					    	{ text: 'ยกเลิก' },
-					    	{
-						        text: '<b>ยืนยัน</b>',
-						        type: 'button-stable',
-						        onTap: function(e) {
-						        	var ratingDate = new Date();
-						        	console.log($scope.rating.comment);
-						        	$http
-									.post(urlService.getBaseUrl() + '/insertRatingComments', {pId:profileUser.profileID, rating:$scope.rating.rate, tComment:$scope.rating.comment, prodId:productId, rDate:ratingDate})
-									.success(function(response){
-										
-									})
-					        	}
-					      	}
-					    ]
-					});
 					getOrder();
 				})
 			})
@@ -191,6 +174,15 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 			})
 		}
 		getSellerOrder();
+
+		$scope.$on('$stateChangeSuccess', function(){
+			getSellerOrder();
+		});
+
+		$scope.loadOrder = function(){
+			getSellerOrder();
+			$scope.$broadcast('scroll.refreshComplete');
+		}
 
 		$ionicPopover.fromTemplateUrl('templates/orderSeller.html', {
 			scope: $scope,

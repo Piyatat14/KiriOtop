@@ -116,6 +116,9 @@ angular.module('starter.userCtrl', [])
 	$scope.logout = function() {
 		Authen.logout();
 		Users.removeUserData();
+		$ionicHistory.nextViewOptions({
+			disableBack: true
+		});
 		$state.go('app.product', {}, {reload:true});
 		$scope.dataUser = Authen.getUser();
 		$ionicSideMenuDelegate.toggleLeft();

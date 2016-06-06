@@ -2,8 +2,13 @@ angular.module('starter.services', ['ngCookies'])
 
 .service('urlService', function() {
 	this.getBaseUrl = function() {
-		return "http://192.168.1.57:3000";
+		return "http://104.199.134.131:3000";
 	};
+})
+
+.factory('socket', function() {
+	var socket = io.connect('http://192.168.1.33:3000');
+	return socket;
 })
 
 .factory('Authen', function($cookieStore) {

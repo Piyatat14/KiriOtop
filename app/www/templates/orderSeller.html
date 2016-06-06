@@ -1,5 +1,6 @@
 <ion-view view-title="ประวัติการขาย">
 	<ion-content>
+		<ion-refresher pulling-text="Pull to refresh..." on-refresh="loadOrder()"></ion-refresher>
 		<ion-list>
 			<li class="item" ng-if="orderSellerData == ''" style="text-align:center;">ไม่มีออเดอร์สินค้า</li>
 			<a class="item item-thumbnail-left" href="#/app/orderDetail/{{order.order_buyer_id}}" ng-repeat="order in orderSellerData | orderBy : '-order_date'">
