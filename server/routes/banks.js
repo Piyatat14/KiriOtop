@@ -2,16 +2,17 @@ var mysql = require('mysql'),
 	strQuery = "",
 	/*
 	connection = mysql.createConnection({
-		host : "us-cdbr-iron-east-03.cleardb.net",
-		user : "bdbd8affec3e86",
-		password : "1252ed96",
-		database : "heroku_5d02e003c9e3105"
-	});
-	*/
-	connection = mysql.createConnection({
 		host: "localhost",
 		user: "root",
 		password: "1234",
+		database: "kiri_otop"
+	});
+	*/
+	connection = mysql.createConnection({
+		host: "104.199.134.131",
+		port: 3306,
+		user: "admin",
+		password: "admin",
 		database: "kiri_otop"
 	});
 

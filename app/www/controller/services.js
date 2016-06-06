@@ -2,7 +2,7 @@ angular.module('starter.services', ['ngCookies'])
 
 .service('urlService', function() {
 	this.getBaseUrl = function() {
-		return "http://192.168.1.57:3000";
+		return "http://104.199.134.131:3000";
 	};
 })
 
