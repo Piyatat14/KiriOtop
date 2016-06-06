@@ -274,28 +274,6 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     }
   })
 
-  .state('app.mainChat', {
-    cache: false,
-    url: '/mainChat',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/mainChat.html',
-        controller: 'MainChatCtrl'
-      }
-    }
-  })
-
-  .state('app.roomChat', {
-    cache: false,
-    url: '/roomChat/:groupId/:productId',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/roomChat.html',
-        controller: 'RoomChatCtrl'
-      }
-    }
-  })
-
   .state('app.allComment', {
     cache: false,
     url: '/allComment/:prodId',

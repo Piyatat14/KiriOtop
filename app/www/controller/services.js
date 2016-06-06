@@ -7,7 +7,7 @@ angular.module('starter.services', ['ngCookies'])
 })
 
 .factory('socket', function() {
-	var socket = io.connect('http://192.168.1.33:3000');
+	var socket = io.connect('http://104.199.134.131:3000');
 	return socket;
 })
 

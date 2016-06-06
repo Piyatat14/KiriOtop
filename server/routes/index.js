@@ -160,8 +160,4 @@ router.put('/updateUnbanUsers', backend.updateUnbanUser);
 //Find User type admin
 router.post('/findUserAdmins', backend.findUserAdmin);
 
-//Chat Message
-//Get data for chat room.
-router.get('/getDataRoomChat', chat.getDataRoomChat);
-
 module.exports = router;
