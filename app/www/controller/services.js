@@ -6,6 +6,11 @@ angular.module('starter.services', ['ngCookies'])
 	};
 })
 
+.factory('socket', function() {
+	var socket = io.connect('http://192.168.1.33:3000');
+	return socket;
+})
+
 .factory('Authen', function($cookieStore) {
 	//key in _user: userID, email
 	var _user = $cookieStore.get('starter.sessionUser');

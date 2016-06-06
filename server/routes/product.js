@@ -116,7 +116,7 @@ exports.getDetailProduct = function(req, res, next) {
 };
 
 exports.getProduct = function(req, res, next) {
-	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_price, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.profile_id=? GROUP BY product.product_id";
+	strQuery = "SELECT product.product_id, product.profile_id, product.group_id, product.product_user_id, product.product_name, product.product_price, product.product_rating, product.product_view, product.product_amount, product.release_date, product_image.image FROM product LEFT JOIN product_image ON product.product_id = product_image.product_id WHERE product.profile_id=? AND product.product_status='คงเหลือ' GROUP BY product.product_id";
 	connection.query(strQuery, [req.query.pId], function(err, rows){
 		if(err) {
 			console.log(err);
@@ -326,6 +326,123 @@ exports.getViewUserGroup = function(req, res) {
 			throw err;
 		}else {
 			res.send(rows);
+		}
+	});
+};
+
+exports.checkRatingProduct = function(req, res) {
+	strQuery = "SELECT order_buyer.order_buyer_id, user_profile.first_name, user_profile.last_name, user_profile.user_image FROM order_buyer LEFT JOIN user_profile ON order_buyer.profile_id = user_profile.profile_id WHERE order_buyer.buyer_status_name='ได้รับของ' AND order_buyer.product_id=? AND order_buyer.profile_id=?";
+	connection.query(strQuery, [req.query.pId, req.query.profId], function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
+		}
+	});
+};
+
+exports.getOnlyOneRatingProduct = function(req, res) {
+	strQuery = "SELECT user_product_rating.user_product_rating_id, user_product_rating.profile_id, user_product_rating.rating, user_product_rating.comment, user_product_rating.comment_date, user_profile.first_name, user_profile.last_name, user_profile.user_image FROM user_product_rating JOIN user_profile ON user_product_rating.profile_id = user_profile.profile_id WHERE user_product_rating.product_id=? AND user_product_rating.profile_id=? LIMIT 1";
+	connection.query(strQuery, [req.query.pId, req.query.profId], function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
+		}
+	});
+};
+
+exports.deleteOnlyOneRatingComment = function(req, res) {
+	strQuery = "DELETE FROM user_product_rating WHERE user_product_rating_id=?";
+	connection.query(strQuery, [req.query.ratId], function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
+		}
+	});
+};
+
+exports.editOnlyOneRatingComment = function(req, res) {
+	var ratData = {
+		rating : req.body.rating,
+		comment : req.body.tComment,
+		comment_date : req.body.rDate
+	}
+	strQuery = "UPDATE user_product_rating SET ? WHERE user_product_rating_id=?";
+	connection.query(strQuery, [ratData, req.body.ratId], function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
+		}
+	});
+};
+
+exports.checkBeforeDelete = function(req, res) {
+	strQuery = "SELECT product.product_id FROM product JOIN order_buyer ON product.product_id = order_buyer.product_id WHERE order_buyer.buyer_status_name<>'ได้รับของ' AND product.product_id=?";
+	connection.query(strQuery, [req.query.prodId], function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
+		}
+	});
+};
+
+exports.deleteProduct = function(req, res) {
+	var stat = {
+		product_status : "หมด"
+	}
+	strQuery = "UPDATE product SET ? WHERE product_id=?";
+	connection.query(strQuery, [stat, req.body.prodId], function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send("Success");
+		}
+	});
+};
+
+exports.getAverageRating = function(req, res) {
+	strQuery = "SELECT rating FROM user_product_rating WHERE product_id=?";
+	connection.query(strQuery, [req.query.pId], function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			res.send(rows);
+		}
+	});
+};
+
+exports.increaseViewer = function(req, res) {
+	var productId = req.query.pId
+	strQuery = "SELECT product_view FROM product WHERE product_id=?";
+	connection.query(strQuery, [productId], function(err, rows) {
+		if(err) {
+			console.log(err);
+			throw err;
+		}else {
+			rows[0].product_view++;
+			var increase = {
+				product_view : rows[0].product_view
+			};
+			strQuery2 = "UPDATE product SET ? WHERE product_id=?";
+			connection.query(strQuery2, [increase, productId], function(err, rows) {
+				if(err) {
+					console.log(err);
+					throw err;
+				}else {
+					res.send(increase);
+				}
+			});
 		}
 	});
 };

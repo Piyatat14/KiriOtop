@@ -23,21 +23,61 @@
 			</li>
 			<li class="item row" style="text-align:center;">
 				<div class="fixedRating col col-50">
-					<rating ng-model="productdata.ratingProduct" max="5" readonly="true"></rating>
-					<span style="display:block;">({{productdata.ratingProduct}} จาก 10,000)<i class="icon ion-person" style="font-size:20px; padding-left:3px;"></i></span>
-					<span style="text-align:center;">100,00{{productdata.viewProduct}}<i class="icon ion-eye" style="font-size:20px;"></i></span>
+					<rating ng-model="averageRating.rate" max="5" readonly="true"></rating>
+					<span style="display:block;">({{averageRating.rate}} จาก {{avrRatingLength}})<i class="icon ion-person" style="font-size:20px; padding-left:3px;"></i></span>
+					<span style="text-align:center;">{{viewer.product_view}}<i class="icon ion-eye" style="font-size:20px;"></i></span>
 				</div>
 				<div class="col">
 					<button class="button button-small button-positive" ng-click="buyProduct()" style="width:80%;"><i class="icon ion-ios-cart-outline" style="padding-right: 10px;"></i>ซื้อ</button>
 				</div>
 			</li>
-			<li class="item" ng-if="ratingComment == ''" style="text-align:center;">ไม่มีความคิดเห็น</li>
+			<a class="item" ng-if="checkRatingComment == 2" style="text-align:center; cursor:pointer; background-color:#E7E7F3;" ng-click="popupRating('0')">
+				<img class="image-view-userGroup" src="{{imageProfile}}" style="width:80px; height:80px;"><br>
+				<h3>{{userProfileData.first_name}} {{userProfileData.last_name}}</h3>
+				<p>ให้คะแนนสินค้านี้</p>
+			</a>
+			<li class="item" ng-if="checkRatingComment == 1" ng-repeat="onlyOne in onlyOneRatingComment" style="background-color:#F2F2F2;">
+				<div>
+					<p style="float:left; display:inline;">ความคิดเห็นของคุณ</p>
+					<span style="position:absolute; right:0; padding-right:3px;">
+						<span>
+							<a href="#" style="text-decoration:none; color:black; padding-right:1px;" ng-click="editRatingComment(onlyOne.user_product_rating_id)">
+								<i class="icon ion-edit" style="color:grey;"></i>
+								แก้ไข
+							</a>
+						</span>
+						<span>|
+							<a href="#" style="text-decoration:none; color:black; padding-right:5px;" ng-click="deleteRatingComment(onlyOne.user_product_rating_id)">
+								<i class="icon ion-trash-a" style="color:red;"></i>
+								ลบ
+							</a>
+						</span>
+					</span>
+				</div>
+				<div class="row">
+					<div class="col col-33">
+						<a href="#" ng-click="loadProfile()"><img class="image-view-userGroup" src="{{onlyOne.user_image}}"></a>
+					</div>
+					<div class="col">
+						<p>
+							{{onlyOne.first_name}} {{onlyOne.last_name}}
+							<span style="padding-left:5px; float:right;">({{onlyOne.comment_date | date: "dd/MM/yyyy"}})</span>
+						</p>
+						<p class="fixedRating">
+							<rating ng-model="onlyOne.rating" max="5" readonly="true"></rating>
+						</p>
+						<p>
+							{{onlyOne.comment}}
+						</p>
+					</div>
+				</div>
 			</li>
+			<li class="item" ng-if="ratingComment == ''" style="text-align:center;">ไม่มีความคิดเห็น</li>
 			<li class="item" ng-repeat="ratComData in ratingComment | orderBy : '-comment_date'">
 				<div><p>ความคิดเห็น</p></div>
 				<div class="row">
 					<div class="col col-33">
-						<a href="#" ng-click="loadProfile()"><img src="{{ratComData.user_image}}" style="width:80px; height:80px;"></a>
+						<a href="#" ng-click="loadProfile()"><img class="image-view-userGroup" src="{{ratComData.user_image}}" style="width:80px; height:80px;"></a>
 					</div>
 					<div class="col">
 						<p>
@@ -156,4 +196,13 @@
 		  	<button class="button button-balanced pathDirection" ng-click="openGoogleApp()"><i class="ion-social-google-outline" style="font-size:20px;"></i>oogleMaps</button>
 		</ion-content>
 	</ion-modal-view>
+</script>
+
+<script id="templates/ratingComment.html" type="text/ng-template">
+	<ion-list>
+		<ion-item style="text-align:center;">
+			<rating ng-model="rating.rate" max="rating.max"></rating><br/>
+			<input type="text" ng-model="rating.comment" placeholder="ความคิดเห็น"/>
+		</ion-item>
+	</ion-list>
 </script>

@@ -87,18 +87,23 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		}
 	})
 
-	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, $timeout, Authen, Users, $filter, $ionicModal, IonicClosePopupService, googleMapsMarkAndDirec, $ionicActionSheet, $cordovaLaunchNavigator) {
+	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, Authen, Users, socket, $filter, $ionicModal, IonicClosePopupService, googleMapsMarkAndDirec, $ionicActionSheet, $cordovaLaunchNavigator) {
 		$scope.forReportData = {};
 		$scope.forOrderBuyer = {};
 		$scope.forImageDetail = [];
 		$scope.ratingComment = {};
 		$scope.productdata = {};
 		$scope.profileData = {};
+		$scope.checkRatingComment = 0;
 		if(angular.isUndefined(Authen.getUser())){
 			$scope.forReportData.userID = null;
 		}else{
 			$scope.forReportData.userID = Authen.getUser().userID;
 		}
+		$scope.rating = {};
+		$scope.rating.rate = 3;
+		$scope.rating.max = 5;
+		$scope.rating.comment = '';
 
 		var profileUser = Users.getUserData();
 
@@ -129,24 +134,143 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 					}else{
 						$scope.forImageDetail.push({
 							image : urlService.getBaseUrl() + /img/ + response[i].image
-						});
+						});	
 					}
 				}
 			})
 		
 		$http
-			.get(urlService.getBaseUrl() + '/getRatingProducts', {params: {pId : $stateParams.idProduct}})
-			.success(function(response) {
-				$scope.ratingComment = response;
-				$scope.ratComLength = $scope.ratingComment.length;
-				for(var i=0; i<$scope.ratComLength; i++){
-					if(response[i].user_image == null){
-						$scope.ratingComment[i].user_image = urlService.getBaseUrl() + /img/ + 'null.png';
-					}else{
-						$scope.ratingComment[i].user_image = urlService.getBaseUrl() + /img/ + response[i].user_image;
-					}
+		.get(urlService.getBaseUrl() + '/getAverageRatings', {params: {pId : $stateParams.idProduct}})
+		.success(function(response) {
+			console.log(response);
+			$scope.averageRating = {
+				rate : 0
+			};
+			$scope.avrRatingLength = response.length;
+			if($scope.avrRatingLength < 1){
+				$scope.averageRating.rate = 0;
+			}else{
+				for(var i=0; i<$scope.avrRatingLength; i++){
+					$scope.averageRating.rate += response[i].rating;
 				}
+				$scope.averageRating.rate = $scope.averageRating.rate/$scope.avrRatingLength;
+			}
+		})
+
+		$http
+		.get(urlService.getBaseUrl() + '/getRatingProducts', {params: {pId : $stateParams.idProduct}})
+		.success(function(response) {
+			$scope.ratingComment = response;
+			$scope.ratComLength = $scope.ratingComment.length;
+			for(var i=0; i<$scope.ratComLength; i++){
+				if(response[i].user_image == null || response[i].user_image == ''){
+					$scope.ratingComment[i].user_image = urlService.getBaseUrl() + /img/ + 'null.png';
+				}else{
+					$scope.ratingComment[i].user_image = urlService.getBaseUrl() + /img/ + response[i].user_image;
+				}
+			}
+		})
+
+		$http
+		.get(urlService.getBaseUrl() + '/increaseViewers', {params: {pId : $stateParams.idProduct}})
+		.success(function(response) {
+			$scope.viewer = response;
+			console.log(response);
+		})
+
+		var callOnlyOne = function(){
+			if(profileUser != undefined){
+				$http
+				.get(urlService.getBaseUrl() + '/checkRatingProducts', {params: {pId : $stateParams.idProduct, profId: profileUser.profileID}})
+				.success(function(response) {
+					if(response != ''){
+						$scope.userProfileData = response[0];
+						if(response[0].user_image == null || response[0].user_image == ''){
+							$scope.imageProfile = urlService.getBaseUrl() + /img/ + 'null.png';
+						}else{
+							$scope.imageProfile = urlService.getBaseUrl() + /img/ + response[0].user_image;
+						}
+						$http
+						.get(urlService.getBaseUrl() + '/getOnlyOneRatingProducts', {params: {pId : $stateParams.idProduct, profId: profileUser.profileID}})
+						.success(function(response) {
+							if(response != ''){
+								console.log(response);
+								$scope.checkRatingComment = 1;
+								$scope.onlyOneRatingComment = response;
+								$scope.onlyLength = $scope.onlyOneRatingComment.length;
+								for(var i=0; i<$scope.onlyLength; i++){
+									if(response[i].user_image == null || response[i].user_image == ''){
+										$scope.onlyOneRatingComment[i].user_image = urlService.getBaseUrl() + /img/ + 'null.png';
+									}else{
+										$scope.onlyOneRatingComment[i].user_image = urlService.getBaseUrl() + /img/ + response[i].user_image;
+									}
+								}
+							}else{
+								$scope.checkRatingComment = 2;
+							}
+						})
+					}else{
+						$scope.checkRatingComment = 0;
+					}
+				})
+			}
+		}
+		
+		callOnlyOne();
+
+		$scope.popupRating = function(id){
+			if(id == 0){
+				$scope.rating.rate = 3;
+				$scope.rating.comment = '';
+			}
+			$ionicPopup.show({
+			    templateUrl: 'templates/ratingComment.html',
+			    title: 'ให้คะแนนสินค้า',
+			    scope: $scope,
+			    buttons: [
+			    	{ 
+			    		text: 'ยกเลิก',
+			    		type: 'button-outline button-assertive'
+			    	},
+			    	{
+				        text: '<b>ยืนยัน</b>',
+				        type: 'button-outline button-positive',
+				        onTap: function(e) {
+				        	var ratingDate = new Date();
+				        	if(id == 0){
+				        		$http
+								.post(urlService.getBaseUrl() + '/insertRatingComments', {pId:profileUser.profileID, rating:$scope.rating.rate, tComment:$scope.rating.comment, prodId:$stateParams.idProduct, rDate:ratingDate})
+								.success(function(response){
+									callOnlyOne();
+								})
+				        	}else{
+				        		console.log("qwe");
+				        		$http
+								.put(urlService.getBaseUrl() + '/editOnlyOneRatingComments', {ratId:id, rating:$scope.rating.rate, tComment:$scope.rating.comment, rDate:ratingDate})
+								.success(function(response){
+									callOnlyOne();
+								})
+				        	}
+				        	
+			        	}
+			      	}
+			    ]
+			});
+		};
+
+		$scope.editRatingComment = function(id){
+			$scope.rating.rate = $scope.onlyOneRatingComment[0].rating;
+			$scope.rating.comment = $scope.onlyOneRatingComment[0].comment;
+			$scope.popupRating(id);
+		};
+
+		$scope.deleteRatingComment = function(id){
+			$http
+			.delete(urlService.getBaseUrl() + '/deleteOnlyOneRatingComments', {params: {ratId: id}})
+			.success(function(response) {
+				callOnlyOne();
 			})
+		};
 
 		$scope.reportProduct = function() {
 			var myPopup = $ionicPopup.show({
@@ -257,6 +381,10 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 														title: 'ทำการสั่งซื้อเสร็จเรียบร้อย',
 														template: 'ตรวจสอบสถานะสินค้าได้ที่ประวัติการซื้อ'
 													});
+													socket.emit('buyToServer', {id: 1})
+													socket.on('alertToSeller', function(data){
+														console.log(data);
+													})
 												})
 											})
 										})
@@ -499,7 +627,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 
 	})
 
-	.controller('showProductCtrl', function($http, $scope, $stateParams, urlService, Authen, Users) {
+	.controller('showProductCtrl', function($http, $scope, $stateParams, urlService, Authen, Users, $ionicPopup, $ionicListDelegate) {
 		var profileData = {};
 		var idProfile;
 		profileData.profileID = '';
@@ -509,10 +637,13 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		}else{
 			idProfile = profileData.profileID;
 		}
-		$http
+
+		var getProductBuyer = function(){
+			$http
 			.get(urlService.getBaseUrl() + '/getProducts', {params: {pId: idProfile}})
 			.success(function(response) {
 				$scope.productData = response;
+				console.log(response);
 				for(var i=0; i<response.length; i++){
 					if(response[i].image == null){
 						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + 'nullProduct.jpg';
@@ -521,6 +652,29 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 					}
 				}
 			})
+		}
+
+		getProductBuyer();
+
+		$scope.deleteProduct = function(productId){
+			$http
+			.get(urlService.getBaseUrl() + '/checkBeforeDeletes', {params: {prodId: productId}})
+			.success(function(response) {
+				if(response == ''){
+					$http
+					.put(urlService.getBaseUrl() + '/deleteProducts', {prodId: productId})
+					.success(function(response) {
+						getProductBuyer();
+					})
+				}else{
+					$ionicPopup.alert({
+						title: 'เกิดข้อผิดพลาด',
+						template: 'ไม่สามารถลบสินค้านี้ได้ ยังมีรายการสั่งซื้อนี้อยู่'
+					});
+				}
+			})
+			$ionicListDelegate.closeOptionButtons();
+		};
 	})
 
 	.controller('addProductCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $filter) {

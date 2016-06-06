@@ -5,7 +5,6 @@ var express = require('express'),
 	path = require('path'),
     app = express();
 
-
 app.use(express.static(__dirname + '/uploads'));
 // parse application/json  middleware
 app.use(bodyParser.json());
@@ -14,6 +13,9 @@ app.use(bodyParser.urlencoded({
 	extended: true
 }));
 
+// io.sockets.on('connection', function(socket){
+// 	console.log('WORKING');
+// })
 
 //dispatching CORS headers for clients can access the data we are exposing
 var allowCrossDomain = function(req, res, next) {
@@ -28,9 +30,14 @@ app.use(allowCrossDomain);
 app.use('/', require('./routes/index'));
 
 app.set('port', process.env.PORT || 3000);
-app.listen(app.get('port'), function() {
+var server = app.listen(app.get('port'), function() {
 	// start the server
 	console.log('Server started! At http://localhost:' + app.get('port'));
 });
-
+var io = require('socket.io').listen(server);
+io.on('connection', function(socket) {
+    socket.on('buyToServer', function(data){
+    	io.emit('alertToSeller', data);
+    })
+});
 module.exports = app;
