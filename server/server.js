@@ -34,10 +34,13 @@ var server = app.listen(app.get('port'), function() {
 	// start the server
 	console.log('Server started! At http://localhost:' + app.get('port'));
 });
+/*
 var io = require('socket.io').listen(server);
 io.on('connection', function(socket) {
     socket.on('buyToServer', function(data){
     	io.emit('alertToSeller', data);
     })
 });
+*/
+
 module.exports = app;
