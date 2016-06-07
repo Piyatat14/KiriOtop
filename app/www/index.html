@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' 'unsafe-eval' *; media-src 'self' 'unsafe-inline' 'unsafe-eval' *; img-src 'self' 'unsafe-inline' 'unsafe-eval' *;">
+    <meta http-equiv="Content-Security-Policy" content="default-src &apos;self&apos; data: gap: *; script-src &apos;self&apos; &apos;unsafe-inline&apos; &apos;unsafe-eval&apos; *; style-src &apos;self&apos; &apos;unsafe-inline&apos; &apos;unsafe-eval&apos; *; media-src &apos;self&apos; &apos;unsafe-inline&apos; &apos;unsafe-eval&apos; *; img-src &apos;self&apos; &apos;unsafe-inline&apos; &apos;unsafe-eval&apos; *;">
     <!-- <meta name="format-detection" content="telephone=yes"> -->
     <title></title>
     
@@ -23,6 +23,7 @@
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
+<script src="lib/ionic-platform-web-client/dist/ionic.io.bundle.min.js"></script>
 
     <!-- Angular Charts -->
     <script src="lib/angular-chart/Chart.min.js"></script>
@@ -43,7 +44,8 @@
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="js/ng-cordova.min.js"></script>
-    <script src="cordova.js"></script>
+    <!-- Cordova is bootstrapped by ionic-platform-web-client, uncomment this if you remove ionic-platform-web-client... -->
+<!-- <script src="cordova.js"></script> -->
 
 
     <!-- Socket IO -->
