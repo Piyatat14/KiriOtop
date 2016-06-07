@@ -1,22 +1,29 @@
 angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 
-	.controller('ProductCtrl', function($scope, $http, urlService, $ionicPlatform) { //$ionicHistory,
+	.controller('ProductCtrl', function($scope, $http, urlService, $ionicPlatform, $ionicLoading) { //$ionicHistory,
 		// $ionicHistory.nextViewOptions({
 		// 	disableBack: true
 		// });
 		// $ionicPlatform.ready(function() {
 		// 	var push = PushNotification.init({
-		// 	    android: {
-		// 	        senderID: "97298974682"
-		// 	    },
-		// 	    ios: {
-		// 	        alert: "true",
-		// 	        badge: true,
-		// 	        sound: 'false'
-		// 	    },
-		// 	    windows: {}
+			    
 		// 	});
 		// });
+		var checkLoading = 0;
+		$ionicLoading.show({
+			content: 'Loading',
+		    animation: 'fade-in',
+		    showBackdrop: true,
+		    maxWidth: 200,
+		    showDelay: 0
+		})
+
+		var endOfLoading = function(){
+			checkLoading++;
+			if(checkLoading > 2){
+				$ionicLoading.hide();
+			}
+		}
 		$http
 			.get(urlService.getBaseUrl() + '/recommendProducts')
 			.success(function(response) {
@@ -28,6 +35,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 						$scope.recommendData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
 					}
 				}
+				endOfLoading();
 			})
 		$http
 			.get(urlService.getBaseUrl() + '/salableProducts')
@@ -40,6 +48,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 						$scope.salableData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
 					}
 				}
+				endOfLoading();
 			})
 		$http
 			.get(urlService.getBaseUrl() + '/newProducts')
@@ -52,6 +61,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 						$scope.newsData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
 					}
 				}
+				endOfLoading();
 			})
 	})
 
@@ -100,7 +110,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		}
 	})
 
-	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, Authen, Users, socket, $filter, $ionicModal, IonicClosePopupService, googleMapsMarkAndDirec, $ionicActionSheet, $cordovaLaunchNavigator) {
+	.controller('detailProductCtrl', function($scope, $http, urlService, $stateParams, $ionicPopup, Authen, Users, socket, $filter, $ionicLoading, $ionicModal, IonicClosePopupService, googleMapsMarkAndDirec, $ionicActionSheet, $cordovaLaunchNavigator) {
 		$scope.forReportData = {};
 		$scope.forOrderBuyer = {};
 		$scope.forImageDetail = [];
@@ -119,7 +129,20 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		$scope.rating.comment = '';
 
 		var profileUser = Users.getUserData();
-
+		$ionicLoading.show({
+			content: 'Loading',
+		    animation: 'fade-in',
+		    showBackdrop: true,
+		    maxWidth: 200,
+		    showDelay: 0
+		})
+		var checkLoading = 0;
+		var endOfLoading = function(){
+			checkLoading++;
+			if(checkLoading > 3){
+				$ionicLoading.hide();
+			}
+		}
 		$http
 			.get(urlService.getBaseUrl() + '/getDetailProducts', {params: {pId : $stateParams.idProduct}})
 			.success(function(response) {
@@ -150,6 +173,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 						});	
 					}
 				}
+				endOfLoading();
 			})
 		
 		$http
@@ -168,6 +192,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 				}
 				$scope.averageRating.rate = $scope.averageRating.rate/$scope.avrRatingLength;
 			}
+			endOfLoading();
 		})
 
 		$http
@@ -182,13 +207,14 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 					$scope.ratingComment[i].user_image = urlService.getBaseUrl() + /img/ + response[i].user_image;
 				}
 			}
+			endOfLoading();
 		})
 
 		$http
 		.get(urlService.getBaseUrl() + '/increaseViewers', {params: {pId : $stateParams.idProduct}})
 		.success(function(response) {
 			$scope.viewer = response;
-			console.log(response);
+			endOfLoading();
 		})
 
 		var callOnlyOne = function(){
