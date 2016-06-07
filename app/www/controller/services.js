@@ -5,12 +5,12 @@ angular.module('starter.services', ['ngCookies'])
 		return "http://104.199.134.131:3000";
 	};
 })
-/*
+
 .factory('socket', function() {
 	var socket = io.connect('http://104.199.134.131:3000');
 	return socket;
 })
-*/
+
 
 .factory('Authen', function($cookieStore) {
 	//key in _user: userID, email

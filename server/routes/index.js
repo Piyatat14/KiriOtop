@@ -7,7 +7,6 @@ var userGroup = require('./user-group');
 var order = require('./order');
 var report = require('./report');
 var backend = require('./backend');
-var chat = require('./chat');
 var statement = require('./statement');
 
 //PRODUCT

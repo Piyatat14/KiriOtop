@@ -12,10 +12,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ 
 	extended: true
 }));
-
-// io.sockets.on('connection', function(socket){
-// 	console.log('WORKING');
-// })
+/*
+io.sockets.on('connection', function(socket){
+	console.log('WORKING');
+})
+*/
 
 //dispatching CORS headers for clients can access the data we are exposing
 var allowCrossDomain = function(req, res, next) {
@@ -34,13 +35,13 @@ var server = app.listen(app.get('port'), function() {
 	// start the server
 	console.log('Server started! At http://localhost:' + app.get('port'));
 });
-/*
+
 var io = require('socket.io').listen(server);
 io.on('connection', function(socket) {
     socket.on('buyToServer', function(data){
     	io.emit('alertToSeller', data);
     })
 });
-*/
+
 
 module.exports = app;
