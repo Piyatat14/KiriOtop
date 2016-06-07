@@ -36,6 +36,8 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
   // });
 })
 
+
+
 .config(function($stateProvider, $urlRouterProvider, $compileProvider) { 
   $stateProvider
 

@@ -1,8 +1,21 @@
 angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 
-	.controller('ProductCtrl', function($scope, $http, urlService) { //$ionicHistory,
+	.controller('ProductCtrl', function($scope, $http, urlService, $ionicPlatform) { //$ionicHistory,
 		// $ionicHistory.nextViewOptions({
 		// 	disableBack: true
+		// });
+		// $ionicPlatform.ready(function() {
+		// 	var push = PushNotification.init({
+		// 	    android: {
+		// 	        senderID: "97298974682"
+		// 	    },
+		// 	    ios: {
+		// 	        alert: "true",
+		// 	        badge: true,
+		// 	        sound: 'false'
+		// 	    },
+		// 	    windows: {}
+		// 	});
 		// });
 		$http
 			.get(urlService.getBaseUrl() + '/recommendProducts')
