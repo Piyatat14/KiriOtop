@@ -27,7 +27,14 @@
       "locator": "https://github.com/crosswalk-project/cordova-plugin-crosswalk-webview.git",
       "id": "cordova-plugin-crosswalk-webview"
     },
-    "org.apache.cordova.file"
+    "org.apache.cordova.file",
+    {
+      "variables": {
+        "SENDER_ID": "97298974682"
+      },
+      "locator": "phonegap-plugin-push",
+      "id": "phonegap-plugin-push"
+    }
   ],
   "cordovaPlatforms": [
     "ios",

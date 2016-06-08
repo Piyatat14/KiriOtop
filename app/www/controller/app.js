@@ -6,7 +6,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', 'starter.services', 'starter.bankAccountCtrl', 'starter.userGroupCtrl', 'starter.orderCtrl', 'starter.statementCtrl', 'ngCordova', 'mdo-angular-cryptography'])
 
-.run(function($ionicPlatform, $rootScope) {
+.run(function($ionicPlatform, $rootScope, $http) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -18,13 +18,56 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-    var push = new Ionic.push({
-      "debug" : true
-    });
 
-    push.register(function(token){
-      console.log("GU MA LAW : "+token.token);
+    //var io = Ionic.io();
+    var push = new Ionic.Push({
+      "debug" : true
+      // "onNotification" : function(notification){
+      //   alert("RECEIVED NOTI");
+      // },
+      // "pluginConfig" : {
+      //   "android" : {
+      //     "iconColor" : "#0000FF"
+      //   }
+      // }
     });
+    push.register(function(token){
+      console.log("ID : ",token.token);
+    });
+    // var ionLogin = {
+    //   'email' : 'test@gmail.com',
+    //   'password' : 'qwe'
+    // }
+    // var authSuccess = function(user) {
+    //   console.log("SUCCC");
+    // };
+
+    // var authFailure = function(errors) {
+    //   for (var err in errors) {
+    //     console.log(err);
+    //   }
+    // };
+
+    // var login = function() {
+    //   Ionic.Auth.login('basic', {'remember':true}, ionLogin).then(authSuccess, authFailure);
+    // };
+    // login();
+
+    // var ionUser = Ionic.User.current();
+    // if(ionUser.isAuthenticated()){
+    //   console.log(ionUser.id);
+    //   // var push = new Ionic.Push({
+    //   // "user_ids": [ionUser.id, ionUser.id, "ids"],
+    //   // "notification": {
+    //   //   "message":"Hello World!"
+    //   // }
+    //   //  });
+    // }else{
+    //   var regis = function() {
+    //     Ionic.Auth.signup(ionLogin).then(authSuccess, authFailure);
+    //   };
+    //   regis();
+    // }
   });
 
   // $rootScope.$on('$stateChangeStart', function (event, toState) {
