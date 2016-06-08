@@ -20,10 +20,6 @@
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
-    <preference name="xwalkVersion" value="18+" />
-    <preference name="xwalkCommandLine" value="--disable-pull-to-refresh-effect" />
-    <preference name="xwalkMode" value="embedded" />
-    <preference name="xwalkMultipleApk" value="true" />
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
