@@ -957,7 +957,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		});
 	})
 
-	.controller('editProductCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $stateParams) {
+	.controller('editProductCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicLoading, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $stateParams) {
 		
 		var userID = Authen.getUser().userID;
 		//object for user data after view call this controller.

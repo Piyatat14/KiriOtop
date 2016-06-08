@@ -1,6 +1,6 @@
 angular.module('starter.orderCtrl', ['ionic.rating'])
 
-	.controller('orderBuyerCtrl', function($scope, $http, urlService, Users, $ionicPopover, $state, $filter, $ionicPopup) { //, $ionicPlatform, $cordovaPush
+	.controller('orderBuyerCtrl', function($scope, $http, urlService, Users, $ionicPopover, $state, $filter, $ionicPopup, $ionicLoading) { //, $ionicPlatform, $cordovaPush
 		// $ionicPlatform.ready(function () {
 		// 	$cordovaPush.register({
 		// 		badge: true,
@@ -22,6 +22,23 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 		var statusBuyer = '';
 		var orderStatus = '';
 		var productId = '';
+		var loading = function(){
+			$ionicLoading.show({
+				content: 'Loading',
+			    animation: 'fade-in',
+			    showBackdrop: true,
+			    maxWidth: 200,
+			    showDelay: 0
+			})
+		}
+		loading();
+		var checkLoading = 0;
+		var endOfLoading = function(){
+			checkLoading++;
+			if(checkLoading > 0){
+				$ionicLoading.hide();
+			}
+		}
 		var getOrder = function(){
 			$http
 			.get(urlService.getBaseUrl() + '/getOrderBuyers', {params : {pfId : profileUser.profileID}})
@@ -40,6 +57,7 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 						$scope.orderBuyerData[i].buyer_status_name = 'กำลังขนส่ง';
 					}
 				}
+				endOfLoading();
 			})
 		}
 
@@ -98,6 +116,7 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 		};
 
 		$scope.updateComfirm = function(){
+			loading();
 			orderStatus = 'รอสินค้า';
 			$http
 			.put(urlService.getBaseUrl() + '/updateStatusAlls', {orderId : idOderBuyer, statusOrder : orderStatus})
@@ -115,6 +134,7 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 		};
 
 		$scope.updateGot = function(){
+			loading();
 			orderStatus = 'ได้รับของ';
 			$http
 			.put(urlService.getBaseUrl() + '/updateStatusAlls', {orderId : idOderBuyer, statusOrder : orderStatus})
@@ -132,6 +152,7 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 		};
 
 		$scope.updateCancel = function(){
+			loading();
 			orderStatus = 'ยกเลิกรายการ';
 			$http
 			.put(urlService.getBaseUrl() + '/updateStatusAlls', {orderId : idOderBuyer, statusOrder : orderStatus})
@@ -149,11 +170,28 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 		};
 	})
 
-	.controller('orderSellerCtrl', function($scope, $http, urlService, Users, $ionicPopover, $state, $ionicPopup) {
+	.controller('orderSellerCtrl', function($scope, $http, urlService, Users, $ionicPopover, $state, $ionicPopup, $ionicLoading) {
 		var profileUser = Users.getUserData();
 		var idOderSeller = '';
 		var statusSeller = '';
 		var orderStatus = '';
+		var loading = function(){
+			$ionicLoading.show({
+				content: 'Loading',
+			    animation: 'fade-in',
+			    showBackdrop: true,
+			    maxWidth: 200,
+			    showDelay: 0
+			})
+		}
+		loading();
+		var checkLoading = 0;
+		var endOfLoading = function(){
+			checkLoading++;
+			if(checkLoading > 0){
+				$ionicLoading.hide();
+			}
+		}
 		$scope.banksForSent = [];
 		var getSellerOrder = function(){
 			$http
@@ -171,6 +209,7 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 						$scope.orderSellerData[i].buyer_status_name = 'ชำระเงินเรียบร้อย';
 					}
 				}
+				endOfLoading();
 			})
 		}
 		getSellerOrder();
@@ -234,6 +273,7 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 		};
 
 		$scope.updateComfirm = function(){
+			loading();
 			orderStatus = 'รอการชำระเงิน';
 			$http
 			.put(urlService.getBaseUrl() + '/updateStatusAlls', {orderId : idOderSeller, statusOrder : orderStatus})
@@ -251,6 +291,7 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 		};
 
 		$scope.updateBankAccount = function(){
+			loading();
 			$http
 			.get(urlService.getBaseUrl() + '/getBankInOrders', {params : {profId : profileUser.profileID}})
 			.success(function(response){
@@ -275,6 +316,7 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 		};
 
 		$scope.updateSent = function(){
+			loading();
 			orderStatus = 'ส่งสินค้าเรียบร้อย';
 			$http
 			.put(urlService.getBaseUrl() + '/updateStatusAlls', {orderId : idOderSeller, statusOrder : orderStatus})
@@ -292,6 +334,7 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 		};
 
 		$scope.updateCancel = function(){
+			loading();
 			orderStatus = 'ยกเลิกรายการ';
 			$http
 			.put(urlService.getBaseUrl() + '/updateStatusAlls', {orderId : idOderSeller, statusOrder : orderStatus})
@@ -319,12 +362,30 @@ angular.module('starter.orderCtrl', ['ionic.rating'])
 	 	};
 	})
 
-	.controller('orderDetailCtrl', function($scope, $http, urlService, Users, $state, $stateParams) {
+	.controller('orderDetailCtrl', function($scope, $http, urlService, Users, $state, $stateParams, $ionicLoading) {
 		var profileUser = Users.getUserData();
+		var loading = function(){
+			$ionicLoading.show({
+				content: 'Loading',
+			    animation: 'fade-in',
+			    showBackdrop: true,
+			    maxWidth: 200,
+			    showDelay: 0
+			})
+		}
+		loading();
+		var checkLoading = 0;
+		var endOfLoading = function(){
+			checkLoading++;
+			if(checkLoading > 0){
+				$ionicLoading.hide();
+			}
+		}
 		$scope.orderData = {};
 		$http
 		.get(urlService.getBaseUrl() + '/getOrderLogs', {params : {orderId : $stateParams.orderId}})
 		.success(function(response){
 			$scope.orderData = response;
+			endOfLoading();
 		})
 	})

@@ -1,7 +1,7 @@
 angular.module('starter.userCtrl', [])
 
 
-.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, Authen, Users, urlService, $state, $ionicHistory, $crypto, $ionicSideMenuDelegate) {
+.controller('LoginCtrl', function($scope, $http, $ionicPopup, $ionicModal, Authen, Users, urlService, $state, $ionicHistory, $crypto, $ionicSideMenuDelegate, $ionicLoading) {
 
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
@@ -15,7 +15,22 @@ angular.module('starter.userCtrl', [])
 
 	// Form data for the login modal
 	$scope.loginData = {};
-
+	var loading = function(){
+		$ionicLoading.show({
+			content: 'Loading',
+		    animation: 'fade-in',
+		    showBackdrop: true,
+		    maxWidth: 200,
+		    showDelay: 0
+		})
+	}
+	var checkLoading = 0;
+	var endOfLoading = function(){
+		checkLoading++;
+		if(checkLoading > 0){
+			$ionicLoading.hide();
+		}
+	}
 	$ionicHistory.nextViewOptions({
 		disableBack: true
 	});
@@ -42,6 +57,7 @@ angular.module('starter.userCtrl', [])
 	// Perform the login action when the user submits the login form
 	$scope.doLogin = function() {
 		//$scope.loginData.encrypted = $crypto.encrypt($scope.loginData.password);
+		loading();
 		$http
 		.post(urlService.getBaseUrl() + '/findUsers', $scope.loginData)
 		.success(function(response) {
@@ -52,6 +68,7 @@ angular.module('starter.userCtrl', [])
 					okText: 'ตกลง',
 					okType: 'button-assertive'
 				});
+				endOfLoading();
 			}else if(response[0].user_status == 'ไม่สามารถใช้งานได้'){
 				$ionicPopup.alert({
 					title: 'การเข้าสู่ระบบผิดพลาด',
@@ -59,16 +76,18 @@ angular.module('starter.userCtrl', [])
 					okText: 'ตกลง',
 					okType: 'button-assertive'
 				});
+				endOfLoading();
 			}else {
 				var loginPass = null;
 				//If password in database not server assign.
 				if(response[0].password.length > 8) {
 					//Decryption password for check valid.
 					loginPass = $crypto.decrypt(response[0].password);
+					endOfLoading();
 				}else {										//Password is server generate in case forget password.
 					loginPass = response[0].password;
+					endOfLoading();
 				}
-
 				if(loginPass == $scope.loginData.password) {
 					//login success Authen set user detail.
 					Authen.setUser({
@@ -77,7 +96,7 @@ angular.module('starter.userCtrl', [])
 					});
 					$scope.dataUser = Authen.getUser();
 					$scope.userData = response[0];
-					if($scope.userData.user_image == null){
+					if($scope.userData.user_image == null || $scope.userData.user_image == ''){
 						$scope.imageMenu = '/img/no-image.jpg';
 					}else{
 						$scope.imageMenu = urlService.getBaseUrl() + /img/ + $scope.userData.user_image;
@@ -89,9 +108,12 @@ angular.module('starter.userCtrl', [])
 							if(res !== 'ERROR' && Users.getUserData() === undefined) {
 								//set cookie for user about profile data.
 								Users.setUserData({
-									profileID: res[0].profile_id
+									profileID: res[0].profile_id,
+									canSell : res[0].can_sell
 								});
 							}
+							$scope.profData = Users.getUserData();
+							endOfLoading();
 						}
 					);
 					$scope.closeLogin();
@@ -106,6 +128,7 @@ angular.module('starter.userCtrl', [])
 						okText: 'ตกลง',
 						okType: 'button-assertive'
 					});
+					endOfLoading();
 				}
 			}
 		}).error(function(err) {
@@ -121,10 +144,12 @@ angular.module('starter.userCtrl', [])
 		});
 		$state.go('app.product', {}, {reload:true});
 		$scope.dataUser = Authen.getUser();
+		$scope.profData = Users.getUserData();
 		$ionicSideMenuDelegate.toggleLeft();
 	};
 
 	$scope.sendPassword = function(email) {
+		loading();
 		$scope.checkEmail = {};
 		//If email is valid.
 		if(email !== undefined && email !== "") {
@@ -144,8 +169,10 @@ angular.module('starter.userCtrl', [])
 								console.log('Send E-mail complete.');
 							});
 						}
+						endOfLoading();
 					}).error(function(err) {
 						console.log(err);
+						endOfLoading();
 					})
 				}else {							//Email not found.
 					$ionicPopup.alert({
@@ -154,18 +181,22 @@ angular.module('starter.userCtrl', [])
 						okText: 'ตกลง',
 						okType: 'button-assertive'
 					});
+					endOfLoading();
 				}
+				endOfLoading();
 			}).error(function(err) {
 				console.log(err);
 				$ionicPopup.alert({
-						title: 'ผิดพลาด',
-						template: 'ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง',
-						okText: 'ตกลง',
-						okType: 'button-assertive'
-					});
+					title: 'ผิดพลาด',
+					template: 'ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง',
+					okText: 'ตกลง',
+					okType: 'button-assertive'
+				});
+				endOfLoading();
 			});
 		}else {
 			$scope.checkEmail.status = false;
+			endOfLoading();
 		}
 	};
 
@@ -180,12 +211,29 @@ angular.module('starter.userCtrl', [])
 	};
 })
 
-.controller('registerCtrl', function($scope, $http, $ionicPopup, urlService, $ionicHistory, $state, $crypto) {
+.controller('registerCtrl', function($scope, $http, $ionicPopup, urlService, $ionicHistory, $state, $crypto, $ionicLoading) {
 	$ionicHistory.nextViewOptions({
 		disableBack: true
 	});
 	$scope.registerData = {};
+	var loading = function(){
+		$ionicLoading.show({
+			content: 'Loading',
+		    animation: 'fade-in',
+		    showBackdrop: true,
+		    maxWidth: 200,
+		    showDelay: 0
+		})
+	}
+	var checkLoading = 0;
+	var endOfLoading = function(){
+		checkLoading++;
+		if(checkLoading > 0){
+			$ionicLoading.hide();
+		}
+	}
 	$scope.insertRegis = function() {
+		loading();
 		if($scope.registerData.password != $scope.registerData.rePassword){
 			$ionicPopup.alert({
 				title: 'สมัครสมาชิกผิดพลาด',
@@ -193,6 +241,7 @@ angular.module('starter.userCtrl', [])
 				okText: 'ตกลง',
 				okType: 'button-assertive'
 			});
+			endOfLoading();
 		}else{
 			const regisPass = $crypto.encrypt($scope.registerData.password);
 			$scope.registerData.encryptPass = regisPass;
@@ -207,6 +256,7 @@ angular.module('starter.userCtrl', [])
 					.success(function(response) {
 						$state.go('app.product', {}, {reload:true});
 						$scope.login();
+						endOfLoading();
 					})
 				}else{
 					$ionicPopup.alert({
@@ -215,13 +265,14 @@ angular.module('starter.userCtrl', [])
 						okText: 'ตกลง',
 						okType: 'button-assertive'
 					});
+					endOfLoading();
 				}
 			})
 		}
 	};
 })
 
-.controller('ProfileCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory) {
+.controller('ProfileCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicLoading, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory) {
 	//this controller must login.
 	$ionicPlatform.ready(function() {
 
@@ -230,7 +281,22 @@ angular.module('starter.userCtrl', [])
 
 		//object for user data after view call this controller.
 		var profileUser = Users.getUserData();
-
+		var loading = function(){
+			$ionicLoading.show({
+				content: 'Loading',
+			    animation: 'fade-in',
+			    showBackdrop: true,
+			    maxWidth: 200,
+			    showDelay: 0
+			})
+		}
+		var checkLoading = 0;
+		var endOfLoading = function(){
+			checkLoading++;
+			if(checkLoading > 0){
+				$ionicLoading.hide();
+			}
+		}
 		//object for image.
 		$scope.images = { 
 			imageUri: '', 
@@ -247,6 +313,7 @@ angular.module('starter.userCtrl', [])
 
 		//if profileUser is have in database. get data show on profile view.
 		if(profileUser !== undefined) {
+			loading();
 			//get profile_id each user.
 			$http.post(urlService.getBaseUrl() + '/findProfileUsers', userDetail)
 				.success(function(res) {
@@ -262,6 +329,7 @@ angular.module('starter.userCtrl', [])
 						$scope.images.filename = res[0].user_image;
 						$scope.profileData.imageName = res[0].user_image;
 					}
+					endOfLoading();
 				}
 			);
 		}
@@ -300,6 +368,7 @@ angular.module('starter.userCtrl', [])
 
 		//function upload image to server.
 		upload = function(imageURI, filename) {
+			loading();
 			var options = new FileUploadOptions();
 			options.fileKey = 'image';
 			options.fileName = $scope.images.filename;
@@ -316,10 +385,12 @@ angular.module('starter.userCtrl', [])
 					console.log("Sent = " + res.bytesSent);
 					$scope.profileData.imageName = res.response;
 					addDataProfile();
+					endOfLoading();
 				}, function(error) {
 					alert("ไม่สามารถทำการอัพโหลดรูปภาพของคุณได้");
 				    console.log("upload error source " + error.source);
 				    console.log("upload error target " + error.target);
+				    endOfLoading();
 				}, options
 			);
 		}
@@ -383,6 +454,7 @@ angular.module('starter.userCtrl', [])
 
         addDataProfile = function() {
         	//assign object to profileUser. In case update data profile but no exit profile.html
+        	loading();
 			profileUser = Users.getUserData();
 			if(profileUser !== undefined) {
 				console.log('now : ' + profileUser.profileID);
@@ -406,9 +478,11 @@ angular.module('starter.userCtrl', [])
         			alert("อัพเดทข้อมูลสำเร็จ");
         			console.log("response database : " + response);
         			$state.go('app.profile', {}, {reload: true});
+        			endOfLoading();
         		}).error(function(err) {
         			console.log(err);
         			alert("[ผิดพลาด] ไม่สามารถอัพเดทข้อมูลได้");
+        			endOfLoading();
         		})
         	}else {
         		console.log('insert');
@@ -422,24 +496,42 @@ angular.module('starter.userCtrl', [])
 	        		alert("บันทึกข้อมูลสำเร็จ");
 	        		console.log("response database : " + response);
 	        		$state.go('app.profile', {}, {reload: true});
+	        		endOfLoading();
 	        	}).error(function(err) {
 	        		console.log(err);
 	        		alert("[ผิดพลาด] ไม่สามารถบันทึกข้อมูลได้");
+	        		endOfLoading();
 	        	});
         	}	
         }
 	})
 })
 
-.controller('editPasswordCtrl', function($scope, $state, $http, Authen, urlService, $ionicPopup, $crypto) {
+.controller('editPasswordCtrl', function($scope, $state, $http, Authen, urlService, $ionicPopup, $crypto, $ionicLoading) {
 	var user = Authen.getUser(); 
 
 	//data for change password.
 	$scope.data = {
 		userID: user.userID
 	};
-
+	var loading = function(){
+		$ionicLoading.show({
+			content: 'Loading',
+		    animation: 'fade-in',
+		    showBackdrop: true,
+		    maxWidth: 200,
+		    showDelay: 0
+		})
+	}
+	var checkLoading = 0;
+	var endOfLoading = function(){
+		checkLoading++;
+		if(checkLoading > 0){
+			$ionicLoading.hide();
+		}
+	}
 	$scope.checkPassword = function() {
+		loading();
 		//new password not same.
 		if($scope.data.newPass !== $scope.data.newPassConfirm) {
 			$ionicPopup.alert({
@@ -448,6 +540,7 @@ angular.module('starter.userCtrl', [])
 				okText: 'ตกลง',
 				okType: 'button-assertive'
 			});
+			endOfLoading();
 		}else {						//password is same.
 			//password less than 6 digits.
 			if($scope.data.newPass.length < 6) {
@@ -457,6 +550,7 @@ angular.module('starter.userCtrl', [])
 					okText: 'ตกลง',
 					okType: 'button-assertive'
 				});
+				endOfLoading();
 			}else {
 				var confirm = $ionicPopup.confirm({
 					title: 'เปลี่ยนรหัสผ่าน',
@@ -499,6 +593,7 @@ angular.module('starter.userCtrl', [])
 										}).then(function(res) {
 											$state.go('app.editPassword', {}, {reload: true});
 										});
+										endOfLoading();
 									}).error(function(err) {
 										console.log(err);
 										$ionicPopup.alert({
@@ -507,6 +602,7 @@ angular.module('starter.userCtrl', [])
 											okText: 'ตกลง',
 											okType: 'button-assertive'
 										});
+										endOfLoading();
 									});
 								}else {
 									$ionicPopup.alert({
@@ -515,9 +611,9 @@ angular.module('starter.userCtrl', [])
 										okText: 'ตกลง',
 										okType: 'button-assertive'
 									});
+									endOfLoading();
 								}
 							}
-
 						}).error(function(err) {
 							console.log(err);
 							$ionicPopup.alert({
@@ -526,6 +622,7 @@ angular.module('starter.userCtrl', [])
 								okText: 'ตกลง',
 								okType: 'button-assertive'
 							});
+							endOfLoading();
 						});
 					}
 				});
@@ -534,8 +631,24 @@ angular.module('starter.userCtrl', [])
 	}
 })
 
-.controller('searchCtrl', function($scope, $http, Authen, urlService, $stateParams) {
-	console.log($stateParams);
+.controller('searchCtrl', function($scope, $http, Authen, urlService, $stateParams, $ionicLoading) {
+	var loading = function(){
+		$ionicLoading.show({
+			content: 'Loading',
+		    animation: 'fade-in',
+		    showBackdrop: true,
+		    maxWidth: 200,
+		    showDelay: 0
+		})
+	}
+	loading();
+	var checkLoading = 0;
+	var endOfLoading = function(){
+		checkLoading++;
+		if(checkLoading > 0){
+			$ionicLoading.hide();
+		}
+	}
 	if($stateParams.searchData.prodPrice == undefined){
 		$http.get(urlService.getBaseUrl() + '/searchProductByNames', {params : {prodName : $stateParams.searchData.prodName}})
 			.success(function(response) {
@@ -547,6 +660,7 @@ angular.module('starter.userCtrl', [])
 						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
 					}
 				}
+				endOfLoading();
 			}
 		);
 	}else{
@@ -560,6 +674,7 @@ angular.module('starter.userCtrl', [])
 						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
 					}
 				}
+				endOfLoading();
 			}
 		);
 	}
