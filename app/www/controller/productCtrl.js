@@ -129,17 +129,20 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		$scope.rating.comment = '';
 
 		var profileUser = Users.getUserData();
-		$ionicLoading.show({
-			content: 'Loading',
-		    animation: 'fade-in',
-		    showBackdrop: true,
-		    maxWidth: 200,
-		    showDelay: 0
-		})
+		var loading = function(){
+			$ionicLoading.show({
+				content: 'Loading',
+			    animation: 'fade-in',
+			    showBackdrop: true,
+			    maxWidth: 200,
+			    showDelay: 0
+			})
+		}
+		loading();
 		var checkLoading = 0;
 		var endOfLoading = function(){
 			checkLoading++;
-			if(checkLoading > 3){
+			if(checkLoading > 4){
 				$ionicLoading.hide();
 			}
 		}
@@ -247,11 +250,15 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 							}else{
 								$scope.checkRatingComment = 2;
 							}
+							endOfLoading();
 						})
 					}else{
 						$scope.checkRatingComment = 0;
 					}
+					endOfLoading();
 				})
+			}else{
+				endOfLoading();
 			}
 		}
 		
@@ -275,6 +282,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 				        text: '<b>ยืนยัน</b>',
 				        type: 'button-outline button-positive',
 				        onTap: function(e) {
+				        	loading();
 				        	var ratingDate = new Date();
 				        	if(id == 0){
 				        		$http
@@ -304,6 +312,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		};
 
 		$scope.deleteRatingComment = function(id){
+			loading();
 			$http
 			.delete(urlService.getBaseUrl() + '/deleteOnlyOneRatingComments', {params: {ratId: id}})
 			.success(function(response) {
@@ -323,6 +332,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 				        text: '<b>ส่งรายงาน</b>',
 				        type: 'button-assertive',
 				        onTap: function(e) {
+				        	loading();
 				        	$scope.forReportData.productId = $scope.productdata.idProduct;
 				        	$scope.forReportData.logDate = $filter('date')(new Date(), 'yyyy-MM-dd');
 				        	$http
@@ -332,6 +342,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 							     	title: 'รายงานสำเร็จ',
 							     	template: 'ขอบคุณสำหรับการรายงาน'
 							   	});
+							   	endOfLoading();
 							})
 			        	}
 			      	}
@@ -386,7 +397,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 						}
 					}
 					if($scope.productdata.stockProduct == 'สต็อกสินค้า'){
-						$scope.forOrderBuyer.dateWithIn = '0000-00-00'
+						$scope.forOrderBuyer.dateWithIn = '0000-00-00';
 						var buyPopup = $ionicPopup.show({
 							template: 'จำนวนที่คุณต้องการ<input type="number" ng-model="forOrderBuyer.orderAmount" ng-change="setAmount()">',
 						    title: 'สั่งซื้อสินค้านี้',
@@ -398,6 +409,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 									text: '<b>สั่งซื้อ</b>',
 						        	type: 'button-positive',
 						        	onTap: function(e){
+						        		loading();
 						        		$http
 										.get(urlService.getBaseUrl() + '/buildOrderIds', {params: {prodId : $scope.forOrderBuyer.productId, profId : profileUser.profileID, gId : $scope.productdata.idGroup}})
 										.success(function(response) {
@@ -420,6 +432,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 														title: 'ทำการสั่งซื้อเสร็จเรียบร้อย',
 														template: 'ตรวจสอบสถานะสินค้าได้ที่ประวัติการซื้อ'
 													});
+													endOfLoading();
 													socket.emit('buyToServer', {id: 1})
 													socket.on('alertToSeller', function(data){
 														console.log(data);
@@ -442,31 +455,40 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 									text: '<b>สั่งซื้อ</b>',
 						        	type: 'button-positive',
 						        	onTap: function(e){
-						        		$http
-										.get(urlService.getBaseUrl() + '/buildOrderIds', {params: {prodId : $scope.forOrderBuyer.productId, profId : profileUser.profileID, gId : $scope.productdata.idGroup}})
-										.success(function(response) {
-											var runOrder;
-											if(response == ''){
-												runOrder = '1001';
-											}else{
-												response[0].order_id++;
-												runOrder = response[0].order_id;
-											}
-											$scope.forOrderBuyer.orderId = runOrder;
-											$http
-											.post(urlService.getBaseUrl() + '/insertOrderBuyers', $scope.forOrderBuyer)
+						        		if($scope.forOrderBuyer.dateWithIn == undefined){
+						        			$ionicPopup.alert({
+												title: 'เกิดข้อผิดพลาด',
+												template: 'กรุณาใส่วันที่สำหรับวันส่งสินค้า'
+											});
+										}else{
+											loading();
+							        		$http
+											.get(urlService.getBaseUrl() + '/buildOrderIds', {params: {prodId : $scope.forOrderBuyer.productId, profId : profileUser.profileID, gId : $scope.productdata.idGroup}})
 											.success(function(response) {
-												var idOrderSeller = response.insertId;
+												var runOrder;
+												if(response == ''){
+													runOrder = '1001';
+												}else{
+													response[0].order_id++;
+													runOrder = response[0].order_id;
+												}
+												$scope.forOrderBuyer.orderId = runOrder;
 												$http
-												.post(urlService.getBaseUrl() + '/insertOrderSellers', {sId : idOrderSeller, profId : $scope.productdata.idProfile})
+												.post(urlService.getBaseUrl() + '/insertOrderBuyers', $scope.forOrderBuyer)
 												.success(function(response) {
-													$ionicPopup.alert({
-														title: 'ทำการสั่งซื้อเสร็จเรียบร้อย',
-														template: 'ตรวจสอบสถานะสินค้าได้ที่ประวัติการซื้อ'
-													});
+													var idOrderSeller = response.insertId;
+													$http
+													.post(urlService.getBaseUrl() + '/insertOrderSellers', {sId : idOrderSeller, profId : $scope.productdata.idProfile})
+													.success(function(response) {
+														$ionicPopup.alert({
+															title: 'ทำการสั่งซื้อเสร็จเรียบร้อย',
+															template: 'ตรวจสอบสถานะสินค้าได้ที่ประวัติการซื้อ'
+														});
+														endOfLoading();
+													})
 												})
 											})
-										})
+										}
 						        	}
 								}
 							]
@@ -477,6 +499,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		};
 
 		$scope.loadProfile = function() {
+			loading();
 			$http
 			.get(urlService.getBaseUrl() + '/getViewProfiles', {params: {profId : $scope.productdata.idProfile}})
 			.success(function(response){
@@ -487,6 +510,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 					$scope.profileData[0].user_image = urlService.getBaseUrl() + /img/ + $scope.profileData[0].user_image;
 				}
 				showProfiles();
+
 			})
 		}
 
@@ -496,10 +520,12 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 				templateUrl: 'templates/showProfile.html',
 				scope: $scope
 			});
+			endOfLoading();
 			IonicClosePopupService.register(showProfile);
 		}
 
 		$scope.loadUserGroup = function(){
+			loading();
 			$http
 			.get(urlService.getBaseUrl() + '/getViewUserGroups', {params: {gId : $scope.productdata.idGroup}})
 			.success(function(response){
@@ -522,6 +548,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 				templateUrl: 'templates/showUserGroup.html',
 				scope: $scope
 			});
+			endOfLoading();
 			IonicClosePopupService.register(showUserGroup);
 		}
 
@@ -553,6 +580,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 			$scope.mapModal = modal;
 		});
 		$scope.loadLocation = function(lat, lng, add){
+			loading();
 			googleMapsMarkAndDirec.loadMap().then(function(){
 				var myLatLng = {lat: lat, lng: lng};
 				var map = new google.maps.Map(document.getElementById('map_canvas'), {
@@ -566,6 +594,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 					map: map,
 					title: add
 				});
+				endOfLoading();
 			})
 			$scope.mapModal.show();
 		}
@@ -592,6 +621,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 			});
 		}
 		$scope.loadDirection = function(lat, lng, add){
+			loading();
 			cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
 				if(enabled == true){
 					navigator.geolocation.getCurrentPosition(function(pos) {
@@ -643,16 +673,23 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 							//     });
 							// });
 						}
+						endOfLoading();
 					}, function(error) {
-						alert('Unable to get location: ' + error.message);
+						$ionicPopup.alert({
+							title: 'เกิดข้อผิดพลาด',
+							template: 'ไม่สามารถดึงที่อยู่ปัจจุบันได้'
+						});
+						endOfLoading();
 					});
 					$scope.direcMap.show();
 				}else{
 					gpsAlert();
 					$scope.direcMap.hide();
+					endOfLoading();
 				}
 			}, function(error){
 				gpsAlert();
+				endOfLoading();
 			});
 		}
 
@@ -666,7 +703,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 
 	})
 
-	.controller('showProductCtrl', function($http, $scope, $stateParams, urlService, Authen, Users, $ionicPopup, $ionicListDelegate) {
+	.controller('showProductCtrl', function($http, $scope, $stateParams, urlService, Authen, Users, $ionicPopup, $ionicListDelegate, $ionicLoading) {
 		var profileData = {};
 		var idProfile;
 		profileData.profileID = '';
@@ -676,7 +713,23 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		}else{
 			idProfile = profileData.profileID;
 		}
-
+		var loading = function(){
+			$ionicLoading.show({
+				content: 'Loading',
+			    animation: 'fade-in',
+			    showBackdrop: true,
+			    maxWidth: 200,
+			    showDelay: 0
+			})
+		}
+		loading();
+		var checkLoading = 0;
+		var endOfLoading = function(){
+			checkLoading++;
+			if(checkLoading > 0){
+				$ionicLoading.hide();
+			}
+		}
 		var getProductBuyer = function(){
 			$http
 			.get(urlService.getBaseUrl() + '/getProducts', {params: {pId: idProfile}})
@@ -690,12 +743,14 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 						$scope.productData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
 					}
 				}
+				endOfLoading();
 			})
 		}
 
 		getProductBuyer();
 
 		$scope.deleteProduct = function(productId){
+			loading();
 			$http
 			.get(urlService.getBaseUrl() + '/checkBeforeDeletes', {params: {prodId: productId}})
 			.success(function(response) {
@@ -710,13 +765,14 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 						title: 'เกิดข้อผิดพลาด',
 						template: 'ไม่สามารถลบสินค้านี้ได้ ยังมีรายการสั่งซื้อนี้อยู่'
 					});
+					endOfLoading();
 				}
 			})
 			$ionicListDelegate.closeOptionButtons();
 		};
 	})
 
-	.controller('addProductCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $filter) {
+	.controller('addProductCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicLoading, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $filter) {
 
 		var userID = Authen.getUser().userID;
 		//object for user data after view call this controller.
@@ -725,7 +781,23 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		$scope.products = {};
 		$scope.products.categoryText = 'อาหาร';
 		$scope.products.productStock = 'สต็อกสินค้า';
-
+		var loading = function(){
+			$ionicLoading.show({
+				content: 'Loading',
+			    animation: 'fade-in',
+			    showBackdrop: true,
+			    maxWidth: 200,
+			    showDelay: 0
+			})
+		}
+		loading();
+		var checkLoading = 0;
+		var endOfLoading = function(){
+			checkLoading++;
+			if(checkLoading > 0){
+				$ionicLoading.hide();
+			}
+		}
 		$ionicPlatform.ready(function() {
 			$scope.images = [];
 			$scope.realImageName = [];
@@ -734,6 +806,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 				.get(urlService.getBaseUrl() + '/getUserGroupForProducts', {params: {pId: profileUser.profileID}})
 				.success(function(response) {
 					$scope.userGroupData = response;
+					endOfLoading();
 				})
 
 			$scope.preInsertProduct = function() {
@@ -765,6 +838,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 
 			//function upload image to server.
 			upload = function(imageURI, filename) {
+				loading();
 				var options = new FileUploadOptions();
 				options.fileKey = 'image';
 				options.fileName = filename;
@@ -783,11 +857,14 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 						});
 						if($scope.images.length == $scope.realImageName.length){
 							insertProducts();
+						}else{
+							endOfLoading();
 						}
 					}, function(error) {
 						alert("ไม่สามารถทำการอัพโหลดรูปภาพของคุณได้");
 					    console.log("upload error source " + error.source);
 					    console.log("upload error target " + error.target);
+					    endOfLoading();
 					}, options
 				);
 			};
@@ -868,10 +945,12 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 							.post(urlService.getBaseUrl() + '/insertImageProducts', forImageData)
 							.success(function(response) {
 								$state.go('app.showProducts', {}, {reload:true});
+								endOfLoading();
 							})
 						}
 					}else{
 						$state.go('app.showProducts', {}, {reload:true});
+						endOfLoading();
 					}
 				})
 			};
@@ -885,7 +964,23 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		var profileUser = Users.getUserData();
 
 		$scope.products = {};
-
+		var loading = function(){
+			$ionicLoading.show({
+				content: 'Loading',
+			    animation: 'fade-in',
+			    showBackdrop: true,
+			    maxWidth: 200,
+			    showDelay: 0
+			})
+		}
+		loading();
+		var checkLoading = 0;
+		var endOfLoading = function(){
+			checkLoading++;
+			if(checkLoading > 1){
+				$ionicLoading.hide();
+			}
+		}
 		$ionicPlatform.ready(function() {
 			$scope.images = [];
 			$scope.realImageName = [];
@@ -894,6 +989,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 				.get(urlService.getBaseUrl() + '/getUserGroupForProducts', {params: {pId: profileUser.profileID}})
 				.success(function(response) {
 					$scope.userGroupData = response;
+					endOfLoading();
 				})
 			
 			$http
@@ -918,6 +1014,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 			                });
 						}
 					}
+					endOfLoading();
 				})
 
 			$scope.preUpdateProduct = function() {
@@ -958,6 +1055,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 
 			//function upload image to server.
 			upload = function(imageURI, filename) {
+				loading();
 				var options = new FileUploadOptions();
 				options.fileKey = 'image';
 				options.fileName = filename;
@@ -976,11 +1074,14 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 						});
 						if($scope.images.length == $scope.realImageName.length){
 							updateProduct();
+						}else{
+							endOfLoading();
 						}
 					}, function(error) {
 						alert("ไม่สามารถทำการอัพโหลดรูปภาพของคุณได้");
 					    console.log("upload error source " + error.source);
 					    console.log("upload error target " + error.target);
+					    endOfLoading();
 					}, options
 				);
 			};
@@ -1063,10 +1164,12 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 									.post(urlService.getBaseUrl() + '/insertImageProducts', forImageData)
 									.success(function(response) {
 										$state.go('app.showProducts', {}, {reload:true});
+										endOfLoading();
 									})
 							}
 						}else{
 							$state.go('app.showProducts', {}, {reload:true});
+							endOfLoading();
 						}
 					})
 				})
@@ -1079,6 +1182,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 		var setLimit = 10;
 		$scope.canBeLoaded = true;
 		$scope.ratingComment = [];
+		
 		$scope.loadComment = function(){
 			$http
 			.get(urlService.getBaseUrl() + '/getRatingProducts', {params: {pId: $stateParams.prodId, offset: setOffset, limit: setLimit}})
