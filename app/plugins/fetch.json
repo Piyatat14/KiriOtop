@@ -78,8 +78,6 @@
             "id": "phonegap-plugin-push"
         },
         "is_top_level": true,
-        "variables": {
-            "SENDER_ID": "97298974682"
-        }
+        "variables": {}
     }
 }

@@ -18,12 +18,13 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+    var push = new Ionic.push({
+      "debug" : true
+    });
 
-    // $rootScope.$on('$cordovaPush:notificationReceived', function (event, notification) {
-    //   if (notification.alert) {
-    //     navigator.notification.alert(notification.alert);
-    //   }
-    // });
+    push.register(function(token){
+      console.log("GU MA LAW : "+token.token);
+    });
   });
 
   // $rootScope.$on('$stateChangeStart', function (event, toState) {
