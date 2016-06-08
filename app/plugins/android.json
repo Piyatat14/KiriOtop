@@ -33,9 +33,6 @@
         "cordova-plugin-device": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
-        "cordova-plugin-file": {
-            "PACKAGE_NAME": "com.ionicframework.app445426"
-        },
         "cordova-plugin-file-transfer": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },

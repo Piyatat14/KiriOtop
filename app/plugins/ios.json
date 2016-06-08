@@ -13,10 +13,6 @@
         "cordova.plugins.diagnostic.api-22": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
-        "phonegap-plugin-push": {
-            "SENDER_ID": "97298974682",
-            "PACKAGE_NAME": "com.ionicframework.app445426"
-        },
         "uk.co.workingedge.phonegap.plugin.launchnavigator": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         }
@@ -53,6 +49,9 @@
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-webserver": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "cordova-plugin-whitelist": {
