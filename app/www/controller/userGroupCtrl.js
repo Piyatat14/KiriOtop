@@ -1,6 +1,6 @@
 angular.module('starter.userGroupCtrl', [])
 
-.controller('showUserGroupCtrl', function($scope, $http, Authen, Users, urlService, $ionicPopover, $ionicPopup) {
+.controller('showUserGroupCtrl', function($scope, $http, Authen, Users, urlService, $ionicPopover, $ionicPopup, $ionicLoading) {
 	var profileData = {};
 	var idGroup = '';
 	var idProfile;
@@ -10,6 +10,23 @@ angular.module('starter.userGroupCtrl', [])
 		idProfile = '0';
 	}else{
 		idProfile = profileData.profileID;
+	}
+	var loading = function(){
+		$ionicLoading.show({
+			content: 'Loading',
+		    animation: 'fade-in',
+		    showBackdrop: true,
+		    maxWidth: 200,
+		    showDelay: 0
+		})
+	}
+	loading();
+	var checkLoading = 0;
+	var endOfLoading = function(){
+		checkLoading++;
+		if(checkLoading > 0){
+			$ionicLoading.hide();
+		}
 	}
 	var getUsergroup = function(){
 		$http
@@ -23,6 +40,7 @@ angular.module('starter.userGroupCtrl', [])
 					$scope.userGroupData[i].image = urlService.getBaseUrl() + /img/ + response[i].image;
 				}
 			}
+			endOfLoading();
 		})
 	}
 
@@ -46,6 +64,7 @@ angular.module('starter.userGroupCtrl', [])
 	});
 
 	$scope.deleteUsergroup = function(){
+		loading();
 		$http
 		.get(urlService.getBaseUrl() + '/checkDeleteUsergroups', {params: {grpId: idGroup}})
 		.success(function(response) {
@@ -61,18 +80,34 @@ angular.module('starter.userGroupCtrl', [])
 					getUsergroup();
 				})
 			}
+			endOfLoading();
 		})
 		$scope.closePopover();
 	}
 })
 
-.controller('ImageUserGroupCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory, googleMaps, $ionicModal) {
+.controller('ImageUserGroupCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicLoading, $ionicPlatform, $cordovaFile, Authen, Users, urlService, $ionicActionSheet, $ionicHistory, googleMaps, $ionicModal) {
 	var userID = Authen.getUser().userID;
 	//object for user data after view call this controller.
 	var profileUser = Users.getUserData();
 
 	$scope.userGroupData = {};
-
+	var loading = function(){
+		$ionicLoading.show({
+			content: 'Loading',
+		    animation: 'fade-in',
+		    showBackdrop: true,
+		    maxWidth: 200,
+		    showDelay: 0
+		})
+	}
+	var checkLoading = 0;
+	var endOfLoading = function(){
+		checkLoading++;
+		if(checkLoading > 0){
+			$ionicLoading.hide();
+		}
+	}
 	$ionicModal.fromTemplateUrl('templates/mapGoogle.html', {
 		scope: $scope,
 		animation: 'slide-in-up'
@@ -81,6 +116,7 @@ angular.module('starter.userGroupCtrl', [])
 	});
 	
 	$scope.openMaps = function() {
+		loading();
 		googleMaps.loadMaps().then(function(){
 			var input = document.getElementById('pac-input');
 			var map = new google.maps.Map(document.getElementById('map_canvas'), {
@@ -142,6 +178,7 @@ angular.module('starter.userGroupCtrl', [])
 				});
 				map.fitBounds(bounds);
 			});
+			endOfLoading();
 		})
 		$scope.modal.show();
 	};
@@ -186,6 +223,7 @@ angular.module('starter.userGroupCtrl', [])
 
 		//function upload image to server.
 		upload = function(imageURI, filename) {
+			loading();
 			var options = new FileUploadOptions();
 			options.fileKey = 'image';
 			options.fileName = filename;
@@ -205,10 +243,12 @@ angular.module('starter.userGroupCtrl', [])
 					if($scope.images.length == $scope.realImageName.length){
 						insertUserGroup();
 					}
+					endOfLoading();
 				}, function(error) {
 					alert("ไม่สามารถทำการอัพโหลดรูปภาพของคุณได้");
 				    console.log("upload error source " + error.source);
 				    console.log("upload error target " + error.target);
+				    endOfLoading();
 				}, options
 			);
 		};
@@ -270,6 +310,7 @@ angular.module('starter.userGroupCtrl', [])
 		};
 
 		insertUserGroup = function(){
+			loading();
 			$scope.userGroupData.idProfile = profileUser.profileID;
 			$http
 			.post(urlService.getBaseUrl() + '/insertUserGroups', $scope.userGroupData)
@@ -287,22 +328,40 @@ angular.module('starter.userGroupCtrl', [])
 							$state.go('app.userGroup', {}, {reload:true});
 						})
 					}
+					endOfLoading();
 				}else{
 					$state.go('app.userGroup', {}, {reload:true});
+					endOfLoading();
 				}
 			})
 		};
 	});
 })
 
-.controller('editUserGroupCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $cordovaFile, Authen, Users, urlService, googleMaps, $ionicActionSheet, $ionicHistory, $stateParams, $ionicModal) {
+.controller('editUserGroupCtrl', function($scope, $state, $cordovaFileTransfer, $cordovaDevice, $cordovaCamera, $http, $ionicPlatform, $ionicLoading, $cordovaFile, Authen, Users, urlService, googleMaps, $ionicActionSheet, $ionicHistory, $stateParams, $ionicModal) {
 	
 	var userID = Authen.getUser().userID;
 	//object for user data after view call this controller.
 	var profileUser = Users.getUserData();
 
 	$scope.editGroupData = {};
-
+	var loading = function(){
+		$ionicLoading.show({
+			content: 'Loading',
+		    animation: 'fade-in',
+		    showBackdrop: true,
+		    maxWidth: 200,
+		    showDelay: 0
+		})
+	}
+	loading();
+	var checkLoading = 0;
+	var endOfLoading = function(){
+		checkLoading++;
+		if(checkLoading > 0){
+			$ionicLoading.hide();
+		}
+	}
 	$ionicModal.fromTemplateUrl('templates/mapGoogle.html', {
 		scope: $scope,
 		animation: 'slide-in-up'
@@ -310,6 +369,7 @@ angular.module('starter.userGroupCtrl', [])
 		$scope.modal = modal;
 	});
 	$scope.openMaps = function(placeLat, placeLng, placeName) {
+		loading();
 		googleMaps.loadMaps().then(function(){
 			var input = document.getElementById('pac-input');
 			var map = new google.maps.Map(document.getElementById('map_canvas'), {
@@ -377,6 +437,7 @@ angular.module('starter.userGroupCtrl', [])
 				});
 				map.fitBounds(bounds);
 			});
+			endOfLoading();
 		})
 		$scope.modal.show();
 	};
@@ -411,6 +472,7 @@ angular.module('starter.userGroupCtrl', [])
 	                });
 				}
 			}
+			endOfLoading();
 		})
 
 		$scope.preUpdateUserGroup = function() {
@@ -454,6 +516,7 @@ angular.module('starter.userGroupCtrl', [])
 
 		//function upload image to server.
 		upload = function(imageURI, filename) {
+			loading();
 			var options = new FileUploadOptions();
 			options.fileKey = 'image';
 			options.fileName = filename;
@@ -473,10 +536,12 @@ angular.module('starter.userGroupCtrl', [])
 					if($scope.images.length == $scope.realImageName.length){
 						updateUserGroup();
 					}
+					endOfLoading();
 				}, function(error) {
 					alert("ไม่สามารถทำการอัพโหลดรูปภาพของคุณได้");
 				    console.log("upload error source " + error.source);
 				    console.log("upload error target " + error.target);
+				    endOfLoading();
 				}, options
 			);
 		};
@@ -538,30 +603,33 @@ angular.module('starter.userGroupCtrl', [])
 
 
         updateUserGroup = function(){
+        	loading();
 	        $scope.editGroupData.idProfile = profileUser.profileID;
 			$http
 			.delete(urlService.getBaseUrl() + '/editAllDeleteImages', {params: {group_id: $scope.editGroupData.idGroup}})
 			.success(function(response) {
 				var forImageData = {};
 				$http
-					.put(urlService.getBaseUrl() + '/updateUserGroups', $scope.editGroupData)
-					.success(function(response) {
-						if($scope.images.length > 0){
-							for(var i=0; i<$scope.images.length; i++){
-								forImageData = {
-									group_id: $scope.editGroupData.idGroup,
-									image: $scope.realImageName[i].realNameImg
-								}
-								$http
-									.post(urlService.getBaseUrl() + '/insertImageUserGroups', forImageData)
-									.success(function(response) {
-										$state.go('app.userGroup', {}, {reload:true});
-									})
+				.put(urlService.getBaseUrl() + '/updateUserGroups', $scope.editGroupData)
+				.success(function(response) {
+					if($scope.images.length > 0){
+						for(var i=0; i<$scope.images.length; i++){
+							forImageData = {
+								group_id: $scope.editGroupData.idGroup,
+								image: $scope.realImageName[i].realNameImg
 							}
-						}else{
-							$state.go('app.userGroup', {}, {reload:true});
+							$http
+								.post(urlService.getBaseUrl() + '/insertImageUserGroups', forImageData)
+								.success(function(response) {
+									$state.go('app.userGroup', {}, {reload:true});
+								})
 						}
-					})
+						endOfLoading();
+					}else{
+						$state.go('app.userGroup', {}, {reload:true});
+						endOfLoading();
+					}
+				})
 			})
 		};
 	});

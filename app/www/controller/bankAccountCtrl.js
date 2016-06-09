@@ -1,14 +1,30 @@
 angular.module('starter.bankAccountCtrl', [])
 
-	.controller('bankCtrl', function($scope, $http, urlService, Authen, $ionicModal){
+	.controller('bankCtrl', function($scope, $http, urlService, Authen, $ionicModal, $ionicLoading){
 		$scope.bankData = {};
-
+		var loading = function(){
+			$ionicLoading.show({
+				content: 'Loading',
+			    animation: 'fade-in',
+			    showBackdrop: true,
+			    maxWidth: 200,
+			    showDelay: 0
+			})
+		}
+		loading();
+		var checkLoading = 0;
+		var endOfLoading = function(){
+			checkLoading++;
+			if(checkLoading > 0){
+				$ionicLoading.hide();
+			}
+		}
 		$scope.getDataBanks = function() {
 			$http
 				.get(urlService.getBaseUrl() + '/getBanks', {params: {bId: '1'}})
 				.success(function(response) {
 					$scope.allBanks = response;
-					console.log($scope.allBanks);
+					endOfLoading();
 				})
 		}
 		$scope.getDataBanks();
@@ -50,6 +66,7 @@ angular.module('starter.bankAccountCtrl', [])
 
 		// Perform the login action when the user submits the login form
 		$scope.doBankAccount = function(bank_id) {
+			loading();
 			$scope.bankData.bank_logo_id = bank_id;
 			if($scope.bankData.bookId == null){
 				$http
@@ -66,10 +83,6 @@ angular.module('starter.bankAccountCtrl', [])
 						$scope.getDataBanks();
 					})
 			}
-		};
-
-		$scope.logout = function() {
-
 		};
 	});
 	// $scope.getBankAccountById = function($scope, $http){

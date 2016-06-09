@@ -6,7 +6,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', 'starter.services', 'starter.bankAccountCtrl', 'starter.userGroupCtrl', 'starter.orderCtrl', 'starter.statementCtrl', 'ngCordova', 'mdo-angular-cryptography'])
 
-.run(function($ionicPlatform, $rootScope, $http) {
+.run(function($ionicPlatform, $rootScope, $http, $state, Authen, Users, $ionicHistory) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -18,10 +18,9 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-
     //var io = Ionic.io();
-    var push = new Ionic.Push({
-      "debug" : true
+    // var push = new Ionic.Push({
+    //   "debug" : true
       // "onNotification" : function(notification){
       //   alert("RECEIVED NOTI");
       // },
@@ -30,10 +29,10 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
       //     "iconColor" : "#0000FF"
       //   }
       // }
-    });
-    push.register(function(token){
-      console.log("ID : ",token.token);
-    });
+    // });
+    // push.register(function(token){
+    //   console.log("ID : ",token.token);
+    // });
     // var ionLogin = {
     //   'email' : 'test@gmail.com',
     //   'password' : 'qwe'
@@ -70,12 +69,19 @@ angular.module('starter', ['ionic', 'starter.userCtrl', 'starter.productCtrl', '
     // }
   });
 
-  // $rootScope.$on('$stateChangeStart', function (event, toState) {
-  //   if (!UserService.current() && toState.name !== 'login') {
-  //     $ionicHistory.nextViewOptions({
-  //       disableBack: true
-  //     });
-  //     $state.go('login');
+  // $rootScope.$on('$stateChangeSuccess', function (event, toState) {
+  //   if (toState.name !== 'app.product' || toState.name !== 'app.register') {
+  //     if(Authen.isLoggedIn() == false){
+  //       Authen.logout();
+  //       Users.removeUserData();
+  //       $ionicHistory.nextViewOptions({
+  //         disableBack: true
+  //       });
+  //       $state.go('app.product');
+  //       console.log("qwe");
+  //     }else{
+
+  //     }
   //   }
   // });
 })
