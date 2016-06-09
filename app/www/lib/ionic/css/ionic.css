@@ -8978,7 +8978,8 @@ a.button {
   display: -ms-flexbox;
   display: flex;
   padding: 5px;
-  width: 100%; }
+  width: 100%; 
+}
 
 .row-wrap {
   -webkit-flex-wrap: wrap;
