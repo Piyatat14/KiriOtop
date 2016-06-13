@@ -7,10 +7,17 @@
         "files": {}
     },
     "installed_plugins": {
+        "cordova-plugin-crosswalk-webview": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
         "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "cordova.plugins.diagnostic.api-22": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "phonegap-plugin-push": {
+            "SENDER_ID": "97298974682",
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "uk.co.workingedge.phonegap.plugin.launchnavigator": {
@@ -31,6 +38,9 @@
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.ionicframework.app445426"
+        },
+        "cordova-plugin-file": {
             "PACKAGE_NAME": "com.ionicframework.app445426"
         },
         "cordova-plugin-file-transfer": {
