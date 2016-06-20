@@ -9,6 +9,7 @@ angular.module('starter.productCtrl', ['ionic.rating', 'ionic.closePopup'])
 			    
 		// 	});
 		// });
+		// START
 		var checkLoading = 0;
 		$ionicLoading.show({
 			content: 'Loading',
