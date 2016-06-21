@@ -96,6 +96,8 @@
             "id": "cordova-plugin-crosswalk-webview"
         },
         "is_top_level": true,
-        "variables": {}
+        "variables": {
+            "SENDER_ID": "97298974682"
+        }
     }
 }

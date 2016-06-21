@@ -1,6 +1,6 @@
 angular.module('starter.statementCtrl', ['chart.js'])
 
-	.controller('showStatementCtrl', function($scope, $http, urlService, Users, $filter, $ionicLoading) {
+	.controller('showStatementCtrl', function($scope, $http, urlService, Users, $filter, $ionicLoading, $ionicModal) {
 		var profileUser = Users.getUserData();
 		$scope.date = {
 			picked : new Date()
@@ -27,11 +27,14 @@ angular.module('starter.statementCtrl', ['chart.js'])
 			$scope.priceDay = [];
 			$scope.series = ['เงิน/เดือน'];
 			$scope.orderDate = [];
+			$scope.keepNRelease = [];
 			$scope.priceMonth = [];
 			var dateOnly = $filter('date')($scope.date.picked, 'MM');
 			$http
 			.get(urlService.getBaseUrl() + '/getProductStatements', {params: {profId : profileUser.profileID, dateState : dateOnly}})
 			.success(function(response) {
+				$scope.forModal = response;
+				console.log(response);
 				for(var i=0; i<response.length; i++){
 					if($filter('date')($scope.date.picked, 'dd/MM/yyyy') == $filter('date')(response[i].order_date, 'dd/MM/yyyy')){
 						$scope.buyer.push(
@@ -44,13 +47,30 @@ angular.module('starter.statementCtrl', ['chart.js'])
 					$scope.orderDate.push(
 						$filter('date')(response[i].order_date, 'dd/MM/yyyy')
 					);
-					$scope.priceMonth.push([
-						response[i].product_price*response[i].order_amount
-					]);
+					$scope.keepNRelease[i] = response[i].product_price*response[i].order_amount;
+					
 				}
+				$scope.priceMonth.push($scope.keepNRelease);
 				endOfLoading();
 			})
 		}
+
+		$ionicModal.fromTemplateUrl('dayModal.html', {
+			scope: $scope,
+			animation: 'slide-in-up'
+		}).then(function(modal) {
+			$scope.dayModal = modal;
+		});
+		$scope.dayDetail = function() {
+			$scope.dayModal.show();
+		};
+		$scope.closeDay = function() {
+			$scope.dayModal.hide();
+		};
+		// Cleanup the modal when we're done with it!
+			$scope.$on('$destroy', function() {
+			$scope.dayModal.remove();
+		});
 
 		$scope.dateChanged();
 	})
