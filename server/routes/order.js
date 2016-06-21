@@ -69,7 +69,7 @@ exports.getOrderLog = function(req, res, next) {
 };
 
 exports.getOrderSeller = function(req, res, next) {
-	strQuery = "SELECT user_group.group_id, order_buyer.order_buyer_id, order_buyer.product_id, order_buyer.profile_id, order_buyer.order_id, order_buyer.order_amount, order_buyer.date_of_within, order_buyer.buyer_status_name, order_buyer.order_date, product.product_name, product.product_price, product_image.image, user_profile.first_name FROM user_group JOIN order_buyer ON user_group.group_id = order_buyer.group_id JOIN order_seller ON order_buyer.order_buyer_id = order_seller.order_buyer_id JOIN product ON order_buyer.product_id = product.product_id LEFT JOIN product_image ON order_buyer.product_id = product_image.product_id JOIN user_profile ON order_seller.profile_id = user_profile.profile_id WHERE user_group.profile_id=? GROUP BY order_buyer.product_id";
+	strQuery = "SELECT user_group.group_id, order_buyer.order_buyer_id, order_buyer.product_id, order_buyer.profile_id, order_buyer.order_id, order_buyer.order_amount, order_buyer.date_of_within, order_buyer.buyer_status_name, order_buyer.order_date, product.product_name, product.product_price, product_image.image, user_profile.first_name FROM user_group JOIN order_buyer ON user_group.group_id = order_buyer.group_id JOIN order_seller ON order_buyer.order_buyer_id = order_seller.order_buyer_id JOIN product ON order_buyer.product_id = product.product_id LEFT JOIN product_image ON order_buyer.product_id = product_image.product_id JOIN user_profile ON order_seller.profile_id = user_profile.profile_id WHERE user_group.profile_id=? GROUP BY order_buyer.order_id";
 	connection.query(strQuery, req.query.pfId, function(err, rows){
 		if(err) {
 			console.log(err);
